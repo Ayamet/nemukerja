@@ -3,10 +3,12 @@
 {% block title %}Sign Up - NemuKerja{% endblock %}
 
 {% block content %}
-    <div class="wrap">
-        <!-- Fixed logo using img tag with url_for -->
-        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="NemuKerja Logo" style="height: 168px;width: 504px; background-color: #f0f0f0;">
-        <h2>Sign Up</h2>
+<div class="auth-container">
+    <div class="auth-card">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="NemuKerja Logo" class="auth-logo">
+        <h2>Create Your Account</h2>
+        <p class="tagline">Start your career journey with us today.</p>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -17,66 +19,71 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-       <form method="POST" action="{{ url_for('register') }}">
-                    {{ form.hidden_tag() }}
-                    
-                    <!-- Regular labels with proper field names -->
-                    <div class="form-group mt-4">
-                        <label for="name" class="form-label-static">Full Name</label>
-                        {{ form.name(class="form-control", id="name") }}
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label for="email" class="form-label-static">Email Address</label>
-                        {{ form.email(class="form-control", id="email") }}
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label for="phone" class="form-label-static">Phone Number</label>
-                        {{ form.phone(class="form-control", id="phone") }}
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label for="signup_password" class="form-label-static">Password</label>
-                        <div class="input-group">
-                            {{ form.password(class="form-control", id="signup_password") }}
-                            <span class="input-group-text" onclick="togglePassword('signup_password')">
-                                <i class="fa fa-eye" id="eye-signup_password"></i>
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label for="confirm_password" class="form-label-static">Confirm Password</label>
-                        {{ form.confirm_password(class="form-control", id="confirm_password") }}
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        <label for="role_select" class="form-label-static">I am a</label>
-                        {{ form.role(class="form-select", id="role_select") }}
-                    </div>
-                    
-                    <div id="company_fields" style="display: none;">
-                        <div class="form-group mt-4">
-                            <label for="company_name" class="form-label-static">Company Name</label>
-                            {{ form.company_name(class="form-control", id="company_name") }}
-                        </div>
-                        <div class="form-group mt-4">
-                            <label for="description" class="form-label-static">Company Description</label>
-                            {{ form.description(class="form-control", id="description") }}
-                        </div>
-                        <div class="form-group mt-4">
-                            <label for="website" class="form-label-static">Website</label>
-                            {{ form.website(class="form-control", id="website") }}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group mt-4">
-                        {{ form.submit(class="btn btn-primary form-control") }}
-                    </div>
-                </form>
-    </div>
 
+        <form method="POST" action="{{ url_for('register') }}" novalidate>
+            {{ form.hidden_tag() }}
+            
+            <div class="form-group">
+                <label for="name" class="form-label-static">Full Name</label>
+                {{ form.name(class="form-control", id="name", placeholder="e.g. John Doe") }}
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="form-label-static">Username</label>
+                {{ form.username(class="form-control", id="username", placeholder="e.g. johndoe99") }}
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label-static">Email Address</label>
+                {{ form.email(class="form-control", id="email", placeholder="you@example.com") }}
+            </div>
+            
+            <div class="form-group">
+                <label for="phone" class="form-label-static">Phone Number</label>
+                {{ form.phone(class="form-control", id="phone", placeholder="e.g. 08123456789") }}
+            </div>
+            
+            <div class="form-group">
+                <label for="signup_password" class="form-label-static">Password</label>
+                <div class="input-group">
+                    {{ form.password(class="form-control", id="signup_password", placeholder="Create a strong password") }}
+                    <span class="input-group-text" onclick="togglePassword('signup_password')">
+                        <i class="fa fa-eye" id="eye-signup_password"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password" class="form-label-static">Confirm Password</label>
+                {{ form.confirm_password(class="form-control", id="confirm_password", placeholder="Confirm your password") }}
+            </div>
+            
+            <div class="form-group">
+                <label for="role_select" class="form-label-static">I am a...</label>
+                {{ form.role(class="form-select", id="role_select") }}
+            </div>
+            
+            <div id="company_fields" style="display: none;">
+                <div class="form-group">
+                    <label for="company_name" class="form-label-static">Company Name</label>
+                    {{ form.company_name(class="form-control", id="company_name") }}
+                </div>
+                <div class="form-group">
+                    <label for="description" class="form-label-static">Company Description</label>
+                    {{ form.description(class="form-control", id="description", rows="3") }}
+                </div>
+            </div>
+            
+            <div class="form-group mt-4">
+                {{ form.submit(class="btn btn-primary", value="Create Account") }}
+            </div>
+        </form>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Sign In</a></p>
+        </div>
+    </div>
+</div>
 
 <script>
     function togglePassword(id) {
@@ -93,14 +100,9 @@
         }
     }
 
-    // Toggle company fields based on role
     document.getElementById('role_select').addEventListener('change', function() {
         var companyFields = document.getElementById('company_fields');
-        if (this.value === 'company') {
-            companyFields.style.display = 'block';
-        } else {
-            companyFields.style.display = 'none';
-        }
+        companyFields.style.display = (this.value === 'company') ? 'block' : 'none';
     });
 </script>
 {% endblock %}

@@ -1,52 +1,60 @@
 import os
-from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
-from extensions import db, login_manager, bcrypt
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, session
+from nemukerja.extensions import db, login_manager, bcrypt
 from flask_migrate import Migrate
+from flask_babel import Babel
 from flask_login import login_user, login_required, logout_user, current_user
-from models import User, Company, Job, Application
-from forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
+from sqlalchemy import or_
+
+from nemukerja.models import User, Company, JobListing, Application, Applicant
+from nemukerja.forms import (
+    RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm,
+    ReactiveForm, ContactForm, FeedbackForm
+)
+
+# --- [PERUBAHAN UTAMA PENYEBAB ERROR] ---
+
+# 1. Definisikan fungsi pemilih bahasa terlebih dahulu di luar 'create_app'
+def get_locale():
+    # Mengambil bahasa dari session jika ada, jika tidak, cocokkan dengan preferensi browser
+    if 'language' in session and session['language'] in Config.LANGUAGES:
+        return session['language']
+    return request.accept_languages.best_match(Config.LANGUAGES)
+
+# 2. Inisialisasi Babel dengan memberikan fungsi pemilih bahasa secara langsung
+babel = Babel(locale_selector=get_locale)
+
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'mysql+pymysql://root:@localhost/nemukerja_db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    LANGUAGES = ['en', 'id']
+    BABEL_DEFAULT_LOCALE = 'en'
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize extensions
+    # Inisialisasi ekstensi
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    babel.init_app(app) # Cara inisialisasi ini tetap sama
     login_manager.login_view = 'login'
     migrate = Migrate(app, db)
-
+    
+    # 3. Hapus dekorator @babel.localeselector dari sini karena sudah ditangani di atas
+    
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Create DB and seed demo data (runs once at startup)
-    with app.app_context():
-        db.create_all()
-        if User.query.count() == 0:
-            pw = bcrypt.generate_password_hash('password').decode()
-            demo_company_user = User(email='company@example.com', password_hash=pw, role='company', name='Demo HR')
-            demo_user = User(email='user@example.com', password_hash=pw, role='user', name='Demo User')
-            db.session.add_all([demo_company_user, demo_user])
-            db.session.commit()
-            co = Company(user_id=demo_company_user.id, company_name='PT. Contoh', description='Perusahaan demo')
-            db.session.add(co)
-            db.session.commit()
-            j1 = Job(title='Operator Produksi (Device)', location='Batam', description='Deskripsi pekerjaan', slots=3, company_id=co.id)
-            j2 = Job(title='Admin Kantor', location='Jakarta', description='Deskripsi admin', slots=2, company_id=co.id)
-            db.session.add_all([j1, j2])
-            db.session.commit()
+    # --- Routes ---
 
-    # Routes
     @app.route('/')
     def index():
-        jobs = Job.query.order_by(Job.created_at.desc()).all()
+        jobs = JobListing.query.order_by(JobListing.posted_at.desc()).all()
         return render_template('base.html', jobs=jobs)
 
     @app.route('/login', methods=['GET', 'POST'])
@@ -55,12 +63,15 @@ def create_app():
             return redirect(url_for('dashboard'))
         form = LoginForm()
         if form.validate_on_submit():
-            user = User.query.filter_by(email=form.email.data.lower()).first()
-            if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
+            identifier = form.username_or_email.data
+            user = User.query.filter(or_(User.username == identifier, User.email == identifier)).first()
+            
+            if user and bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data)
-                flash('Login successful.', 'success')
+                flash('Login berhasil.', 'success')
                 return redirect(url_for('dashboard'))
-            flash('Invalid email or password.', 'danger')
+            else:
+                flash('Username/Email atau password salah.', 'danger')
         return render_template('login.html', form=form)
 
     @app.route('/register', methods=['GET', 'POST'])
@@ -69,103 +80,64 @@ def create_app():
             return redirect(url_for('dashboard'))
         form = RegisterForm()
         if form.validate_on_submit():
-            existing = User.query.filter_by(email=form.email.data.lower()).first()
-            if existing:
-                flash('Email already registered.', 'danger')
-                return redirect(url_for('register'))
             pw_hash = bcrypt.generate_password_hash(form.password.data).decode()
             u = User(
+                username=form.username.data,
                 email=form.email.data.lower(),
-                password_hash=pw_hash,
-                role=form.role.data,
-                name=form.name.data
+                password=pw_hash,
+                role='company' if form.role.data == 'company' else 'applicant'
             )
             db.session.add(u)
             db.session.commit()
-            if form.role.data == 'company':
+
+            if u.role == 'applicant':
+                applicant_profile = Applicant(id_user=u.id, full_name=form.name.data)
+                db.session.add(applicant_profile)
+            
+            if u.role == 'company':
                 co = Company(
-                    user_id=u.id,
+                    id_user=u.id,
                     company_name=form.company_name.data,
                     description=form.description.data,
-                    website=form.website.data
+                    phone=form.phone.data,
+                    contact_email=u.email
                 )
                 db.session.add(co)
-                db.session.commit()
-            flash('Account created successfully! Please login.', 'success')
-            if u.role == 'company':
-                login_user(u)
-                return redirect(url_for('company_profile'))
+            
+            db.session.commit()
+            flash('Akun berhasil dibuat! Silakan login.', 'success')
             return redirect(url_for('login'))
         return render_template('register.html', form=form)
-
-    @app.route('/reactivate', methods=['GET', 'POST'])
-    def reactivate():
-        if current_user.is_authenticated:
-            return redirect(url_for('dashboard'))
-        form = ReactiveForm()
-        if form.validate_on_submit():
-            flash('Reactivation link sent to your email.', 'success')  # Placeholder
-            return redirect(url_for('login'))
-        return render_template('reactive.html', form=form)
-
-    @app.route('/company-profile', methods=['GET', 'POST'])
-    @login_required
-    def company_profile():
-        if current_user.role != 'company':
-            flash('Only company accounts can access this.', 'danger')
-            return redirect(url_for('index'))
-        form = CompanyProfileForm()
-        co = Company.query.filter_by(user_id=current_user.id).first()
-        if form.validate_on_submit():
-            if not co:
-                co = Company(user_id=current_user.id)
-                db.session.add(co)
-            co.company_name = form.company_name.data
-            co.description = form.description.data
-            co.website = form.website.data
-            db.session.commit()
-            flash('Company profile saved.', 'success')
-            return redirect(url_for('dashboard'))
-        if co:
-            form.company_name.data = co.company_name
-            form.description.data = co.description
-            form.website.data = co.website
-        return render_template('company_profile.html', form=form, company=co)
 
     @app.route('/logout')
     @login_required
     def logout():
         logout_user()
-        flash('Logged out.', 'info')
+        flash('Anda telah logout.', 'info')
         return redirect(url_for('index'))
 
     @app.route('/dashboard')
     def dashboard():
-        jobs = Job.query.order_by(Job.created_at.desc()).all()
+        jobs = JobListing.query.order_by(JobListing.posted_at.desc()).all()
         if current_user.is_authenticated:
             if current_user.role == 'company':
-                co = Company.query.filter_by(user_id=current_user.id).first()
+                co = Company.query.filter_by(id_user=current_user.id).first()
                 if not co:
-                    flash('Please complete your company profile first.', 'warning')
+                    flash('Mohon lengkapi profil perusahaan Anda terlebih dahulu.', 'warning')
                     return redirect(url_for('company_profile'))
                 jobs = co.jobs if co else []
                 return render_template('dashboard_company.html', jobs=jobs, company=co)
             else:
                 return render_template('dashboard_user.html', jobs=jobs)
         else:
-            # Guest user: show job listing
             return render_template('dashboard_user.html', jobs=jobs, guest=True)
 
     @app.route('/job/<int:job_id>')
     def job_detail(job_id):
-        job = Job.query.get_or_404(job_id)
+        job = JobListing.query.get_or_404(job_id)
         data = {
-            'id': job.id,
-            'title': job.title,
-            'location': job.location,
-            'description': job.description,
-            'slots': job.slots,
-            'is_open': job.is_open,
+            'id': job.id, 'title': job.title, 'location': job.location,
+            'description': job.description, 'qualifications': job.qualifications,
             'company': job.company.company_name if job.company else None,
             'applied_count': len(job.applications)
         }
@@ -174,77 +146,119 @@ def create_app():
     @app.route('/apply/<int:job_id>', methods=['GET', 'POST'])
     @login_required
     def apply(job_id):
-        if current_user.role != 'user':
-            flash('Only job seekers can apply for jobs.', 'danger')
+        if current_user.role != 'applicant':
+            flash('Hanya pencari kerja yang dapat melamar.', 'danger')
             return redirect(url_for('dashboard'))
-        job = Job.query.get_or_404(job_id)
+        job = JobListing.query.get_or_404(job_id)
         form = ApplyForm()
-        existing_application = Application.query.filter_by(
-            user_id=current_user.id,
-            job_id=job.id
-        ).first()
-        if existing_application:
-            flash('You have already applied for this job.', 'warning')
+        applicant = current_user.applicant_profile
+        if not applicant:
+            flash('Profil pelamar tidak ditemukan.', 'danger')
             return redirect(url_for('dashboard'))
-        if not job.is_open:
-            flash('This job is closed.', 'warning')
+        existing_application = Application.query.filter_by(id_applicant=applicant.id, id_job=job.id).first()
+        if existing_application:
+            flash('Anda sudah melamar pekerjaan ini.', 'warning')
             return redirect(url_for('dashboard'))
         if form.validate_on_submit():
-            if len(job.applications) >= job.slots:
-                job.is_open = False
-                db.session.commit()
-                flash('Slots full, job closed automatically.', 'warning')
-                return redirect(url_for('dashboard'))
             application = Application(
-                user_id=current_user.id,
-                job_id=job.id,
-                cover_letter=form.cover_letter.data
+                id_applicant=applicant.id,
+                id_job=job.id,
+                notes=form.notes.data
             )
             db.session.add(application)
             db.session.commit()
-            flash('Application submitted. Wait for company response.', 'success')
+            flash('Lamaran berhasil dikirim.', 'success')
             return redirect(url_for('dashboard'))
         return render_template('apply.html', form=form, job=job)
 
+    @app.route('/company-profile', methods=['GET', 'POST'])
+    @login_required
+    def company_profile():
+        if current_user.role != 'company':
+            flash('Hanya akun perusahaan yang dapat mengakses halaman ini.', 'danger')
+            return redirect(url_for('index'))
+        form = CompanyProfileForm()
+        co = Company.query.filter_by(id_user=current_user.id).first()
+        if form.validate_on_submit():
+            if not co:
+                co = Company(id_user=current_user.id)
+                db.session.add(co)
+            co.company_name = form.company_name.data
+            co.description = form.description.data
+            db.session.commit()
+            flash('Profil perusahaan disimpan.', 'success')
+            return redirect(url_for('dashboard'))
+        if co:
+            form.company_name.data = co.company_name
+            form.description.data = co.description
+        return render_template('company_profile.html', form=form, company=co)
+    
     @app.route('/company/add-job', methods=['GET', 'POST'])
     @login_required
     def add_job():
         if current_user.role != 'company':
-            flash('Only companies can add jobs.', 'danger')
+            flash('Hanya perusahaan yang dapat menambah lowongan.', 'danger')
             return redirect(url_for('dashboard'))
-        co = Company.query.filter_by(user_id=current_user.id).first()
+        co = Company.query.filter_by(id_user=current_user.id).first()
         if not co:
-            flash('Please complete your company profile first.', 'warning')
+            flash('Mohon lengkapi profil perusahaan Anda terlebih dahulu.', 'warning')
             return redirect(url_for('company_profile'))
         form = AddJobForm()
         if form.validate_on_submit():
-            job = Job(
-                title=form.title.data,
-                location=form.location.data,
+            job = JobListing(
+                title=form.title.data, location=form.location.data,
                 description=form.description.data,
-                slots=form.slots.data,
-                company_id=co.id
+                qualifications=form.qualifications.data,
+                id_company=co.id
             )
             db.session.add(job)
             db.session.commit()
-            flash('Job added.', 'success')
+            flash('Lowongan berhasil ditambahkan.', 'success')
             return redirect(url_for('dashboard'))
         return render_template('add_job.html', form=form)
 
     @app.route('/about')
     def about():
         return render_template('about.html')
-
-    @app.route('/contact')
-    def contact():
-        return render_template('contact.html')
-
+    
     @app.route('/address')
     def address():
         return render_template('address.html')
 
-    return app
+    @app.route('/faq')
+    def faq():
+        return render_template('faq.html')
+        
+    @app.route('/reactivate', methods=['GET', 'POST'])
+    def reactivate():
+        if current_user.is_authenticated:
+            return redirect(url_for('dashboard'))
+        form = ReactiveForm()
+        if form.validate_on_submit():
+            flash('Tautan reaktivasi telah dikirim ke email Anda.', 'success')
+            return redirect(url_for('login'))
+        return render_template('reactive.html', form=form)
 
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True)
+    @app.route('/contact', methods=['GET', 'POST'])
+    def contact():
+        form = ContactForm()
+        if form.validate_on_submit():
+            flash('Your message has been sent successfully!', 'success')
+            return redirect(url_for('contact')) 
+        return render_template('contact.html', form=form)
+
+    @app.route('/feedback', methods=['GET', 'POST'])
+    def feedback():
+        form = FeedbackForm()
+        if form.validate_on_submit():
+            flash('Thank you for your feedback!', 'success')
+            return redirect(url_for('feedback'))
+        return render_template('feedback.html', form=form)
+
+    @app.route('/set_language/<lang>')
+    def set_language(lang):
+        if lang in Config.LANGUAGES:
+            session['language'] = lang
+        return redirect(request.referrer or url_for('index'))
+        
+    return app

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Contact Us - NemuKerja{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card" style="max-width: 650px;">
+        <h2>Contact Us</h2>
+        <p class="tagline">Have questions? We'd love to hear from you.</p>
+        
+        <form method="POST" action="{{ url_for('contact') }}" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label class="form-label-static">{{ form.name.label }}</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+                <div class="col-md-6 form-group">
+                    <label class="form-label-static">{{ form.email.label }}</label>
+                    {{ form.email(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label-static">{{ form.subject.label }}</label>
+                {{ form.subject(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label class="form-label-static">{{ form.message.label }}</label>
+                {{ form.message(class="form-control", rows="5") }}
+            </div>
+            <div class="form-group mt-4">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

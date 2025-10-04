@@ -1,287 +1,143 @@
+/* =================================
+   NemuKerja - Professional Blue Theme
+   ================================= */
+
+/* -- 1. Variables & Global Styles -- */
+:root {
+    --primary-blue: #005A9C;
+    --hover-blue: #004a80;
+    --light-gray-bg: #F8F9FA;
+    --white-card: #FFFFFF;
+    --dark-text: #212529;
+    --secondary-text: #6C757D;
+    --border-color: #DEE2E6;
+    --font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
 body {
-    background-color: #A0A19B;
-    font-family: Arial, sans-serif;
+    background-color: var(--light-gray-bg);
+    font-family: var(--font-sans-serif);
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+
+/* -- 2. Main Layout -- */
+/* [PERUBAHAN] Aturan ini ditambahkan untuk memberi jarak dari navbar */
+main {
+    padding-top: 96px; /* 6rem -> Memberi jarak dari navbar fixed-top */
+    padding-bottom: 48px; /* Memberi jarak di bagian bawah halaman */
+}
+
+
+/* -- 3. Form Container & Wrapper -- */
+.auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    color: #ffffff;
-}
-
-.container {
-    background: #444444;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    padding: 2rem;
-    max-width: 600px;
     width: 100%;
-    margin: 20px auto;
+    /* [PERUBAHAN] min-height dihapus dari sini agar layout lebih natural */
 }
 
-.wrap {
+.auth-card {
+    background-color: var(--white-card);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 450px;
     text-align: center;
+    border-top: 5px solid var(--primary-blue);
 }
 
-h2, h3 {
-    color: #cccccc;
-    margin-bottom: 1.5rem;
-}
 
-img {
-    margin-bottom: 1rem;
-    background-color: #555555;
-}
-
-.form-group {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
-
-.form-control, .form-select {
-    padding: 0.75rem;
-    border-radius: 4px;
-    border: 1px solid #666666;
-    background-color: #555555;
-    color: #ffffff;
+/* -- 4. Content Inside Card -- */
+.auth-logo {
     width: 100%;
-    box-sizing: border-box;
+    max-width: 280px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.auth-card h2 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+}
+
+.auth-card .tagline {
+    color: var(--secondary-text);
+    margin-bottom: 2rem;
+    font-size: 1rem;
 }
 
 
-.form-control:focus {
-    border-color: #777777;
-    outline: none;
+/* -- 5. Form Elements -- */
+.form-group {
+    margin-bottom: 1.25rem;
+    text-align: left;
 }
-/* Static label styles */
+
 .form-label-static {
     display: block;
     margin-bottom: 0.5rem;
-    color: #cccccc;
     font-weight: 500;
     font-size: 0.9rem;
+    color: #495057;
 }
 
-/* Hide any floating labels */
-.form-control + .form-label {
-    display: none !important;
+.form-control, .form-select {
+    display: block;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 
-/* Form group spacing */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-/* Checkbox styling */
-.form-check {
-    display: flex;
-    align-items: center;
-}
-
-.form-check-input {
-    margin-right: 0.5rem;
-}
-
-.form-check-label {
-    color: #cccccc;
-    margin-bottom: 0;
-}
-
-.form-label {
-    position: absolute;
-    top: 0.75rem;
-    left: 1rem;
-    color: #aaaaaa;
-    transition: all 0.2s;
-    pointer-events: none;
-}
-
-.form-group.has-value .form-label,
-.form-group:focus-within .form-label {
-    top: -0.5rem;
-    left: 0.75rem;
-    font-size: 0.75rem;
-    color: #cccccc;
-    background: #444444;
-    padding: 0 0.25rem;
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-blue);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(0, 90, 156, .2);
 }
 
 .input-group-text {
     cursor: pointer;
-    background-color: #555555;
-    border: 1px solid #666666;
-    border-radius: 0 4px 4px 0;
-    color: #ffffff;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-left: none;
 }
 
+
+/* -- 6. Buttons & Links -- */
 .btn-primary {
-    background-color: #555555;
-    border-color: #555555;
-    padding: 0.75rem;
-    border-radius: 4px;
-    color: #ffffff;
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    padding: 0.8rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border-radius: 8px;
+    width: 100%;
+    transition: background-color 0.2s;
 }
 
 .btn-primary:hover {
-    background-color: #666666;
-    border-color: #666666;
+    background-color: var(--hover-blue);
+    border-color: var(--hover-blue);
 }
 
-.btn-outline-primary {
-    border-color: #777777;
-    color: #cccccc;
+.auth-links {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
 }
 
-.btn-outline-primary:hover {
-    background-color: #777777;
-    color: #ffffff;
-}
-
-.btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
-}
-
-.btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: #ffffff;
-}
-
-.alert {
-    margin-bottom: 1rem;
-    background-color: #555555;
-    color: #ffffff;
-    border-color: #666666;
-}
-
-.alert-success {
-    background-color: #4a704a;
-    border-color: #4a704a;
-}
-
-.alert-danger, .alert-error {
-    background-color: #704a4a;
-    border-color: #704a4a;
-}
-
-.alert-warning {
-    background-color: #705a4a;
-    border-color: #705a4a;
-}
-
-.alert-info {
-    background-color: #4a5a70;
-    border-color: #4a5a70;
-}
-
-.text-center a {
-    color: #cccccc;
+.auth-links a {
+    color: var(--primary-blue);
     text-decoration: none;
+    font-weight: 500;
 }
 
-.text-center a:hover {
+.auth-links a:hover {
     text-decoration: underline;
-}
-
-.job-list {
-    text-align: left;
-}
-
-.card {
-    border: 1px solid #666666;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    background-color: #4a4a4a;
-}
-
-.card-body {
-    padding: 1rem;
-}
-
-.card-title {
-    margin-bottom: 0.75rem;
-    color: #ffffff;
-}
-
-.card-text {
-    margin-bottom: 0.5rem;
-    color: #cccccc;
-}
-
-.navbar {
-    background-color: #222222;
-    padding: 1rem;
-}
-
-.navbar-brand, .nav-link {
-    color: #cccccc !important;
-}
-
-.navbar-brand:hover, .nav-link:hover {
-    color: #ffffff !important;
-}
-
-.navbar-toggler {
-    border-color: #666666;
-}
-
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23cccccc' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
-/* Target navbar buttons specifically */
-.navbar-nav .nav-link.btn:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* For the primary button (Register) */
-.navbar-nav .nav-link.btn-primary:focus {
-    background-color: #555555 !important;
-    border-color: #555555 !important;
-    color: #ffffff !important;
-}
-
-.navbar-nav .nav-link.btn-primary:hover:focus {
-    background-color: #666666 !important;
-    border-color: #666666 !important;
-    color: #ffffff !important;
-}
-
-/* For the outline primary button (Login) */
-.navbar-nav .nav-link.btn-outline-primary:focus {
-    background-color: transparent !important;
-    border-color: #777777 !important;
-    color: #cccccc !important;
-}
-
-.navbar-nav .nav-link.btn-outline-primary:hover:focus {
-    background-color: #777777 !important;
-    color: #ffffff !important;
-}
-
-/* For the outline danger button (Logout) */
-.navbar-nav .nav-link.btn-outline-danger:focus {
-    background-color: transparent !important;
-    border-color: #dc3545 !important;
-    color: #dc3545 !important;
-}
-
-.navbar-nav .nav-link.btn-outline-danger:hover:focus {
-    background-color: #dc3545 !important;
-    color: #ffffff !important;
-}
-
-/* Regular nav links (non-button) */
-.navbar-nav .nav-link:not(.btn):focus {
-    color: #b2b208 !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.navbar-nav .nav-link:not(.btn):focus:hover {
-    color: #b2b208 !important;
-}
-/* Ensure content doesn't overlap with fixed navbar */
-body {
-    padding-top: 56px; /* Height of navbar */
 }

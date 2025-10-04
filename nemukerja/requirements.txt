@@ -6,3 +6,5 @@ Flask-SQLAlchemy
 PyMySQL
 python-dotenv
 Flask-Migrate
+email-validator
+Flask-Babel
