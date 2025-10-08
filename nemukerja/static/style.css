@@ -1,12 +1,14 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: #A0A19B;
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     margin: 0;
     color: #ffffff;
+    padding-top: 56px;
 }
 
 .container {
@@ -14,7 +16,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     padding: 2rem;
-    max-width: 600px;
+    max-width: 1200px;
     width: 100%;
     margin: 20px auto;
 }
@@ -23,19 +25,28 @@ body {
     text-align: center;
 }
 
-h2, h3 {
+h1, h2, h3, h4, h5, h6 {
     color: #cccccc;
     margin-bottom: 1.5rem;
 }
 
-img {
-    margin-bottom: 1rem;
-    background-color: #555555;
+.form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
 }
 
-.form-group {
-    position: relative;
-    margin-bottom: 1.5rem;
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #cccccc;
+    font-weight: 500;
+    font-size: 0.9rem;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    background: transparent !important;
+    padding: 0 !important;
+    pointer-events: auto;
 }
 
 .form-control, .form-select {
@@ -45,33 +56,28 @@ img {
     background-color: #555555;
     color: #ffffff;
     width: 100%;
-    box-sizing: border-box;
 }
 
-
-.form-control:focus {
+.form-control:focus, .form-select:focus {
     border-color: #777777;
     outline: none;
-}
-.form-label-static {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #cccccc;
-    font-weight: 500;
-    font-size: 0.9rem;
+    background-color: #555555;
+    color: #ffffff;
 }
 
-.form-control + .form-label {
-    display: none !important;
-}
-
-.form-group {
-    margin-bottom: 1rem;
+.form-group.has-value .form-label,
+.form-group:focus-within .form-label {
+    position: static !important;
+    font-size: 0.9rem !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .form-check {
     display: flex;
     align-items: center;
+    margin-bottom: 1rem;
 }
 
 .form-check-input {
@@ -81,33 +87,6 @@ img {
 .form-check-label {
     color: #cccccc;
     margin-bottom: 0;
-}
-
-.form-label {
-    position: absolute;
-    top: 0.75rem;
-    left: 1rem;
-    color: #aaaaaa;
-    transition: all 0.2s;
-    pointer-events: none;
-}
-
-.form-group.has-value .form-label,
-.form-group:focus-within .form-label {
-    top: -0.5rem;
-    left: 0.75rem;
-    font-size: 0.75rem;
-    color: #cccccc;
-    background: #444444;
-    padding: 0 0.25rem;
-}
-
-.input-group-text {
-    cursor: pointer;
-    background-color: #555555;
-    border: 1px solid #666666;
-    border-radius: 0 4px 4px 0;
-    color: #ffffff;
 }
 
 .btn-primary {
@@ -133,14 +112,39 @@ img {
     color: #ffffff;
 }
 
-.btn-outline-danger {
-    border-color: #dc3545;
-    color: #dc3545;
+.card {
+    border: 1px solid #666666;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: #4a4a4a;
+    color: #ffffff;
 }
 
-.btn-outline-danger:hover {
-    background-color: #dc3545;
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
     color: #ffffff;
+}
+
+.card-text {
+    margin-bottom: 0.5rem;
+    color: #cccccc;
+}
+
+.navbar {
+    background-color: #222222;
+    padding: 1rem;
+}
+
+.navbar-brand, .nav-link {
+    color: #cccccc !important;
+}
+
+.navbar-brand:hover, .nav-link:hover {
+    color: #ffffff !important;
 }
 
 .alert {
@@ -170,123 +174,159 @@ img {
     border-color: #4a5a70;
 }
 
-.text-center a {
-    color: #cccccc;
-    text-decoration: none;
-}
-
-.text-center a:hover {
-    text-decoration: underline;
-}
-
 .job-list {
     text-align: left;
 }
 
-.card {
-    border: 1px solid #666666;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    background-color: #4a4a4a;
-}
-
-.card-body {
-    padding: 1rem;
-}
-
-.card-title {
-    margin-bottom: 0.75rem;
-    color: #ffffff;
-}
-
-.card-text {
-    margin-bottom: 0.5rem;
-    color: #cccccc;
-}
-
-.navbar {
-    background-color: #222222;
-    padding: 1rem;
-}
-
-.navbar-brand, .nav-link {
-    color: #cccccc !important;
-}
-
-.navbar-brand:hover, .nav-link:hover {
-    color: #ffffff !important;
-}
-
-.navbar-toggler {
-    border-color: #666666;
-}
-
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23cccccc' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-}
-.navbar-nav .nav-link.btn:focus {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.navbar-nav .nav-link.btn-primary:focus {
-    background-color: #555555 !important;
-    border-color: #555555 !important;
-    color: #ffffff !important;
-}
-
-.navbar-nav .nav-link.btn-primary:hover:focus {
-    background-color: #666666 !important;
-    border-color: #666666 !important;
-    color: #ffffff !important;
-}
-
-.navbar-nav .nav-link.btn-outline-primary:focus {
-    background-color: transparent !important;
-    border-color: #777777 !important;
-    color: #cccccc !important;
-}
-
-.navbar-nav .nav-link.btn-outline-primary:hover:focus {
-    background-color: #777777 !important;
-    color: #ffffff !important;
-}
-
-.navbar-nav .nav-link.btn-outline-danger:focus {
-    background-color: transparent !important;
-    border-color: #dc3545 !important;
-    color: #dc3545 !important;
-}
-
-.navbar-nav .nav-link.btn-outline-danger:hover:focus {
-    background-color: #dc3545 !important;
-    color: #ffffff !important;
-}
-
-.navbar-nav .nav-link:not(.btn):focus {
-    color: #b2b208 !important;
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-.navbar-nav .nav-link:not(.btn):focus:hover {
-    color: #b2b208 !important;
-}
-body {
-    padding-top: 56px; 
-}
-
 .job-info, .applicant-info {
     border-left: 4px solid #007bff;
-    background-color: #f8f9fa;
+    background-color: #555555;
 }
 
 .application-tips {
     border-left: 4px solid #ffc107;
-    background-color: #fff3cd;
+    background-color: #705a4a;
 }
 
 .cover-letter-textarea {
     min-height: 200px;
     resize: vertical;
+}
+
+#flash-messages-container {
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1050;
+    width: 90%;
+    max-width: 600px;
+}
+
+.flash-message {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.contact-info .d-flex {
+    padding: 15px 0;
+    border-bottom: 1px solid #666666;
+}
+
+.contact-info .d-flex:last-child {
+    border-bottom: none;
+}
+
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.faq-item {
+    padding: 20px;
+    border-radius: 10px;
+    background: #555555;
+    transition: background-color 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.faq-item:hover {
+    background: #666666;
+}
+
+.map-placeholder {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #555555;
+    border-radius: 8px;
+}
+
+.text-dark {
+    color: #ffffff !important;
+}
+
+.text-muted {
+    color: #aaaaaa !important;
+}
+
+.text-primary {
+    color: #cccccc !important;
+}
+
+.modal-content {
+    background-color: #444444;
+    color: #ffffff;
+}
+
+.modal-header, .modal-footer {
+    border-color: #666666;
+}
+
+.modal-title {
+    color: #ffffff;
+}
+
+.form-control::placeholder {
+    color: #999999 !important;
+}
+
+.form-select {
+    color: #ffffff !important;
+}
+
+.form-select option {
+    background-color: #444444;
+    color: #ffffff;
+}
+
+.form-floating {
+    position: relative;
+}
+
+.form-floating > .form-control {
+    height: auto;
+    padding: 1rem 0.75rem;
+}
+
+.form-floating > label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: opacity .1s ease-in-out, transform .1s ease-in-out;
+}
+
+.mb-3 {
+    margin-bottom: 1rem !important;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
 }

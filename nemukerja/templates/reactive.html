@@ -3,6 +3,7 @@
 {% block title %}Account Reactivation - NemuKerja{% endblock %}
 
 {% block content %}
+<div class="container mt-5 pt-5">
 <div class="wrap">
     <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
         <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
@@ -26,5 +27,6 @@
             <p>Back to <a href="{{ url_for('login') }}">Sign In</a></p>
         </div>
     </form>
+    </div>
 </div>
 {% endblock %}

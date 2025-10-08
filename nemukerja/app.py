@@ -75,8 +75,7 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     migrate = Migrate(app, db)
-
-    
+  
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -112,7 +111,6 @@ def create_app():
             user = User.query.filter_by(email=form.email.data.lower()).first()
             if user and bcrypt.check_password_hash(user.password_hash, form.password.data):
                 login_user(user, remember=form.remember.data)
-                flash('Login successful.', 'success')
                 return redirect(url_for('dashboard'))
             flash('Invalid email or password.', 'danger')
         return render_template('login.html', form=form)
@@ -191,7 +189,6 @@ def create_app():
     @login_required
     def logout():
         logout_user()
-        flash('Logged out.', 'info')
         return redirect(url_for('index'))
 
     @app.route('/dashboard')

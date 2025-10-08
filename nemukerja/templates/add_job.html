@@ -5,7 +5,7 @@
 {% block content %}
 <div class="wrap">
     <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
-        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 550px; height: 150px;">
     </div>
     
     <h2>Add New Job</h2>
@@ -66,7 +66,7 @@
         <div class="form-group mt-3">
             <label class="form-label fw-bold">Available Slots</label>
             <small class="text-muted d-block mb-2">How many positions are available for this job?</small>
-            {{ form.slots(class="form-control", type="number", min="1", max="50", placeholder="e.g., 3") }}
+            {{ form.slots(class="form-control", type="number", min="1", max="150", placeholder="e.g., 3") }}
             {% if form.slots.errors %}
                 <div class="text-danger mt-1">
                     {% for error in form.slots.errors %}
@@ -87,30 +87,106 @@
 </div>
 
 <style>
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
 .wrap {
     max-width: 600px;
     margin: 50px auto;
     padding: 30px;
-    background: white;
+    background: #444444 !important;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    color: #ffffff !important;
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    padding: 12px;
-    font-weight: 600;
+.wrap h2,
+.wrap .form-label,
+.wrap .form-label.fw-bold,
+.wrap label,
+.wrap .text-muted,
+.wrap .text-danger,
+.wrap .text-danger small,
+.wrap .btn-secondary,
+.wrap .alert {
+    color: #ffffff !important;
 }
 
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    transform: translateY(-1px);
+.wrap .text-muted {
+    color: #cccccc !important;
+}
+
+.wrap .form-control {
+    background-color: #555555 !important;
+    border-color: #666666 !important;
+    color: #ffffff !important;
+}
+
+.wrap .form-control:focus {
+    border-color: #007bff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    background-color: #555555 !important;
+    color: #ffffff !important;
+}
+
+.wrap .form-control::placeholder {
+    color: #999999 !important;
+}
+
+.wrap .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    padding: 12px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+}
+
+.wrap .btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+    transform: translateY(-1px) !important;
+    color: #ffffff !important;
+}
+
+.wrap .btn-secondary {
+    background-color: #666666 !important;
+    border-color: #666666 !important;
+    color: #ffffff !important;
+}
+
+.wrap .btn-secondary:hover {
+    background-color: #777777 !important;
+    border-color: #777777 !important;
+    color: #ffffff !important;
+}
+
+.wrap .alert {
+    background-color: #555555 !important;
+    border-color: #666666 !important;
+}
+
+.wrap .alert-danger {
+    background-color: #704a4a !important;
+    border-color: #704a4a !important;
+}
+
+.wrap .alert-success {
+    background-color: #4a704a !important;
+    border-color: #4a704a !important;
+}
+
+.wrap .img {
+    background-color: #333333 !important;
+}
+
+.wrap .input-group-text {
+    background-color: #666666 !important;
+    border-color: #666666 !important;
+    color: #ffffff !important;
+}
+
+.wrap small {
+    color: #cccccc !important;
+}
+
+.wrap .text-danger small {
+    color: #ff6b6b !important;
 }
 </style>
 

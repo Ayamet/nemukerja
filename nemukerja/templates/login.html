@@ -3,61 +3,69 @@
 {% block title %}Sign In - NemuKerja{% endblock %}
 
 {% block content %}
-<div class="container-compact">
-<div class="wrap">
-    <div class="img" style="background-color: #ffffff; height: 150px; display: flex; justify-content: center; align-items: center;">
-        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
-    </div>
 
-    <h2>Sign In</h2>
+<div class="container-sm mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <div class="img bg-dark rounded-top d-flex justify-content-center align-items-center" style="height: 150px;">
+                        <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="max-height: 150px;">
+                    </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <h2 class="text-center mt-4">Sign In</h2>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('login') }}">
+                        {{ form.hidden_tag() }}
+
+                        <div class="mb-3">
+                            {{ form.email(class="form-control", id="email", placeholder="Enter your email") }}
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="input-group">
+                                {{ form.password(class="form-control", id="login_password", placeholder="Enter your password") }}
+                                <span class="input-group-text" onclick="togglePassword('login_password')">
+                                    <i class="fa fa-eye" id="eye-login_password"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.remember(class="form-check-input", id="remember") }}
+                                <label class="form-check-label" for="remember">
+                                    Remember me 
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.submit(class="btn btn-primary w-100") }}
+                        </div>
+
+                        <div class="text-center">
+                            <p class="mb-1">Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
+                            <p class="mb-0">Forgot password? <a href="{{ url_for('reactivate') }}">Reactivate Account</a></p>
+                        </div>
+                    </form>
                 </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <form method="POST" action="{{ url_for('login') }}">
-        {{ form.hidden_tag() }}
-
-        <div class="form-group mt-3">
-            {{ form.email(class="form-control", id="email", placeholder="Enter your email") }}
-        </div>
-
-        <div class="form-group mt-3">
-            <div class="input-group">
-                {{ form.password(class="form-control", id="login_password", placeholder="Enter your password") }}
-                <span class="input-group-text" onclick="togglePassword('login_password')">
-                    <i class="fa fa-eye" id="eye-login_password"></i>
-                </span>
             </div>
         </div>
-
-        <div class="form-group mt-3">
-            <div class="form-check">
-                {{ form.remember(class="form-check-input", id="remember") }}
-                <label class="form-check-label" for="remember">
-                    Remember me 
-                </label>
-            </div>
-        </div>
-
-        <div class="form-group mt-4">
-            {{ form.submit(class="btn btn-primary form-control") }}
-        </div>
-
-        <div class="mt-3 text-center">
-            <p>Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
-            <p>Forgot password? <a href="{{ url_for('reactivate') }}">Reactivate Account</a></p>
-        </div>
-    </form>
+    </div>
 </div>
-</div>
+
 <script>
 function togglePassword(id) {
     var pwd = document.getElementById(id);
@@ -87,15 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-.wrap {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 30px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
-}
-
 .form-check {
     display: flex;
     align-items: center;

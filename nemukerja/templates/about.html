@@ -3,7 +3,7 @@
 {% block title %}About Us - NemuKerja{% endblock %}
 
 {% block content %}
-
+  <div class="container mt-5 pt-5">
     <div class="wrap">
         <img src="{{ url_for('static', filename='images/banner.png') }}" alt="NemuKerja Logo" style="height: 168px;width: 504px; background-color: #f0f0f0;">
         <h2>About Us</h2>
@@ -12,5 +12,5 @@
             <a href="{{ url_for('dashboard') }}" class="btn btn-primary">View Job Listings</a>
         </div>
     </div>
-
+</div>
 {% endblock %}

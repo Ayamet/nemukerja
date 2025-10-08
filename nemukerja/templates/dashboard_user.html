@@ -3,6 +3,20 @@
 {% block title %}Job Listings - NemuKerja{% endblock %}
 
 {% block content %}
+<style>
+.card-title, .card-text {
+    color: #000 !important;
+}
+
+.modal-body {
+    color: #000 !important;
+}
+
+.card {
+    color: #000;
+}
+</style>
+<div class="container mt-4">
     <h2>Available Job Listings</h2>
 
     {% if guest %}
@@ -28,11 +42,11 @@
                     </p>
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-outline-primary btn-sm" 
-                            onclick="showJobDetail('{{ job.id }}')">
-                        View Details
-                    </button>
-                    {% if not guest and (current_user.role == 'user') %}
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-2" 
+                                        onclick="showJobDetail('{{ job.id }}')">
+                                    View Details
+                                </button>
+                    {% if (not guest) and current_user.role == 'user' %}
                     <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-sm">Apply Now</a>
                     {% elif guest %}
                     <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Apply</a>
@@ -48,31 +62,48 @@
         </div>
         {% endfor %}
     </div>
+</div>
 
-<div class="modal fade" id="jobDetailModal" tabindex="-1">
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailModal" tabindex="-1" aria-labelledby="jobDetailModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailTitle">Job Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="jobDetailModalLabel">Job Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="jobDetailBody">
-
+                <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <span id="applyButtonContainer"></span>
+                <span id="applyButtonContainer">
+                    <!-- Apply button will be loaded dynamically -->
+                </span>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // Initialize template variables
+    const isGuest = JSON.parse('{{ guest|tojson|safe }}');
+    const userRole = JSON.parse('{{ (current_user.role if current_user.is_authenticated else "null")|tojson|safe }}');
+</script>
+
+<script>
 function showJobDetail(jobId) {
+    
     fetch(`/job/${jobId}`)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(job => {
-            document.getElementById('jobDetailTitle').textContent = job.title;
+            
+            document.getElementById('jobDetailModalLabel').textContent = job.title;
             document.getElementById('jobDetailBody').innerHTML = `
                 <h6>Company: ${job.company}</h6>
                 <p><strong>Location:</strong> ${job.location}</p>
@@ -85,9 +116,8 @@ function showJobDetail(jobId) {
             `;
 
             let applyButton = '';
-            const isUser = JSON.parse('{{ (not guest and current_user.role == "user")|tojson|safe }}');
-            const isGuest = JSON.parse('{{ guest|tojson|safe }}');
-            if (isUser) {
+            
+            if (!isGuest && userRole === 'user') {
                 if (job.is_open) {
                     applyButton = `<a href="/apply/${job.id}" class="btn btn-primary">Apply Now</a>`;
                 } else {
@@ -99,12 +129,20 @@ function showJobDetail(jobId) {
 
             document.getElementById('applyButtonContainer').innerHTML = applyButton;
 
-            const modal = new bootstrap.Modal(document.getElementById('jobDetailModal'));
+            const modalElement = document.getElementById('jobDetailModal');
+            const modal = new bootstrap.Modal(modalElement);
             modal.show();
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Error loading job details');
+            console.error('Error loading job details:', error);
+            document.getElementById('jobDetailBody').innerHTML = `
+                <div class="alert alert-danger">
+                    Error loading job details: ${error.message}
+                </div>
+            `;
+            const modalElement = document.getElementById('jobDetailModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
         });
 }
 </script>
