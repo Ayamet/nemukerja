@@ -1,6 +1,17 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, IntegerField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, SelectField
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional
+
+class RegisterForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    role = SelectField('Role', choices=[('user', 'Job Seeker'), ('company', 'Company')], validators=[DataRequired()])
+    company_name = StringField('Company Name', validators=[Optional(), Length(max=100)])
+    description = TextAreaField('Company Description', validators=[Optional(), Length(max=500)])
+    website = StringField('Website', validators=[Optional(), Length(max=200)])
+    submit = SubmitField('Sign Up')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -8,35 +19,35 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
-class RegisterForm(FlaskForm):
-    name = StringField('Full Name', validators=[DataRequired(), Length(min=2)])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    phone = StringField('Phone Number', validators=[DataRequired(), Length(min=10)])
-    role = SelectField('Role', choices=[('user', 'Job Seeker'), ('company', 'Company')], validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    company_name = StringField('Company Name', validators=[Optional()])
-    description = TextAreaField('Description', validators=[Optional()])
-    website = StringField('Website', validators=[Optional()])
-    submit = SubmitField('Sign Up')
-
-class ReactiveForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    submit = SubmitField('Send To Email')
-
 class CompanyProfileForm(FlaskForm):
-    company_name = StringField('Company Name', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    website = StringField('Website', validators=[DataRequired()])
+    company_name = StringField('Company Name', validators=[DataRequired(), Length(max=100)])
+    description = TextAreaField('Description', validators=[DataRequired(), Length(max=500)])
+    website = StringField('Website', validators=[Optional(), Length(max=200)])
     submit = SubmitField('Save Profile')
 
 class AddJobForm(FlaskForm):
-    title = StringField('Job Title', validators=[DataRequired()])
-    location = StringField('Location', validators=[DataRequired()])
-    description = TextAreaField('Description', validators=[DataRequired()])
-    slots = IntegerField('Slots', validators=[DataRequired()])
+    title = StringField('Job Title', validators=[DataRequired(), Length(max=100)])
+    location = StringField('Location', validators=[DataRequired(), Length(max=100)])
+    description = TextAreaField('Job Description', validators=[DataRequired()])
+    slots = IntegerField('Available Slots', validators=[DataRequired()])
     submit = SubmitField('Add Job')
 
 class ApplyForm(FlaskForm):
     cover_letter = TextAreaField('Cover Letter', validators=[DataRequired()])
-    submit = SubmitField('Apply')
+    submit = SubmitField('Submit Application')
+
+class ReactiveForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Send Reactivation Link')
+
+class RegisterForm(FlaskForm):
+    name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    phone = StringField('Phone Number', validators=[Optional(), Length(max=20)])  # TAMBAHKAN INI
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    role = SelectField('Role', choices=[('user', 'Job Seeker'), ('company', 'Company')], validators=[DataRequired()])
+    company_name = StringField('Company Name', validators=[Optional(), Length(max=100)])
+    description = TextAreaField('Company Description', validators=[Optional(), Length(max=500)])
+    website = StringField('Website', validators=[Optional(), Length(max=200)])
+    submit = SubmitField('Sign Up')

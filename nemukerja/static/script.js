@@ -1,4 +1,3 @@
-// Placeholder for custom scripts
 function togglePassword(id) {
     var pwd = document.getElementById(id);
     var eye = document.getElementById('eye-' + id);
@@ -13,7 +12,6 @@ function togglePassword(id) {
     }
 }
 
-// Enable Sign Up button after reCAPTCHA
 function enableSignUp() {
     document.getElementById("signup_btn").disabled = false;
 }

@@ -21,7 +21,6 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Company Information -->
     <div class="card mb-4">
         <div class="card-body">
             <h4 class="card-title">{{ company.company_name }}</h4>
@@ -38,7 +37,6 @@
         </div>
     </div>
 
-    <!-- Company Statistics -->
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card text-center">
@@ -66,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Recent Job Postings -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Your Job Postings</h3>
         <a href="{{ url_for('add_job') }}" class="btn btn-primary">Post New Job</a>
@@ -114,7 +111,6 @@
         </div>
     {% endif %}
 
-    <!-- Recent Applications -->
     {% if recent_applications %}
     <div class="mt-5">
         <h3>Recent Applications</h3>

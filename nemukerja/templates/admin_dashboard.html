@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - NemuKerja{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users me-2"></i>
+                            Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_companies') }}">
+                            <i class="fas fa-building me-2"></i>
+                            Manage Companies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_jobs') }}">
+                            <i class="fas fa-briefcase me-2"></i>
+                            Manage Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Main
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
+            <h2 class="mb-4">Admin Dashboard</h2>
+            
+            <div class="row mb-4">
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Total Users</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_users }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-users fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Total Companies</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_companies }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-building fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                        Total Jobs</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_jobs }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-briefcase fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Total Applications</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_applications }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">User Registration Trend</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-pie pt-4 pb-2">
+                                <div class="text-center">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="h5 text-primary">{{ user_count }}</div>
+                                            <span class="text-xs">Job Seekers</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="h5 text-success">{{ company_user_count }}</div>
+                                            <span class="text-xs">Company Accounts</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Statistics -->
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-success">Job Statistics</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-pie pt-4 pb-2">
+                                <div class="text-center">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="h5 text-success">{{ open_jobs }}</div>
+                                            <span class="text-xs">Open Jobs</span>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="h5 text-warning">{{ closed_jobs }}</div>
+                                            <span class="text-xs">Closed Jobs</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_activity %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for activity in recent_activity %}
+                                        <tr>
+                                            <td>
+                                                {% if activity.type == 'user' %}
+                                                    <span class="badge bg-primary">User</span>
+                                                {% elif activity.type == 'company' %}
+                                                    <span class="badge bg-success">Company</span>
+                                                {% elif activity.type == 'job' %}
+                                                    <span class="badge bg-info">Job</span>
+                                                {% elif activity.type == 'application' %}
+                                                    <span class="badge bg-warning">Application</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ activity.description }}</td>
+                                            <td>{{ activity.date }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <p class="text-muted">No recent activity.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+.sidebar {
+    min-height: calc(100vh - 76px);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.sidebar .nav-link:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+.border-left-primary { border-left: 0.25rem solid #4e73df!important; }
+.border-left-success { border-left: 0.25rem solid #1cc88a!important; }
+.border-left-info { border-left: 0.25rem solid #36b9cc!important; }
+.border-left-warning { border-left: 0.25rem solid #f6c23e!important; }
+
+.text-xs { font-size: 0.7rem; }
+.font-weight-bold { font-weight: 700; }
+.text-uppercase { text-transform: uppercase; }
+.text-gray-800 { color: #5a5c69!important; }
+.text-gray-300 { color: #dddfeb!important; }
+</style>
+{% endblock %}
