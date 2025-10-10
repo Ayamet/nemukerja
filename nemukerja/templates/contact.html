@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - NemuKerja{% endblock %}
+
+{% block content %}
+<style>
+.row.mb-5 .lead.text-muted {
+    color: #000000 !important;
+}
+</style>
+
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold text-primary mb-3">Contact Us</h1>
+            <p class="lead text-muted">We're here to help you find your dream job or the perfect candidate</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-lg h-100">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                        <h4 class="card-title">Get In Touch</h4>
+                        <p class="text-muted">We're always happy to help with any questions</p>
+                    </div>
+
+                    <div class="contact-info">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-primary text-white me-3">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Address</h6>
+                                <p class="text-muted mb-0">Batam<br>Somewhere</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-success text-white me-3">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Phone</h6>
+                                <p class="text-muted mb-0">+62 0813 6464 7725 </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-info text-white me-3">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Email</h6>
+                                <p class="text-muted mb-0">support@nemukerja.com</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle bg-warning text-white me-3">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Working Hours</h6>
+                                <p class="text-muted mb-0">Mon - Fri: 9:00 - 18:00<br>Sat: 9:00 - 14:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-4">
+                    <h4 class="card-title mb-4">Send us a Message</h4>
+
+                    <form id="contactForm">
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First Name *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last Name *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject *</label>
+                            <select class="form-select" id="subject" required>
+                                <option value="" selected disabled>Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="partnership">Partnership Opportunity</option>
+                                <option value="career">Career Questions</option>
+                                <option value="feedback">Feedback & Suggestions</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message *</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Tell us how we can help you..." required></textarea>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="newsletter">
+                            <label class="form-check-label" for="newsletter">
+                                Subscribe to our newsletter for job alerts and updates
+                            </label>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <h3 class="text-center mb-4">Frequently Asked Questions</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">How do I create an account?</h5>
+                                <p class="text-muted">Click on the "Register" button in the top navigation and choose between Job Seeker or Company account.</p>
+                            </div>
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">Is NemuKerja free to use?</h5>
+                                <p class="text-muted">Yes! Both job seekers and companies can use our basic services completely free of charge.</p>
+                            </div>
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">How do I apply for jobs?</h5>
+                                <p class="text-muted">Browse available jobs, click "View Details" and then "Apply Now" to submit your application with a cover letter.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">Can I post multiple job openings?</h5>
+                                <p class="text-muted">Yes, companies can post unlimited job openings and manage them through the company dashboard.</p>
+                            </div>
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">How long does it take to get a response?</h5>
+                                <p class="text-muted">Companies typically respond within 3-5 business days, but this may vary depending on the employer.</p>
+                            </div>
+                            <div class="faq-item mb-4">
+                                <h5 class="text-primary">Do you have a mobile app?</h5>
+                                <p class="text-muted">Our website is fully responsive and works perfectly on mobile devices. A dedicated mobile app is coming soon!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-4">
+                    <h4 class="text-center mb-4">Find Us Here</h4>
+                    <div class="map-container rounded text-center">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3609.88955124707!2d104.0484566!3d1.1187204999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d98921856ddfab%3A0xf9d9fc65ca00c9d!2sPoliteknik%20Negeri%20Batam!5e1!3m2!1sen!2str!4v1759950669207!5m2!1sen!2str" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <div class="mt-2">
+                                <small class="text-muted">Politeknik Negeri Batam, Batam, Indonesia</small>
+                            </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<style>
+.icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.contact-info .d-flex {
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.contact-info .d-flex:last-child {
+    border-bottom: none;
+}
+
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.faq-item {
+    padding: 20px;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: background-color 0.3s ease;
+}
+
+.faq-item:hover {
+    background: #e9ecef;
+}
+
+.map-placeholder {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.display-4 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.form-control, .form-select {
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+}
+#contactForm .form-label {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+#contactForm .form-control,
+#contactForm .form-select {
+    background-color: #666666 !important;
+    border-color: #888888 !important;
+    color: #ffffff !important;
+}
+
+#contactForm .form-control:focus,
+#contactForm .form-select:focus {
+    background-color: #777777 !important;
+    border-color: #aaaaaa !important;
+    box-shadow: 0 0 0 0.2rem rgba(170, 170, 170, 0.25) !important;
+}
+
+#contactForm .form-control::placeholder {
+    color: #cccccc !important;
+}
+
+#contactForm .form-select option {
+    background-color: #666666;
+    color: #ffffff;
+}
+.container {
+    padding-top: 80px !important;
+}
+
+body {
+    padding-top: 80px !important;
+}
+.row.mb-5 {
+    margin-top: 60px !important;
+}
+
+.content-block {
+    padding-top: 60px !important;
+}
+</style>
+
+
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = {
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        subject: document.getElementById('subject').value,
+        message: document.getElementById('message').value,
+        newsletter: document.getElementById('newsletter').checked
+    };
+
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.subject || !formData.message) {
+        alert('Please fill in all required fields.');
+        return;
+    }
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+        alert('Thank you for your message! We will get back to you within 24 hours.');
+        this.reset();
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    }, 2000);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        item.addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+    });
+
+    const contactItems = document.querySelectorAll('.contact-info .d-flex');
+    contactItems.forEach((item, index) => {
+        item.style.animationDelay = `${index * 0.1}s`;
+        item.classList.add('animate__animated', 'animate__fadeInLeft');
+    });
+});
+</script>
+{% endblock %}
