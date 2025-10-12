@@ -8,7 +8,7 @@
         <div class="col-md-8 col-lg-6">
             <div class="card shadow-lg border-0">
                 <div class="card-body p-4">
-                    <div class="img bg-dark rounded-top d-flex justify-content-center align-items-center mb-4" style="height: 165px;">
+                    <div class="img bg-light rounded-top d-flex justify-content-center align-items-center mb-4" style="height: 165px;">
                         <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="height: 165px;width: 600px;">
                     </div>
 
@@ -55,7 +55,12 @@
                         
                         <div class="mb-3">
                             <label for="confirm_password" class="form-label">Confirm Password</label>
-                            {{ form.confirm_password(class="form-control", id="confirm_password") }}
+                            <div class="input-group">
+                                {{ form.confirm_password(class="form-control", id="confirm_password") }}
+                                <span class="input-group-text" onclick="togglePassword('confirm_password')">
+                                    <i class="fa fa-eye" id="eye-confirm_password"></i>
+                                </span>
+                            </div>
                         </div>
                         
                         <div class="mb-3">
@@ -114,25 +119,9 @@
 </script>
 
 <style>
+/* Clean up styles to rely on global CSS */
 .card {
     border-radius: 10px;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    padding: 12px;
-    font-weight: 600;
-    border-radius: 6px;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 </style>
 {% endblock %}

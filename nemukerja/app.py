@@ -1,12 +1,11 @@
 import os
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
-from extensions import db, login_manager, bcrypt
-from flask_migrate import Migrate
+from nemukerja.extensions import db, login_manager, bcrypt, migrate
+from nemukerja.config import Config
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import timedelta
-from models import User, Company, JobListing, Application, Applicant
-from forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
-from datetime import timedelta
+from nemukerja.models import User, Company, JobListing, Application, Applicant
+from nemukerja.forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
@@ -24,7 +23,7 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     login_manager.login_view = 'login'
-    migrate = Migrate(app, db)
+    migrate.init_app(app, db)
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -216,7 +215,7 @@ def create_app():
                 location=form.location.data,
                 description=form.description.data,
                 qualifications=form.qualifications.data,
-
+                slots=form.slots.data, # Menambahkan slots
                 id_company=company.id
             )
             db.session.add(new_job)
@@ -312,6 +311,8 @@ def create_app():
         return render_template('address.html')
 
     return app
+
+app = create_app()
 
 if __name__ == '__main__':
     app = create_app()

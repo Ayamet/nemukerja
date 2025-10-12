@@ -1,4 +1,4 @@
-from extensions import db
+from nemukerja.extensions import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -26,6 +26,15 @@ class Applicant(db.Model):
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
     applications = db.relationship('Application', backref='applicant', cascade="all, delete-orphan")
+    
+    @property
+    def name(self):
+        return self.full_name
+
+    @property
+    def email(self):
+        return self.user.email
+
 
 class Company(db.Model):
     __tablename__ = 'companies'
@@ -48,6 +57,10 @@ class JobListing(db.Model):
     description = db.Column(db.Text, nullable=False)
     qualifications = db.Column(db.Text, nullable=False)
     location = db.Column(db.String(255))
+    
+    # MENAMBAHKAN KOLOM SLOTS
+    slots = db.Column(db.Integer, default=1, nullable=False)
+
     posted_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
