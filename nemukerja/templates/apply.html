@@ -5,10 +5,7 @@
 {% block content %}
 <style>
 .job-info, .applicant-info {
-    .job-info, .applicant-info {
     border-left: 4px solid #007bff;
-    background-color: #f8f9fa !important;
-    color: #212121 !important;
 }
 
 .application-tips {
@@ -121,7 +118,7 @@
                     <h5>Your Information</h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ current_user.applicant_profile.full_name }}</p> 
+                            <p><strong>Name:</strong> {{ current_user.name }}</p>
                             <p><strong>Email:</strong> {{ current_user.email }}</p>
                         </div>
                         <div class="col-md-6">
@@ -133,7 +130,7 @@
 
                 <div class="application-form">
                     <h5>Application Form</h5>
-                    <p>Please provide your cover letter below. Make sure to highlight why you're a good fit for this position.</p>
+                    <p class="text-muted mb-4">Please provide your cover letter below. Make sure to highlight why you're a good fit for this position.</p>
                     
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
@@ -151,7 +148,7 @@
                         
                         <div class="form-group mb-4">
                             
-                            <small>
+                            <small class="text-muted d-block mb-2">
                                 Tell us why you're interested in this position and what makes you a good candidate.
                             </small>
                             {{ form.cover_letter(class="form-control", rows="8", placeholder="Write your cover letter here...") }}

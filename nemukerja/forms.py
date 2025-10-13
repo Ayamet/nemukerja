@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional, NumberRange
+from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError, Optional
 
 class RegisterForm(FlaskForm):
     name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=100)])
@@ -34,11 +34,6 @@ class AddJobForm(FlaskForm):
     location = StringField('Location', validators=[DataRequired(), Length(max=100)])
     description = TextAreaField('Job Description', validators=[DataRequired()])
     qualifications = TextAreaField('Qualifications', validators=[DataRequired()]) 
-    # MENAMBAHKAN FIELD SLOTS
-    slots = IntegerField('Available Slots', validators=[
-        DataRequired(), 
-        NumberRange(min=1, message='Slots must be at least 1')
-    ], default=1)
 
     submit = SubmitField('Add Job')
 
