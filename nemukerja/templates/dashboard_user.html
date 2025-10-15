@@ -4,7 +4,17 @@
 
 {% block content %}
 <style>
-.card-title, .card-text, .modal-body, .card { color: #000 !important; }
+/* Set colors to dark text on light background to override base.html's dark-mode reliance */
+.card-title, .card-text, .modal-body, .card, .card-subtitle { 
+    color: #343a40 !important; 
+}
+.card-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
+}
+.card-text small.text-muted {
+    color: #6c757d !important;
+}
 </style>
 <div class="container mt-4">
     <h2>Available Job Listings</h2>
@@ -26,7 +36,7 @@
                     <p class="card-text">
                         <small class="text-muted">
                             <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
-                            <i class="fas fa-clock"></i> {{ job.posted_at.strftime('%Y-%m-%d') }}
+                            <i class="fas fa-users"></i> {{ job.slots }} slots available
                         </small>
                     </p>
                 </div>
@@ -92,7 +102,8 @@ function showJobDetail(jobId) {
             document.getElementById('jobDetailBody').innerHTML = `
                 <h6>Company: ${job.company}</h6>
                 <p><strong>Location:</strong> ${job.location}</p>
-                <p><strong>Applicants:</strong> ${job.applied_count}</p>
+                <p><strong>Available Slots:</strong> ${job.slots}</p>
+                <p><strong>Current Applicants:</strong> ${job.applied_count}</p>
                 <hr>
                 <h6>Qualifications:</h6>
                 <p>${job.qualifications.replace(/\n/g, '<br>')}</p>

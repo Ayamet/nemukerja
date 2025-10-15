@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="wrap">
-    <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
+    <div class="img" style="background-color: #e9ecef; height: 150px; display: flex; justify-content: center; align-items: center;">
         <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 550px; height: 150px;">
     </div>
     
@@ -51,6 +51,19 @@
         </div>
         
         <div class="form-group mt-3">
+            <label class="form-label fw-bold">Available Slots</label>
+            <small class="text-muted d-block mb-2">How many positions are open?</small>
+            {{ form.slots(class="form-control", placeholder="e.g., 5") }}
+            {% if form.slots.errors %}
+                <div class="text-danger mt-1">
+                    {% for error in form.slots.errors %}
+                        <small>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group mt-3">
             <label class="form-label fw-bold">Job Description</label>
             <small class="text-muted d-block mb-2">Describe the responsibilities and daily tasks</small>
             {{ form.description(class="form-control", rows="6", placeholder="Describe the job responsibilities, requirements, qualifications, and any benefits...") }}
@@ -87,23 +100,105 @@
 </div>
 
 <style>
-.wrap { max-width: 600px; margin: 50px auto; padding: 30px; background: #444444 !important; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); color: #ffffff !important; }
-.wrap h2, .wrap .form-label, .wrap .form-label.fw-bold, .wrap label, .wrap .text-muted, .wrap .text-danger, .wrap .text-danger small, .wrap .btn-secondary, .wrap .alert { color: #ffffff !important; }
-.wrap .text-muted { color: #cccccc !important; }
-.wrap .form-control { background-color: #555555 !important; border-color: #666666 !important; color: #ffffff !important; }
-.wrap .form-control:focus { border-color: #007bff !important; box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; background-color: #555555 !important; color: #ffffff !important; }
-.wrap .form-control::placeholder { color: #999999 !important; }
-.wrap .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; border: none !important; padding: 12px !important; font-weight: 600 !important; color: #ffffff !important; }
-.wrap .btn-primary:hover { background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important; transform: translateY(-1px) !important; color: #ffffff !important; }
-.wrap .btn-secondary { background-color: #666666 !important; border-color: #666666 !important; color: #ffffff !important; }
-.wrap .btn-secondary:hover { background-color: #777777 !important; border-color: #777777 !important; color: #ffffff !important; }
-.wrap .alert { background-color: #555555 !important; border-color: #666666 !important; }
-.wrap .alert-danger { background-color: #704a4a !important; border-color: #704a4a !important; }
-.wrap .alert-success { background-color: #4a704a !important; border-color: #4a704a !important; }
-.wrap .img { background-color: #333333 !important; }
-.wrap .input-group-text { background-color: #666666 !important; border-color: #666666 !important; color: #ffffff !important; }
-.wrap small { color: #cccccc !important; }
-.wrap .text-danger small { color: #ff6b6b !important; }
+/* Perbaikan Tema untuk tampilan Post Job (Putih-Biru) */
+.wrap { 
+    max-width: 600px; 
+    margin: 50px auto; 
+    padding: 30px; 
+    background: #ffffff !important; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    color: #343a40 !important; 
+}
+
+/* Memastikan semua teks menjadi gelap/biru */
+.wrap h2, 
+.wrap .form-label, 
+.wrap .form-label.fw-bold, 
+.wrap label { 
+    color: #343a40 !important; 
+}
+.wrap .text-muted { 
+    color: #6c757d !important;
+}
+.wrap .text-danger { 
+    color: #dc3545 !important; 
+}
+.wrap .text-danger small { 
+    color: #dc3545 !important; 
+}
+
+/* Form control styling */
+.wrap .form-control { 
+    background-color: #ffffff !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control:focus { 
+    border-color: #007bff !important; 
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; 
+    background-color: #ffffff !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control::placeholder { 
+    color: #adb5bd !important; 
+}
+
+/* Button styling */
+.wrap .btn-primary { 
+    background: #007bff !important; 
+    border: none !important; 
+    padding: 12px !important; 
+    font-weight: 600 !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-primary:hover { 
+    background: #0056b3 !important; 
+    transform: translateY(-1px) !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary { 
+    background-color: #6c757d !important; 
+    border-color: #6c757d !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary:hover { 
+    background-color: #5a6268 !important; 
+    border-color: #5a6268 !important; 
+    color: #ffffff !important; 
+}
+
+/* Alert styling */
+.wrap .alert { 
+    background-color: #f8f9fa !important; 
+    border-color: #ced4da !important; 
+    color: #212529 !important;
+}
+.wrap .alert-danger { 
+    background-color: #f8d7da !important; 
+    border-color: #f5c6cb !important; 
+    color: #721c24 !important;
+}
+.wrap .alert-success { 
+    background-color: #d4edda !important; 
+    border-color: #c3e6cb !important; 
+    color: #155724 !important;
+}
+
+.wrap .img { 
+    background-color: #e9ecef !important;
+}
+.wrap .input-group-text { 
+    background-color: #f8f9fa !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+.wrap small { 
+    color: #6c757d !important; 
+}
+.wrap .text-danger small { 
+    color: #dc3545 !important; 
+}
 </style>
 
 <script>

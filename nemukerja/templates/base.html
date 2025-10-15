@@ -13,13 +13,16 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="NemuKerja Logo" width="65" height="65" class="d-inline-block align-top">
+                <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="NemuKerja Logo" width="50" height="50" class="d-inline-block align-top">
+                <span class="fw-bold text-primary ms-2 d-none d-sm-inline">NemuKerja</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                     </li>
@@ -33,39 +36,83 @@
                         <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
                     </li>
                 </ul>
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         {% if current_user.role == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('dashboard') }}">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-danger" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="btn btn-danger btn-sm" href="{{ url_for('logout') }}">Logout</a>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-primary me-2" href="{{ url_for('login') }}">Login</a>
+                        <li class="nav-item me-2">
+                            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('login') }}">Login</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-primary" href="{{ url_for('register') }}">Register</a>
-                            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('register') }}">Register</a>
+                            <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Register</a>
                         </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+    
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NemuKerja Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}"><i class="fas fa-home me-2"></i>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}"><i class="fas fa-briefcase me-2"></i>Job Listing</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('about') }}"><i class="fas fa-info-circle me-2"></i>About Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('contact') }}"><i class="fas fa-envelope me-2"></i>Contact</a>
+                </li>
+                <li class="nav-item"><hr class="dropdown-divider"></li>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cog me-2"></i>Admin Dashboard</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-primary" href="{{ url_for('dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item mt-3">
+                        <a class="btn btn-danger w-100" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item mt-3">
+                        <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary w-100" href="{{ url_for('register') }}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div id="flash-messages-container">
             {% for category, message in messages %}
-                <div class="flash-message flash-{{ category }}">
+                <div class="flash-message alert alert-{{ 'danger' if category == 'error' else category }} fade show" role="alert">
                 {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
             </div>
@@ -73,49 +120,7 @@
         {% endwith %}
 
     <main class="main-content">
-        {% block content %}
-        <div class="container mt-5 pt-5">
-            <h2>Welcome to NemuKerja</h2>
-            <p>Find your dream job today!</p>
-            
-            <h3>Latest Job Listings</h3>
-            <div class="row">
-                {% for job in jobs %}
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ job.title }}</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
-                            <p class="card-text">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
-                                    <i class="fas fa-users"></i> {{ job.slots }} slots available
-                                </small>
-                            </p>
-                        </div>
-                        <div class="card-footer">
-                           <button type="button" class="btn btn-outline-primary btn-sm" 
-                            onclick="showJobDetail('{{ job.id }}')">
-                        View Details
-                    </button>tails
-                            </button>
-                            {% if not current_user.is_authenticated %}
-                                <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Apply</a>
-                            {% elif current_user.role == 'user' %}
-                                <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-sm">Apply Now</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% else %}
-                <div class="col-12">
-                    <p>No jobs available at the moment.</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endblock %}
+        {% block content %}{% endblock %}
     </main>
 
 
@@ -136,5 +141,59 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Auto-hiding flash messages with smooth fade-out (3 seconds delay)
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('#flash-messages-container .flash-message');
+            flashMessages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.remove();
+                    }, 500); // Tunggu hingga transisi opacity selesai
+                }, 3000);
+            });
+        });
+
+        function showJobDetail(jobId) {
+             // Use fetch to get job details and display them in a modal
+            fetch(`/job/${jobId}`)
+                .then(response => response.json())
+                .then(job => {
+                    document.getElementById('jobDetailTitle').textContent = job.title;
+                    document.getElementById('jobDetailBody').innerHTML = `
+                        <h6>Company: ${job.company}</h6>
+                        <p><strong>Location:</strong> ${job.location}</p>
+                        <p><strong>Available Slots:</strong> ${job.slots}</p>
+                        <p><strong>Current Applicants:</strong> ${job.applied_count}</p>
+                        <hr>
+                        <h6>Qualifications:</h6>
+                        <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
+                        <hr>
+                        <h6>Job Description:</h6>
+                        <p>${job.description.replace(/\n/g, '<br>')}</p>
+                    `;
+
+                    let applyButton = '';
+                    const isAuthenticated = '{{ current_user.is_authenticated|tojson|safe }}' === 'true';
+                    const userRole = isAuthenticated ? '{{ current_user.role }}' : null;
+
+                    if (isAuthenticated && userRole === 'applicant') {
+                        applyButton = `<a href="/apply/${job.id}" class="btn btn-primary">Apply Now</a>`;
+                    } else if (!isAuthenticated) {
+                        applyButton = `<a href="{{ url_for('login') }}" class="btn btn-primary">Login to Apply</a>`;
+                    }
+                    
+                    document.getElementById('applyButtonContainer').innerHTML = applyButton;
+
+                    const modal = new bootstrap.Modal(document.getElementById('jobDetailModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading job details');
+                });
+        }
+    </script>
 </body>
 </html>

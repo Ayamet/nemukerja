@@ -1,5 +1,5 @@
 import os
-import timedelta
+from datetime import timedelta
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'a-very-secret-key-that-you-should-change')

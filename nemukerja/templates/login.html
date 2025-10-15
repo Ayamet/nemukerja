@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
+/* Clean up styles to rely on global CSS */
 .form-check {
     display: flex;
     align-items: center;
@@ -95,23 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .form-check-input {
     margin-right: 10px;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    padding: 12px;
-    font-weight: 600;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    transform: translateY(-1px);
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 </style>
 {% endblock %}

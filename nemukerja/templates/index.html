@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Job Listings - NemuKerja{% endblock %}
+
+{% block content %}
+<style>
+/* Set colors to dark text on light background to override base.html's dark-mode reliance */
+.card-title, .card-text, .modal-body, .card, .card-subtitle { 
+    color: #343a40 !important; 
+}
+.card-footer {
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
+}
+.card-text small.text-muted {
+    color: #6c757d !important;
+}
+</style>
+<div class="container mt-4">
+    <h2>Available Job Listings</h2>
+
+    <div class="alert alert-info">
+        Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> to apply for jobs.
+    </div>
+
+    <div class="row">
+        {% for job in jobs %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ job.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
+                    <p class="card-text">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
+                            <i class="fas fa-users"></i> {{ job.slots }} slots available
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-outline-primary btn-sm" 
+                            onclick="showJobDetail('{{ job.id }}')">
+                        View Details
+                    </button>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Apply</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No jobs available at the moment.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="modal fade" id="jobDetailModal" tabindex="-1" aria-labelledby="jobDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="jobDetailModalLabel">Job Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="jobDetailBody">
+                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <span id="applyButtonContainer">
+                    </span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

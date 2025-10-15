@@ -1,12 +1,11 @@
 import os
 from flask import Flask, render_template, redirect, url_for, flash, request, jsonify
-from extensions import db, login_manager, bcrypt
+from nemukerja.extensions import db, login_manager, bcrypt
 from flask_migrate import Migrate
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import timedelta
-from models import User, Company, JobListing, Application, Applicant
-from forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
-from datetime import timedelta
+from nemukerja.models import User, Company, JobListing, Application, Applicant
+from nemukerja.forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
@@ -34,7 +33,7 @@ def create_app():
     def index():
 
         jobs = JobListing.query.order_by(JobListing.posted_at.desc()).all()
-        return render_template('base.html', jobs=jobs)
+        return render_template('index.html', jobs=jobs, guest=True)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -162,7 +161,8 @@ def create_app():
             'description': job.description,
             'qualifications': job.qualifications,
             'company': job.company.company_name if job.company else "N/A",
-            'applied_count': len(job.applications)
+            'applied_count': len(job.applications),
+            'slots': job.slots
         }
         return jsonify(data)
 
@@ -216,7 +216,7 @@ def create_app():
                 location=form.location.data,
                 description=form.description.data,
                 qualifications=form.qualifications.data,
-
+                slots=form.slots.data,
                 id_company=company.id
             )
             db.session.add(new_job)

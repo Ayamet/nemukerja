@@ -28,11 +28,11 @@
                                 <br>
                                 <small class="text-muted">{{ application.job.location }}</small>
                             </td>
-                            <td>{{ application.applicant.name }}</td>
-                            <td>{{ application.applicant.email }}</td>
+                            <td>{{ application.applicant.full_name }}</td>
+                            <td>{{ application.applicant.user.email }}</td>
                             <td>{{ application.applied_at.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>
-                                <span class="badge {% if application.status == 'pending' %}bg-warning{% elif application.status == 'accepted' %}bg-success{% elif application.status == 'rejected' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                <span class="badge {% if application.status == 'Pending' %}bg-warning text-dark{% elif application.status == 'Diterima' %}bg-success{% elif application.status == 'Ditolak' %}bg-danger{% else %}bg-secondary{% endif %}">
                                     {{ application.status|title }}
                                 </span>
                             </td>
@@ -41,7 +41,7 @@
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-eye"></i> View
                                 </a>
-                                {% if application.status == 'pending' %}
+                                {% if application.status == 'Pending' %}
                                 <div class="btn-group btn-group-sm mt-1">
                                     <form method="POST" action="{{ url_for('accept_application', application_id=application.id) }}" class="d-inline">
                                         <button type="submit" class="btn btn-outline-success btn-sm"

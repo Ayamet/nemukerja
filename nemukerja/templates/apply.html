@@ -4,41 +4,24 @@
 
 {% block content %}
 <style>
+/* General light theme colors */
 .job-info, .applicant-info {
     border-left: 4px solid #007bff;
+    background-color: #f8f9fa !important;
+    color: #212121 !important;
+}
+
+.applicant-info {
+    border-left-color: #28a745; /* Green for applicant info */
 }
 
 .application-tips {
     border-left: 4px solid #ffc107;
+    background-color: #fffbe6 !important;
+    color: #212121 !important;
 }
 
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
-}
-
-.card-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: rgb(0, 0, 0);
-    border-bottom: none;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    transform: translateY(-1px);
-}
-
-
+/* Ensure all text is dark */
 .job-info,
 .job-info h5,
 .job-info p,
@@ -52,20 +35,7 @@
 .application-tips,
 .application-tips h6,
 .application-tips li {
-    color: #000000 !important;
-}
-
-.job-info,
-.applicant-info {
-    background-color: #f8f9fa !important;
-}
-
-.application-tips {
-    background-color: rgba(255, 193, 7, 0.1) !important;
-}
-
-.card-body {
-    color: #000000 !important;
+    color: #212121 !important;
 }
 
 .card-body h5,
@@ -73,21 +43,46 @@
 .card-body p,
 .card-body strong,
 .card-body li {
-    color: #000000 !important;
+    color: #212121 !important;
 }
 
+.card-header {
+    background: #007bff; /* Solid Blue header */
+    color: #ffffff;
+    border-bottom: none;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #007bff;
+    border: none;
+}
+.btn-primary:hover {
+    background: #0056b3;
+    transform: translateY(-1px);
+}
 
 .application-form .text-muted {
-    color: #f0f0f0 !important;
+    color: #6c757d !important;
 }
 
 .application-form .form-control {
-    color: #000000 !important;
+    color: #495057 !important;
     background-color: #ffffff !important;
 }
 
 .application-form .form-control::placeholder {
-    color: #6c757d !important;
+    color: #adb5bd !important;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
 }
 </style>
 
@@ -118,7 +113,7 @@
                     <h5>Your Information</h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ current_user.name }}</p>
+                            <p><strong>Name:</strong> {{ current_user.applicant_profile.full_name }}</p> 
                             <p><strong>Email:</strong> {{ current_user.email }}</p>
                         </div>
                         <div class="col-md-6">
