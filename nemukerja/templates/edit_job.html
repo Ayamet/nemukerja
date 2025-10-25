@@ -8,33 +8,52 @@
         <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
     </div>
     
-    <h2>Edit Job: {{ job.title }}</h2>
+    <h2>
+        <span data-i18n="edit_job_edit_job_en">Edit Job:</span>
+        <span data-i18n="edit_job_edit_job_id" class="d-none">Edit Pekerjaan:</span>
+        {{ job.title }}
+    </h2>
     
     <form method="POST">
         {{ form.hidden_tag() }}
         
         <div class="form-group mt-3">
-            <label class="form-label fw-bold">Job Title</label>
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_job_title_en">Job Title</span>
+                <span data-i18n="edit_job_job_title_id" class="d-none">Judul Pekerjaan</span>
+            </label>
             {{ form.title(class="form-control") }}
         </div>
         
         <div class="form-group mt-3">
-            <label class="form-label fw-bold">Location</label>
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_location_en">Location</span>
+                <span data-i18n="edit_job_location_id" class="d-none">Lokasi</span>
+            </label>
             {{ form.location(class="form-control") }}
         </div>
         
         <div class="form-group mt-3">
-            <label class="form-label fw-bold">Available Slots</label>
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_available_slots_en">Available Slots</span>
+                <span data-i18n="edit_job_available_slots_id" class="d-none">Kuota Tersedia</span>
+            </label>
             {{ form.slots(class="form-control") }}
         </div>
 
         <div class="form-group mt-3">
-            <label class="form-label fw-bold">Job Description</label>
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_job_description_en">Job Description</span>
+                <span data-i18n="edit_job_job_description_id" class="d-none">Deskripsi Pekerjaan</span>
+            </label>
             {{ form.description(class="form-control", rows="6") }}
         </div>
 
         <div class="form-group mt-3">
-            <label class="form-label fw-bold">Qualifications</label>
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_qualifications_en">Qualifications</span>
+                <span data-i18n="edit_job_qualifications_id" class="d-none">Kualifikasi</span>
+            </label>
             {{ form.qualifications(class="form-control", rows="4") }}
         </div>
         
@@ -43,7 +62,10 @@
         </div>
         
         <div class="mt-3 text-center">
-            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                <span data-i18n="edit_job_back_to_dashboard_en">Back to Dashboard</span>
+                <span data-i18n="edit_job_back_to_dashboard_id" class="d-none">Kembali ke Dasbor</span>
+            </a>
         </div>
     </form>
 </div>

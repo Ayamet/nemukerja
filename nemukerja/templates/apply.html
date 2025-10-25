@@ -4,85 +4,25 @@
 
 {% block content %}
 <style>
-/* General light theme colors */
 .job-info, .applicant-info {
     border-left: 4px solid #007bff;
     background-color: #f8f9fa !important;
-    color: #212121 !important;
 }
 
 .applicant-info {
-    border-left-color: #28a745; /* Green for applicant info */
+    border-left-color: #28a745;
 }
 
 .application-tips {
     border-left: 4px solid #ffc107;
     background-color: #fffbe6 !important;
-    color: #212121 !important;
-}
-
-/* Ensure all text is dark */
-.job-info,
-.job-info h5,
-.job-info p,
-.job-info strong,
-.applicant-info,
-.applicant-info h5,
-.applicant-info p,
-.applicant-info strong,
-.application-form h5,
-.application-form p,
-.application-tips,
-.application-tips h6,
-.application-tips li {
-    color: #212121 !important;
-}
-
-.card-body h5,
-.card-body h6,
-.card-body p,
-.card-body strong,
-.card-body li {
-    color: #212121 !important;
 }
 
 .card-header {
-    background: #007bff; /* Solid Blue header */
+    background: #007bff;
     color: #ffffff;
     border-bottom: none;
     font-weight: 600;
-}
-
-.btn-primary {
-    background: #007bff;
-    border: none;
-}
-.btn-primary:hover {
-    background: #0056b3;
-    transform: translateY(-1px);
-}
-
-.application-form .text-muted {
-    color: #6c757d !important;
-}
-
-.application-form .form-control {
-    color: #495057 !important;
-    background-color: #ffffff !important;
-}
-
-.application-form .form-control::placeholder {
-    color: #adb5bd !important;
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: none;
 }
 </style>
 
@@ -90,42 +30,45 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0">Apply for: {{ job.title }}</h4>
+                <h4 class="mb-0">
+                    <span data-i18n="apply_for_en">Apply for:</span>
+                    <span data-i18n="apply_for_id" class="d-none">Lamar untuk:</span>
+                    {{ job.title }}
+                </h4>
             </div>
             <div class="card-body">
+                <!-- Job Information -->
                 <div class="job-info mb-4 p-3 bg-light rounded">
-                    <h5>Job Details</h5>
+                    <h5><span data-i18n="apply_job_details_en">Job Details</span><span data-i18n="apply_job_details_id" class="d-none">Detail Pekerjaan</span></h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Company:</strong> {{ job.company.company_name }}</p>
-                            <p><strong>Location:</strong> {{ job.location }}</p>
+                            <p><strong><span data-i18n="apply_company_en">Company:</span><span data-i18n="apply_company_id" class="d-none">Perusahaan:</span></strong> {{ job.company.company_name }}</p>
+                            <p><strong><span data-i18n="apply_location_en">Location:</span><span data-i18n="apply_location_id" class="d-none">Lokasi:</span></strong> {{ job.location }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Available Slots:</strong> {{ job.slots }}</p>
-                            <p><strong>Current Applicants:</strong> {{ job.applications|length }}</p>
+                            <p><strong><span data-i18n="apply_available_slots_en">Available Slots:</span><span data-i18n="apply_available_slots_id" class="d-none">Kuota Tersedia:</span></strong> {{ job.slots }}</p>
+                            <p><strong><span data-i18n="apply_current_applicants_en">Current Applicants:</span><span data-i18n="apply_current_applicants_id" class="d-none">Pelamar Saat Ini:</span></strong> {{ job.applications|length }}</p>
                         </div>
                     </div>
-                    <p><strong>Job Description:</strong></p>
-                    <p class="mb-0">{{ job.description }}</p>
                 </div>
 
+                <!-- Applicant Information -->
                 <div class="applicant-info mb-4 p-3 bg-light rounded">
-                    <h5>Your Information</h5>
+                    <h5><span data-i18n="apply_your_information_en">Your Information</span><span data-i18n="apply_your_information_id" class="d-none">Informasi Anda</span></h5>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ current_user.applicant_profile.full_name }}</p> 
-                            <p><strong>Email:</strong> {{ current_user.email }}</p>
+                            <p><strong><span data-i18n="apply_name_en">Name:</span><span data-i18n="apply_name_id" class="d-none">Nama:</span></strong> {{ current_user.applicant_profile.full_name }}</p> 
+                            <p><strong><span data-i18n="apply_email_en">Email:</span><span data-i18n="apply_email_id" class="d-none">Email:</span></strong> {{ current_user.email }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>Account Type:</strong> Job Seeker</p>
-                            <p><strong>Member Since:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                            <p><strong><span data-i18n="apply_account_type_en">Account Type:</span><span data-i18n="apply_account_type_id" class="d-none">Tipe Akun:</span></strong><span data-i18n="apply_job_seeker_en">Job Seeker</span><span data-i18n="apply_job_seeker_id" class="d-none">Pencari Kerja</span></p>
                         </div>
                     </div>
                 </div>
 
+                <!-- Application Form -->
                 <div class="application-form">
-                    <h5>Application Form</h5>
-                    <p class="text-muted mb-4">Please provide your cover letter below. Make sure to highlight why you're a good fit for this position.</p>
+                    <h5><span data-i18n="apply_application_form_en">Application Form</span><span data-i18n="apply_application_form_id" class="d-none">Formulir Lamaran</span></h5>
                     
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
@@ -138,13 +81,40 @@
                         {% endif %}
                     {% endwith %}
 
-                    <form method="POST" action="{{ url_for('apply', job_id=job.id) }}">
+                    <form method="POST" action="{{ url_for('apply', job_id=job.id) }}" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
                         
+                        <!-- CV Upload -->
                         <div class="form-group mb-4">
-                            
+                            <label class="form-label fw-bold">
+                                <span data-i18n="apply_upload_cv_en">Upload Your CV</span>
+                                <span data-i18n="apply_upload_cv_id" class="d-none">Unggah CV Anda</span>
+                                <span class="text-danger">*</span>
+                            </label>
                             <small class="text-muted d-block mb-2">
-                                Tell us why you're interested in this position and what makes you a good candidate.
+                                <span data-i18n="apply_cv_requirements_en">PDF format only, maximum 10MB</span>
+                                <span data-i18n="apply_cv_requirements_id" class="d-none">Format PDF saja, maksimal 10MB</span>
+                            </small>
+                            {{ form.cv_file(class="form-control") }}
+                            {% if form.cv_file.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.cv_file.errors %}
+                                        <small>{{ error }}</small><br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Cover Letter -->
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-bold">
+                                <span data-i18n="apply_cover_letter_en">Cover Letter</span>
+                                <span data-i18n="apply_cover_letter_id" class="d-none">Surat Lamaran</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <small class="text-muted d-block mb-2">
+                                <span data-i18n="apply_cover_letter_tips_en">Tell us why you're interested in this position and what makes you a good candidate (minimum 100 characters).</span>
+                                <span data-i18n="apply_cover_letter_tips_id" class="d-none">Ceritakan mengapa Anda tertarik dengan posisi ini dan apa yang membuat Anda menjadi kandidat yang baik (minimal 100 karakter).</span>
                             </small>
                             {{ form.cover_letter(class="form-control", rows="8", placeholder="Write your cover letter here...") }}
                             {% if form.cover_letter.errors %}
@@ -154,24 +124,17 @@
                                     {% endfor %}
                                 </div>
                             {% endif %}
+                            <div class="text-muted small mt-1" id="charCount">Character count: 0</div>
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">
+                                <span data-i18n="apply_cancel_en">Cancel</span>
+                                <span data-i18n="apply_cancel_id" class="d-none">Batal</span>
+                            </a>
                             {{ form.submit(class="btn btn-primary") }}
                         </div>
                     </form>
-                </div>
-
-                <div class="application-tips mt-4 p-3 bg-info bg-opacity-10 rounded">
-                    <h6><i class="fas fa-lightbulb me-2"></i>Application Tips</h6>
-                    <ul class="mb-0">
-                        <li>Customize your cover letter for this specific position</li>
-                        <li>Highlight relevant skills and experience</li>
-                        <li>Explain why you're interested in working for this company</li>
-                        <li>Keep it professional and concise</li>
-                        <li>Proofread for spelling and grammar errors</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -181,46 +144,120 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const coverLetterTextarea = document.getElementById('{{ form.cover_letter.id }}');
+    const charCount = document.getElementById('charCount');
     
     if (coverLetterTextarea) {
         coverLetterTextarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+            const count = this.value.length;
+            charCount.textContent = 'Character count: ' + count;
+            
+            if (count < 100) {
+                charCount.className = 'text-danger small mt-1';
+            } else if (count < 200) {
+                charCount.className = 'text-warning small mt-1';
+            } else {
+                charCount.className = 'text-success small mt-1';
+            }
         });
         
+        // Trigger initial count
         coverLetterTextarea.dispatchEvent(new Event('input'));
     }
-
-    const charCount = document.createElement('div');
-    charCount.className = 'text-muted small mt-1';
-    charCount.textContent = 'Character count: 0';
-    coverLetterTextarea.parentNode.appendChild(charCount);
-
-    coverLetterTextarea.addEventListener('input', function() {
-        charCount.textContent = 'Character count: ' + this.value.length;
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const coverLetterTextarea = document.getElementById('{{ form.cover_letter.id }}');
+    const charCount = document.getElementById('charCount');
+    const cvFileInput = document.getElementById('{{ form.cv_file.id }}');
+    const form = document.querySelector('form');
+    
+    // Character count for cover letter
+    if (coverLetterTextarea) {
+        coverLetterTextarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = 'Character count: ' + count;
+            
+            if (count < 100) {
+                charCount.className = 'text-danger small mt-1';
+            } else if (count < 200) {
+                charCount.className = 'text-warning small mt-1';
+            } else {
+                charCount.className = 'text-success small mt-1';
+            }
+        });
+        coverLetterTextarea.dispatchEvent(new Event('input'));
+    }
+    
+    // Client-side file validation
+    if (cvFileInput) {
+        cvFileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                // Check file type
+                if (!file.type.includes('pdf')) {
+                    alert('Only PDF files are allowed.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Check file size (10MB)
+                const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+                if (file.size > maxSize) {
+                    alert('File size must be less than 10MB. Your file is too large.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Show file info
+                const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+                console.log(`File selected: ${file.name} (${fileSizeMB} MB)`);
+            }
+        });
+    }
+    
+    // Enhanced form validation
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        let errorMessage = '';
         
-        if (this.value.length < 50) {
-            charCount.className = 'text-danger small mt-1';
-        } else if (this.value.length < 100) {
-            charCount.className = 'text-warning small mt-1';
-        } else {
-            charCount.className = 'text-success small mt-1';
+        // Check cover letter length
+        const coverLetter = document.getElementById('{{ form.cover_letter.id }}').value;
+        if (coverLetter.trim().length < 100) {
+            isValid = false;
+            errorMessage = 'Please write a more detailed cover letter (at least 100 characters).';
+        }
+        
+        // Check if CV file is selected
+        const cvFile = document.getElementById('{{ form.cv_file.id }}').files[0];
+        if (!cvFile) {
+            isValid = false;
+            errorMessage = 'Please upload your CV file.';
+        } else if (cvFile) {
+            // Double-check file size client-side
+            const maxSize = 10 * 1024 * 1024;
+            if (cvFile.size > maxSize) {
+                isValid = false;
+                errorMessage = 'File size must be less than 10MB. Your file is too large.';
+            }
+            
+            // Double-check file type
+            if (!cvFile.type.includes('pdf')) {
+                isValid = false;
+                errorMessage = 'Only PDF files are allowed.';
+            }
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert(errorMessage);
+            return;
+        }
+        
+        if (!confirm('Are you sure you want to submit your application? You cannot edit it after submission.')) {
+            e.preventDefault();
         }
     });
-});
-
-document.querySelector('form').addEventListener('submit', function(e) {
-    const coverLetter = document.getElementById('{{ form.cover_letter.id }}').value;
-    
-    if (coverLetter.trim().length < 100) {
-        e.preventDefault();
-        alert('Please write a more detailed cover letter (at least 100 characters).');
-        return;
-    }
-    
-    if (!confirm('Are you sure you want to submit your application? You cannot edit it after submission.')) {
-        e.preventDefault();
-    }
 });
 </script>
 {% endblock %}

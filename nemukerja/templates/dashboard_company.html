@@ -4,14 +4,20 @@
 
 {% block content %}
 <div class="container mt-5 pt-5">
-    <h2>Company Dashboard</h2>
+    <h2>
+        <span data-i18n="dashboard_company_company_dashboard_en">Company Dashboard</span>
+        <span data-i18n="dashboard_company_company_dashboard_id" class="d-none">Dasbor Perusahaan</span>
+    </h2>
 
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card text-center h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ total_jobs }}</h5>
-                    <p class="card-text">Total Jobs Posted</p>
+                    <p class="card-text">
+                        <span data-i18n="dashboard_company_total_jobs_posted_en">Total Jobs Posted</span>
+                        <span data-i18n="dashboard_company_total_jobs_posted_id" class="d-none">Total Pekerjaan Diposting</span>
+                    </p>
                 </div>
             </div>
         </div>
@@ -19,21 +25,30 @@
             <div class="card text-center h-100">
                 <div class="card-body">
                     <h5 class="card-title">{{ total_applications }}</h5>
-                    <p class="card-text">Total Applications</p>
+                    <p class="card-text">
+                        <span data-i18n="dashboard_company_total_applications_en">Total Applications</span>
+                        <span data-i18n="dashboard_company_total_applications_id" class="d-none">Total Lamaran</span>
+                    </p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card text-center h-100">
                 <div class="card-body d-flex justify-content-center align-items-center">
-                    <a href="{{ url_for('add_job') }}" class="btn btn-primary">Post New Job</a>
+                    <a href="{{ url_for('add_job') }}" class="btn btn-primary">
+                        <span data-i18n="dashboard_company_post_new_job_en">Post New Job</span>
+                        <span data-i18n="dashboard_company_post_new_job_id" class="d-none">Posting Pekerjaan Baru</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Your Job Postings</h3>
+        <h3>
+            <span data-i18n="dashboard_company_your_job_postings_en">Your Job Postings</span>
+            <span data-i18n="dashboard_company_your_job_postings_id" class="d-none">Pekerjaan yang Diposting</span>
+        </h3>
     </div>
 
     {% if jobs %}
@@ -45,18 +60,31 @@
                             <div class="flex-grow-1">
                                 <h5 class="card-title">{{ job.title }}</h5>
                                 <p class="card-text">
-                                    <strong>Location:</strong> {{ job.location }}<br>
-                                    <strong>Applicants:</strong> {{ job.applications|length }}<br>
-                                    <strong>Posted:</strong> {{ job.posted_at.strftime('%B %d, %Y') if job.posted_at else 'N/A' }}
+                                    <strong>
+                                        <span data-i18n="dashboard_company_location_en">Location:</span>
+                                        <span data-i18n="dashboard_company_location_id" class="d-none">Lokasi:</span>
+                                    </strong> {{ job.location }}<br>
+                                    <strong>
+                                        <span data-i18n="dashboard_company_applicants_en">Applicants:</span>
+                                        <span data-i18n="dashboard_company_applicants_id" class="d-none">Pelamar:</span>
+                                    </strong> {{ job.applications|length }}<br>
+                                    <strong>
+                                        <span data-i18n="dashboard_company_posted_en">Posted:</span>
+                                        <span data-i18n="dashboard_company_posted_id" class="d-none">Diposting:</span>
+                                    </strong> {{ job.posted_at.strftime('%B %d, %Y') if job.posted_at else 'N/A' }}
                                 </p>
                             </div>
                             <div class="btn-group-vertical ms-3">
                                 <button type="button" class="btn btn-outline-primary btn-sm mb-2" 
                                         onclick="showJobDetail('{{ job.id }}')">
-                                    View Details
+                                    <span data-i18n="dashboard_company_view_details_en">View Details</span>
+                                    <span data-i18n="dashboard_company_view_details_id" class="d-none">Lihat Detail</span>
                                 </button>
-                                <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn btn-outline-secondary btn-sm mb-2">Edit</a>
-                                </div>
+                                <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn btn-outline-secondary btn-sm mb-2">
+                                    <span data-i18n="dashboard_company_edit_en">Edit</span>
+                                    <span data-i18n="dashboard_company_edit_id" class="d-none">Edit</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -65,26 +93,53 @@
     {% else %}
         <div class="text-center py-4">
             <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
-            <h4>No Jobs Posted Yet</h4>
-            <p class="text-muted">You haven't posted any job openings yet. Start by posting your first job!</p>
-            <a href="{{ url_for('add_job') }}" class="btn btn-primary">Post Your First Job</a>
+            <h4>
+                <span data-i18n="dashboard_company_no_jobs_posted_yet_en">No Jobs Posted Yet</span>
+                <span data-i18n="dashboard_company_no_jobs_posted_yet_id" class="d-none">Belum Ada Pekerjaan Diposting</span>
+            </h4>
+            <p class="text-muted">
+                <span data-i18n="dashboard_company_you_haven_t_posted_any_job_openings_yet_start_by_posting_your_first_job_en">You haven't posted any job openings yet. Start by posting your first job!</span>
+                <span data-i18n="dashboard_company_you_haven_t_posted_any_job_openings_yet_start_by_posting_your_first_job_id" class="d-none">Anda belum memposting lowongan pekerjaan apa pun. Mulailah dengan memposting pekerjaan pertama Anda!</span>
+            </p>
+            <a href="{{ url_for('add_job') }}" class="btn btn-primary">
+                <span data-i18n="dashboard_company_post_your_first_job_en">Post Your First Job</span>
+                <span data-i18n="dashboard_company_post_your_first_job_id" class="d-none">Posting Pekerjaan Pertama Anda</span>
+            </a>
         </div>
     {% endif %}
 
     {% if recent_applications %}
     <div class="mt-5">
-        <h3>Recent Applications</h3>
+        <h3>
+            <span data-i18n="dashboard_company_recent_applications_en">Recent Applications</span>
+            <span data-i18n="dashboard_company_recent_applications_id" class="d-none">Lamaran Terbaru</span>
+        </h3>
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Job Title</th>
-                                <th>Applicant Name</th>
-                                <th>Applied Date</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>
+                                    <span data-i18n="dashboard_company_job_title_en">Job Title</span>
+                                    <span data-i18n="dashboard_company_job_title_id" class="d-none">Judul Pekerjaan</span>
+                                </th>
+                                <th>
+                                    <span data-i18n="dashboard_company_applicant_name_en">Applicant Name</span>
+                                    <span data-i18n="dashboard_company_applicant_name_id" class="d-none">Nama Pelamar</span>
+                                </th>
+                                <th>
+                                    <span data-i18n="dashboard_company_applied_date_en">Applied Date</span>
+                                    <span data-i18n="dashboard_company_applied_date_id" class="d-none">Tanggal Lamar</span>
+                                </th>
+                                <th>
+                                    <span data-i18n="dashboard_company_status_en">Status</span>
+                                    <span data-i18n="dashboard_company_status_id" class="d-none">Status</span>
+                                </th>
+                                <th>
+                                    <span data-i18n="dashboard_company_action_en">Action</span>
+                                    <span data-i18n="dashboard_company_action_id" class="d-none">Aksi</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,7 +154,10 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="{{ url_for('view_application', application_id=application.id) }}" class="btn btn-outline-primary btn-sm">View</a>
+                                    <a href="{{ url_for('view_application', application_id=application.id) }}" class="btn btn-outline-primary btn-sm">
+                                        <span data-i18n="dashboard_company_view_en">View</span>
+                                        <span data-i18n="dashboard_company_view_id" class="d-none">Lihat</span>
+                                    </a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -107,7 +165,10 @@
                     </table>
                 </div>
                 <div class="text-center mt-3">
-                    <a href="{{ url_for('company_applications') }}" class="btn btn-outline-primary">View All Applications</a>
+                    <a href="{{ url_for('company_applications') }}" class="btn btn-outline-primary">
+                        <span data-i18n="dashboard_company_view_all_applications_en">View All Applications</span>
+                        <span data-i18n="dashboard_company_view_all_applications_id" class="d-none">Lihat Semua Lamaran</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -119,13 +180,19 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailTitle">Job Details</h5>
+                <h5 class="modal-title" id="jobDetailTitle">
+                    <span data-i18n="dashboard_company_job_details_en">Job Details</span>
+                    <span data-i18n="dashboard_company_job_details_id" class="d-none">Detail Pekerjaan</span>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="jobDetailBody">
                 </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span data-i18n="dashboard_company_close_en">Close</span>
+                    <span data-i18n="dashboard_company_close_id" class="d-none">Tutup</span>
+                </button>
             </div>
         </div>
     </div>
@@ -137,16 +204,15 @@ function showJobDetail(jobId) {
         .then(response => response.json())
         .then(job => {
             document.getElementById('jobDetailTitle').textContent = job.title;
-            // FIXED: Removed 'slots' and 'is_open' from the modal details
             document.getElementById('jobDetailBody').innerHTML = `
                 <h6>Company: ${job.company}</h6>
-                <p><strong>Location:</strong> ${job.location}</p>
-                <p><strong>Applicants:</strong> ${job.applied_count}</p>
+                <p><strong><span data-i18n="dashboard_company_location_en">Location:</span><span data-i18n="dashboard_company_location_id" class="d-none">Lokasi:</span></strong> ${job.location}</p>
+                <p><strong><span data-i18n="dashboard_company_applicants_en">Applicants:</span><span data-i18n="dashboard_company_applicants_id" class="d-none">Pelamar:</span></strong> ${job.applied_count}</p>
                 <hr>
-                <h6>Qualifications:</h6>
+                <h6><span data-i18n="dashboard_company_qualifications_en">Qualifications:</span><span data-i18n="dashboard_company_qualifications_id" class="d-none">Kualifikasi:</span></h6>
                 <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
                 <hr>
-                <h6>Job Description:</h6>
+                <h6><span data-i18n="dashboard_company_job_description_en">Job Description:</span><span data-i18n="dashboard_company_job_description_id" class="d-none">Deskripsi Pekerjaan:</span></h6>
                 <p>${job.description.replace(/\n/g, '<br>')}</p>
             `;
 

@@ -52,8 +52,8 @@ CREATE TABLE `applicants` (
 --
 
 INSERT INTO `applicants` (`id_applicant`, `id_user`, `full_name`, `cv_path`, `skills`, `created_at`, `updated_at`) VALUES
-(3, 6, 'Kayla Chan', NULL, NULL, '2025-10-12 14:57:14', '2025-10-12 14:57:14'),
-(4, 7, 'Zain Kece', NULL, NULL, '2025-10-15 04:35:31', '2025-10-15 04:35:31');
+(3, 6, 'Kayla', NULL, NULL, '2025-10-12 14:57:14', '2025-10-12 14:57:14'),
+(4, 7, 'Putri', NULL, NULL, '2025-10-15 04:35:31', '2025-10-15 04:35:31');
 
 -- --------------------------------------------------------
 
@@ -272,3 +272,21 @@ ADD COLUMN slots INT(11) NOT NULL DEFAULT 1 AFTER location;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+CREATE TABLE notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_user INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message VARCHAR(255) NOT NULL,
+    type ENUM('job_posted', 'application_received', 'application_status') NOT NULL,
+    related_id INT,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_user) REFERENCES users(id_user)
+);
+
+ALTER TABLE users MODIFY COLUMN role ENUM('applicant','company','admin') NOT NULL;
+
+INSERT INTO users (email, password, role) 
+VALUES ('admin@nemukerja.com', 'admin', 'admin');
+

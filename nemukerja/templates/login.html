@@ -10,15 +10,17 @@
             <div class="card shadow-lg border-0">
                 <div class="card-body p-4">
                     <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="max-height: 150px;">
-                    <h2 class="text-center mt-4">Sign In</h2>
+                    <h2 class="text-center mt-4">
+                        <span data-i18n="login_sign_in_en">Sign In</span>
+                        <span data-i18n="login_sign_in_id" class="d-none">Masuk</span>
+                    </h2>
 
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                             {% for category, message in messages %}
                                 <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                                     {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+                                   </div>
                             {% endfor %}
                         {% endif %}
                     {% endwith %}
@@ -43,7 +45,8 @@
                             <div class="form-check">
                                 {{ form.remember(class="form-check-input", id="remember") }}
                                 <label class="form-check-label" for="remember">
-                                    Remember me 
+                                    <span data-i18n="login_remember_me_en">Remember me</span>
+                                    <span data-i18n="login_remember_me_id" class="d-none">Ingat saya</span>
                                 </label>
                             </div>
                         </div>
@@ -53,8 +56,22 @@
                         </div>
 
                         <div class="text-center">
-                            <p class="mb-1">Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
-                            <p class="mb-0">Forgot password? <a href="{{ url_for('reactivate') }}">Reactivate Account</a></p>
+                            <p class="mb-1">
+                                <span data-i18n="login_don_t_have_an_account_en">Don't have an account?</span>
+                                <span data-i18n="login_don_t_have_an_account_id" class="d-none">Tidak punya akun?</span>
+                                <a href="{{ url_for('register') }}">
+                                    <span data-i18n="login_sign_up_en">Sign Up</span>
+                                    <span data-i18n="login_sign_up_id" class="d-none">Daftar</span>
+                                </a>
+                            </p>
+                            <p class="mb-0">
+                                <span data-i18n="login_forgot_password_en">Forgot password?</span>
+                                <span data-i18n="login_forgot_password_id" class="d-none">Lupa kata sandi?</span>
+                                <a href="{{ url_for('reactivate') }}">
+                                    <span data-i18n="login_reactivate_account_en">Reactivate Account</span>
+                                    <span data-i18n="login_reactivate_account_id" class="d-none">Aktifkan Ulang Akun</span>
+                                </a>
+                            </p>
                         </div>
                     </form>
                 </div>
@@ -79,11 +96,18 @@ function togglePassword(id) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-
     const emailField = document.getElementById('email');
     const passwordField = document.getElementById('login_password');
 
-   
+    // Set placeholder based on language
+    const savedLang = localStorage.getItem('nk_lang') || 'en';
+    if (savedLang === 'en') {
+        emailField.placeholder = "Enter your email";
+        passwordField.placeholder = "Enter your password";
+    } else {
+        emailField.placeholder = "Masukkan email Anda";
+        passwordField.placeholder = "Masukkan kata sandi Anda";
+    }
 });
 </script>
 

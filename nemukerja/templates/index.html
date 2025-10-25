@@ -17,10 +17,26 @@
 }
 </style>
 <div class="container mt-4">
-    <h2>Available Job Listings</h2>
+    <h2>
+        <span data-i18n="index_available_job_listings_en">Available Job Listings</span>
+        <span data-i18n="index_available_job_listings_id" class="d-none">Daftar Pekerjaan Tersedia</span>
+    </h2>
 
     <div class="alert alert-info">
-        Please <a href="{{ url_for('login') }}">login</a> or <a href="{{ url_for('register') }}">register</a> to apply for jobs.
+        <span data-i18n="index_please_en">Please</span> 
+        <span data-i18n="index_please_id" class="d-none">Silakan</span>
+        <a href="{{ url_for('login') }}">
+            <span data-i18n="index_login_en">login</span>
+            <span data-i18n="index_login_id" class="d-none">masuk</span>
+        </a> 
+        <span data-i18n="index_or_en">or</span>
+        <span data-i18n="index_or_id" class="d-none">atau</span>
+        <a href="{{ url_for('register') }}">
+            <span data-i18n="index_register_en">register</span>
+            <span data-i18n="index_register_id" class="d-none">daftar</span>
+        </a> 
+        <span data-i18n="index_to_apply_for_jobs_en">to apply for jobs.</span>
+        <span data-i18n="index_to_apply_for_jobs_id" class="d-none">untuk melamar pekerjaan.</span>
     </div>
 
     <div class="row">
@@ -34,23 +50,31 @@
                     <p class="card-text">
                         <small class="text-muted">
                             <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
-                            <i class="fas fa-users"></i> {{ job.slots }} slots available
+                            <i class="fas fa-users"></i> 
+                            {{ job.slots }} 
+                            <span data-i18n="index_slots_available_en">slots available</span>
+                            <span data-i18n="index_slots_available_id" class="d-none">kuota tersedia</span>
                         </small>
                     </p>
                 </div>
                 <div class="card-footer">
                     <button type="button" class="btn btn-outline-primary btn-sm" 
                             onclick="showJobDetail('{{ job.id }}')">
-                        View Details
+                        <span data-i18n="index_view_details_en">View Details</span>
+                        <span data-i18n="index_view_details_id" class="d-none">Lihat Detail</span>
                     </button>
-                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Login to Apply</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
+                        <span data-i18n="index_login_to_apply_en">Login to Apply</span>
+                        <span data-i18n="index_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
+                    </a>
                 </div>
             </div>
         </div>
         {% else %}
         <div class="col-12">
             <div class="alert alert-info">
-                No jobs available at the moment.
+                <span data-i18n="index_no_jobs_available_en">No jobs available at the moment.</span>
+                <span data-i18n="index_no_jobs_available_id" class="d-none">Tidak ada pekerjaan tersedia saat ini.</span>
             </div>
         </div>
         {% endfor %}
@@ -61,17 +85,168 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailModalLabel">Job Details</h5>
+                <h5 class="modal-title" id="jobDetailModalLabel">
+                    <span data-i18n="index_job_details_en">Job Details</span>
+                    <span data-i18n="index_job_details_id" class="d-none">Detail Pekerjaan</span>
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="jobDetailBody">
                 </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <span data-i18n="index_close_en">Close</span>
+                    <span data-i18n="index_close_id" class="d-none">Tutup</span>
+                </button>
                 <span id="applyButtonContainer">
-                    </span>
+                    <a href="{{ url_for('login') }}" class="btn btn-primary">
+                        <span data-i18n="index_login_to_apply_en">Login to Apply</span>
+                        <span data-i18n="index_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
+                    </a>
+                </span>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+// Store current language globally
+let currentLang = localStorage.getItem('nk_lang') || 'en';
+
+// Listen for language changes
+document.addEventListener('DOMContentLoaded', function() {
+    // Update currentLang when language changes
+    document.addEventListener('languageChanged', function(e) {
+        currentLang = e.detail.lang;
+        // Re-translate modal if it's open
+        const modal = document.getElementById('jobDetailModal');
+        if (modal && modal.classList.contains('show')) {
+            const jobId = modal.getAttribute('data-current-job');
+            if (jobId) {
+                translateModalContent(currentLang);
+            }
+        }
+    });
+});
+
+function showJobDetail(jobId) {
+    fetch(`/job/${jobId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(job => {
+            document.getElementById('jobDetailModalLabel').textContent = job.title;
+            
+            // Store current job ID for re-translation
+            document.getElementById('jobDetailModal').setAttribute('data-current-job', jobId);
+            
+            // Create modal content with translation support
+            createModalContent(job);
+            
+            const modalElement = document.getElementById('jobDetailModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            
+            // Apply current language to modal content
+            translateModalContent(currentLang);
+        })
+        .catch(error => {
+            console.error('Error loading job details:', error);
+            document.getElementById('jobDetailBody').innerHTML = `
+                <div class="alert alert-danger">
+                    Error loading job details: ${error.message}
+                </div>
+            `;
+            const modalElement = document.getElementById('jobDetailModal');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+}
+
+function createModalContent(job) {
+    document.getElementById('jobDetailBody').innerHTML = `
+        <h6>
+            <span data-i18n="index_company_en">Company:</span>
+            <span data-i18n="index_company_id" class="d-none">Perusahaan:</span>
+            ${job.company}
+        </h6>
+        <p>
+            <strong>
+                <span data-i18n="index_location_en">Location:</span>
+                <span data-i18n="index_location_id" class="d-none">Lokasi:</span>
+            </strong> ${job.location}
+        </p>
+        <p>
+            <strong>
+                <span data-i18n="index_available_slots_en">Available Slots:</span>
+                <span data-i18n="index_available_slots_id" class="d-none">Kuota Tersedia:</span>
+            </strong> ${job.slots}
+        </p>
+        <p>
+            <strong>
+                <span data-i18n="index_current_applicants_en">Current Applicants:</span>
+                <span data-i18n="index_current_applicants_id" class="d-none">Pelamar Saat Ini:</span>
+            </strong> ${job.applied_count}
+        </p>
+        <hr>
+        <h6>
+            <span data-i18n="index_qualifications_en">Qualifications:</span>
+            <span data-i18n="index_qualifications_id" class="d-none">Kualifikasi:</span>
+        </h6>
+        <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
+        <hr>
+        <h6>
+            <span data-i18n="index_job_description_en">Job Description:</span>
+            <span data-i18n="index_job_description_id" class="d-none">Deskripsi Pekerjaan:</span>
+        </h6>
+        <p>${job.description.replace(/\n/g, '<br>')}</p>
+    `;
+}
+
+function translateModalContent(lang) {
+    const modalBody = document.getElementById('jobDetailBody');
+    if (!modalBody) return;
+    
+    // Update all translation elements in modal
+    modalBody.querySelectorAll('[data-i18n]').forEach(el => {
+        const id = el.getAttribute('data-i18n');
+        
+        if (id.endsWith('_en') || id.endsWith('_id')) {
+            if (lang === 'en') {
+                if (id.endsWith('_en')) {
+                    el.classList.remove('d-none');
+                } else if (id.endsWith('_id')) {
+                    el.classList.add('d-none');
+                }
+            } else if (lang === 'id') {
+                if (id.endsWith('_id')) {
+                    el.classList.remove('d-none');
+                } else if (id.endsWith('_en')) {
+                    el.classList.add('d-none');
+                }
+            }
+        }
+    });
+}
+
+// Also update the base.html language function to trigger events
+function updateBaseLangFunction() {
+    const originalToggleLang = window.toggleLang;
+    if (originalToggleLang) {
+        window.toggleLang = function(lang) {
+            originalToggleLang(lang);
+            // Trigger custom event for modal translation
+            document.dispatchEvent(new CustomEvent('languageChanged', { 
+                detail: { lang: lang } 
+            }));
+        };
+    }
+}
+
+// Initialize the override
+document.addEventListener('DOMContentLoaded', updateBaseLangFunction);
+</script>
 {% endblock %}

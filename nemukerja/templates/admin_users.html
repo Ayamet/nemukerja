@@ -44,7 +44,7 @@
 
         <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h2>Manage Users</h2>
+                <h2><span data-i18n="admin_users_manage_users_en">Manage Users</span></h2>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
                         <span class="btn btn-sm btn-outline-secondary">
@@ -61,12 +61,12 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Phone</th>
-                                    <th>Registered</th>
-                                    <th>Status</th>
+                                    <th><span data-i18n="admin_users_name_en">Name</span></th>
+                                    <th><span data-i18n="admin_users_email_en">Email</span></th>
+                                    <th><span data-i18n="admin_users_role_en">Role</span></th>
+                                    <th><span data-i18n="admin_users_phone_en">Phone</span></th>
+                                    <th><span data-i18n="admin_users_registered_en">Registered</span></th>
+                                    <th><span data-i18n="admin_users_status_en">Status</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -76,7 +76,7 @@
                                     <td>
                                         <strong>{{ user.name }}</strong>
                                         {% if user.role == 'admin' %}
-                                            <span class="badge bg-danger ms-1">Admin</span>
+                                            <span class="badge bg-danger ms-1"><span data-i18n="admin_users_admin_en">Admin</span></span>
                                         {% endif %}
                                     </td>
                                     <td>{{ user.email }}</td>
@@ -88,7 +88,7 @@
                                     <td>{{ user.phone or 'N/A' }}</td>
                                     <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
                                     <td>
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success"><span data-i18n="admin_users_active_en">Active</span></span>
                                     </td>
                                 </tr>
                                 {% endfor %}

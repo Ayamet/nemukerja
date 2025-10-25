@@ -8,7 +8,7 @@ class User(db.Model, UserMixin):
     id = db.Column('id_user', db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column('password', db.String(255), nullable=False)
-    role = db.Column(db.Enum('applicant', 'company'), nullable=False)
+    role = db.Column(db.Enum('applicant', 'company','admin'), nullable=False)
     created_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(), onupdate=func.now())
 
@@ -72,3 +72,28 @@ class Application(db.Model):
     notes = db.Column(db.Text)
     applied_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+
+    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.Integer, db.ForeignKey('users.id_user'), nullable=False) 
+    title = db.Column(db.String(255), nullable=False)
+    message = db.Column(db.String(255), nullable=False)
+    type = db.Column(db.Enum('job_posted', 'application_received', 'application_status'), nullable=False)
+    related_id = db.Column(db.Integer)  # job_id or application_id
+    is_read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+
+    user = db.relationship('User', backref=db.backref('notifications', lazy=True))
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'message': self.message,
+            'type': self.type,
+            'is_read': self.is_read,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'related_id': self.related_id
+        }

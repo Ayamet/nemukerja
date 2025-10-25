@@ -9,7 +9,10 @@
         <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
     </div>
     
-    <h2>Account Reactivation</h2>
+    <h2>
+        <span data-i18n="reactive_account_reactivation_en">Account Reactivation</span>
+        <span data-i18n="reactive_account_reactivation_id" class="d-none">Aktivasi Ulang Akun</span>
+    </h2>
     
     <form method="POST" action="{{ url_for('reactivate') }}">
         {{ form.hidden_tag() }}
@@ -24,9 +27,45 @@
         </div>
         
         <div class="mt-3 text-center">
-            <p>Back to <a href="{{ url_for('login') }}">Sign In</a></p>
+            <p>
+                <span data-i18n="reactive_back_to_en">Back to</span>
+                <span data-i18n="reactive_back_to_id" class="d-none">Kembali ke</span>
+                <a href="{{ url_for('login') }}">
+                    <span data-i18n="reactive_sign_in_en">Sign In</span>
+                    <span data-i18n="reactive_sign_in_id" class="d-none">Masuk</span>
+                </a>
+            </p>
         </div>
     </form>
     </div>
 </div>
+
+<style>
+.wrap { 
+    max-width: 500px; 
+    margin: 0 auto; 
+    padding: 30px; 
+    background: #ffffff !important; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    color: #343a40 !important; 
+}
+
+.wrap h2, 
+.wrap .form-label { 
+    color: #343a40 !important; 
+}
+
+.wrap .form-control { 
+    background-color: #ffffff !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+
+.wrap .btn-primary { 
+    background: #007bff !important; 
+    border: none !important; 
+    color: #ffffff !important; 
+}
+</style>
 {% endblock %}

@@ -1,199 +1,784 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}NemuKerja{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="NemuKerja Logo" width="50" height="50" class="d-inline-block align-top">
-                <span class="fw-bold text-primary ms-2 d-none d-sm-inline">NemuKerja</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>{% block title %}{% endblock %}</title>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">Job Listing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('about') }}">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav">
-                    {% if current_user.is_authenticated %}
-                        {% if current_user.role == 'admin' %}
-                            <li class="nav-item me-2">
-                                <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <!-- Optional small inline style to match language dropdown look (you can move to style.css) -->
+        <style>
+            /* Language dropdown floating style (soft rounded card like screenshot) */
+        .persistent-login-alert { 
+            font-weight: 700; 
+            color: #ff0000 !important; 
+            background: #fff0f0 !important; 
+            border-color: #ff4d4d !important;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+            .lang-dropdown-btn {
+                background: transparent;
+                border: none;
+                color: #333;
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem;
+                padding: .35rem .5rem;
+                border-radius: 10px;
+            }
+            .lang-dropdown-btn:hover { color: #0d6efd; background: rgba(13,110,253,0.04); }
+            .lang-menu {
+                min-width: 140px;
+                border-radius: 12px;
+            }
+
+            /* Flash pop-in (rendered only when messages exist) */
+            #flash-messages-container {
+                position: fixed;
+                top: 80px;  /* adjust if navbar height differs */
+                left: 50%;
+                transform: translateX(-50%) translateY(-10px);
+                z-index: 2000;
+                width: auto;
+                max-width: 520px;
+                padding: 0 12px;
+                pointer-events: none;
+                transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 180ms ease;
+                opacity: 0;
+            }
+            #flash-messages-container.show {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+            .flash-message {
+                pointer-events: all;
+                border-radius: 10px;
+                padding: 12px 18px;
+                margin-bottom: 10px;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+                font-weight: 600;
+                text-align: center;
+            }
+            .persistent-login-alert { font-weight: 700; color:#ff0000 !important; background:#fff0f0 !important; border-color:#ff4d4d !important; }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}" style="gap:0.5rem;">
+                    <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="NemuKerja Logo" width="50" height="50" class="d-inline-block align-top">
+                    <span class="fw-bold text-primary ms-1 d-none d-sm-inline align-middle brand-text d-none" data-i18n="site_name_id">NemuKerja</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}">
+                                <span data-i18n="nav_home_en">Home</span>
+                                <span data-i18n="nav_home_id" class="d-none">Beranda</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-danger btn-sm" href="{{ url_for('logout') }}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ url_for('login') }}">Login</a>
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                <span data-i18n="nav_jobs_en">Job Listing</span>
+                                <span data-i18n="nav_jobs_id" class="d-none">Lowongan</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Register</a>
+                            <a class="nav-link" href="{{ url_for('about') }}">
+                                <span data-i18n="nav_about_en">About Us</span>
+                                <span data-i18n="nav_about_id" class="d-none">Tentang Kami</span>
+                            </a>
                         </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">NemuKerja Menu</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index') }}"><i class="fas fa-home me-2"></i>Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('dashboard') }}"><i class="fas fa-briefcase me-2"></i>Job Listing</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('about') }}"><i class="fas fa-info-circle me-2"></i>About Us</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('contact') }}"><i class="fas fa-envelope me-2"></i>Contact</a>
-                </li>
-                <li class="nav-item"><hr class="dropdown-divider"></li>
-                {% if current_user.is_authenticated %}
-                    {% if current_user.role == 'admin' %}
                         <li class="nav-item">
-                            <a class="nav-link text-primary" href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cog me-2"></i>Admin Dashboard</a>
+                            <a class="nav-link" href="{{ url_for('contact') }}">
+                                <span data-i18n="nav_contact_en">Contact</span>
+                                <span data-i18n="nav_contact_id" class="d-none">Kontak</span>
+                            </a>
                         </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link text-primary" href="{{ url_for('dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item mt-3">
-                        <a class="btn btn-danger w-100" href="{{ url_for('logout') }}">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item mt-3">
-                        <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-primary w-100" href="{{ url_for('register') }}">Register</a>
-                    </li>
-                {% endif %}
+                    </ul>
+
+                    <!-- Right side: language dropdown + auth buttons -->
+                    <ul class="navbar-nav align-items-center">
+                        <!-- Language dropdown -->
+                       <ul class="navbar-nav align-items-center">
+    <!-- Language dropdown -->
+    <li class="nav-item me-2">
+        <div class="dropdown">
+            <button id="langDropdown" class="lang-dropdown-btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-language" aria-hidden="true"></i>
+                <span id="current-lang">English</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end lang-menu" aria-labelledby="langDropdown">
+                <li><a class="dropdown-item lang-option" href="#" data-lang="en">English</a></li>
+                <li><a class="dropdown-item lang-option" href="#" data-lang="id">Bahasa Indonesia</a></li>
             </ul>
         </div>
-    </div>
+    </li>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div id="flash-messages-container">
-            {% for category, message in messages %}
-                <div class="flash-message alert alert-{{ 'danger' if category == 'error' else category }} fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Notification Bell -->
+    {% if current_user.is_authenticated %}
+    <li class="nav-item me-2">
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge" style="display: none;">
+                    0
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span>
+                        <span data-i18n="notifications_en">Notifications</span>
+                        <span data-i18n="notifications_id" class="d-none">Notifikasi</span>
+                    </span>
+                    <button class="btn btn-sm btn-outline-secondary" id="markAllReadBtn">
+                        <span data-i18n="mark_all_read_en">Mark all read</span>
+                        <span data-i18n="mark_all_read_id" class="d-none">Tandai semua dibaca</span>
+                    </button>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <div id="notificationList">
+                    <li class="text-center py-3 text-muted">
+                        <span data-i18n="no_notifications_en">No notifications</span>
+                        <span data-i18n="no_notifications_id" class="d-none">Tidak ada notifikasi</span>
+                    </li>
                 </div>
-            {% endfor %}
+            </ul>
+        </div>
+    </li>
+    {% endif %}
+                        <!-- Auth buttons -->
+                        {% if current_user.is_authenticated %}
+                            {% if current_user.role == 'admin' %}
+                                <li class="nav-item me-2">
+                                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('admin_dashboard') }}">
+                                        <span data-i18n="btn_admin_en">Admin Dashboard</span>
+                                        <span data-i18n="btn_admin_id" class="d-none">Dashboard Admin</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary btn-sm" href="{{ url_for('dashboard') }}">
+                                    <span data-i18n="btn_dashboard_en">Dashboard</span>
+                                    <span data-i18n="btn_dashboard_id" class="d-none">Dashboard</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-danger btn-sm" href="{{ url_for('logout') }}">
+                                    <span data-i18n="btn_logout_en">Logout</span>
+                                    <span data-i18n="btn_logout_id" class="d-none">Keluar</span>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary btn-sm" href="{{ url_for('login') }}">
+                                    <span data-i18n="btn_login_en">Login</span>
+                                    <span data-i18n="btn_login_id" class="d-none">Masuk</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">
+                                    <span data-i18n="btn_register_en">Register</span>
+                                    <span data-i18n="btn_register_id" class="d-none">Daftar</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-        {% endif %}
+        </nav>
+
+        <!-- mobile offcanvas menu -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                    <span data-i18n="offcanvas_menu_title_en">NemuKerja Menu</span>
+                    <span data-i18n="offcanvas_menu_title_id" class="d-none">Menu NemuKerja</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-2"></i>
+                            <span data-i18n="nav_home_en">Home</span>
+                            <span data-i18n="nav_home_id" class="d-none">Beranda</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-briefcase me-2"></i>
+                            <span data-i18n="nav_jobs_en">Job Listing</span>
+                            <span data-i18n="nav_jobs_id" class="d-none">Lowongan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span data-i18n="nav_about_en">About</span>
+                            <span data-i18n="nav_about_id" class="d-none">Tentang</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}">
+                            <i class="fas fa-envelope me-2"></i>
+                            <span data-i18n="nav_contact_en">Contact</span>
+                            <span data-i18n="nav_contact_id" class="d-none">Kontak</span>
+                        </a>
+                    </li>
+                    <li class="nav-item"><hr class="dropdown-divider"></li>
+
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link text-primary" href="{{ url_for('admin_dashboard') }}">
+                                    <i class="fas fa-cog me-2"></i>
+                                    <span data-i18n="btn_admin_en">Admin Dashboard</span>
+                                    <span data-i18n="btn_admin_id" class="d-none">Dashboard Admin</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="{{ url_for('dashboard') }}">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                <span data-i18n="btn_dashboard_en">Dashboard</span>
+                                <span data-i18n="btn_dashboard_id" class="d-none">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <a class="btn btn-danger w-100" href="{{ url_for('logout') }}">
+                                <span data-i18n="btn_logout_en">Logout</span>
+                                <span data-i18n="btn_logout_id" class="d-none">Keluar</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item mt-3">
+                            <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('login') }}">
+                                <span data-i18n="btn_login_en">Login</span>
+                                <span data-i18n="btn_login_id" class="d-none">Masuk</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary w-100" href="{{ url_for('register') }}">
+                                <span data-i18n="btn_register_en">Register</span>
+                                <span data-i18n="btn_register_id" class="d-none">Daftar</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Flash messages: render only when there are messages so it "pops" -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="flash-messages-container" aria-live="polite" aria-atomic="true">
+                    {% for category, message in messages %}
+                        {# Special handling for "please log in to access this page" is done client-side #}
+                        <div class="flash-message alert alert-{{ 'danger' if category == 'error' else category }} fade show" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endwith %}
 
-    <main class="main-content">
-        {% block content %}{% endblock %}
-    </main>
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
 
-
-    <div class="modal fade" id="jobDetailModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="jobDetailTitle">Job Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="jobDetailBody"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <span id="applyButtonContainer"></span>
+        <!-- Job detail modal -->
+        <div class="modal fade" id="jobDetailModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="jobDetailTitle">
+                            <span data-i18n="index_job_details_en">Job Details</span>
+                            <span data-i18n="index_job_details_id" class="d-none">Detail Pekerjaan</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="jobDetailBody"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <span data-i18n="btn_close_en">Close</span>
+                            <span data-i18n="btn_close_id" class="d-none">Tutup</span>
+                        </button>
+                        <span id="applyButtonContainer"></span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script>
-        // Auto-hiding flash messages with smooth fade-out (3 seconds delay)
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+        <!-- Inline language + flash behavior (global) -->
+        <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const flashMessages = document.querySelectorAll('#flash-messages-container .flash-message');
-            flashMessages.forEach(message => {
-                setTimeout(() => {
-                    message.style.opacity = '0';
-                    setTimeout(() => {
-                        message.remove();
-                    }, 500); // Tunggu hingga transisi opacity selesai
-                }, 3000);
+            const LANG_KEY = 'nk_lang';
+            const savedLang = localStorage.getItem(LANG_KEY) || 'en';
+            
+            // Function to toggle language visibility for all bilingual content
+            function toggleLang(lang) {
+                // Update all elements with data-i18n attributes
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const id = el.getAttribute('data-i18n');
+                    
+                    // Handle elements with language suffixes (_en, _id)
+                    if (id.endsWith('_en') || id.endsWith('_id')) {
+                        if (lang === 'en') {
+                            if (id.endsWith('_en')) {
+                                el.classList.remove('d-none');
+                            } else if (id.endsWith('_id')) {
+                                el.classList.add('d-none');
+                            }
+                        } else if (lang === 'id') {
+                            if (id.endsWith('_id')) {
+                                el.classList.remove('d-none');
+                            } else if (id.endsWith('_en')) {
+                                el.classList.add('d-none');
+                            }
+                        }
+                    }
+                });
+                
+                // Update the language switcher label
+                const currentLabel = document.getElementById('current-lang');
+                if (currentLabel) {
+                    currentLabel.textContent = (lang === 'id') ? 'Bahasa Indonesia' : 'English';
+                }
+                
+                // Update <html lang=""> attribute
+                document.documentElement.lang = lang;
+                
+                // Update form placeholders
+                updateFormPlaceholders(lang);
+                
+                // Mark active option in dropdown
+                document.querySelectorAll('.lang-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                const activeOption = document.querySelector(`.lang-option[data-lang="${lang}"]`);
+                if (activeOption) {
+                    activeOption.classList.add('active');
+                }
+            }
+            
+            // Function to update form placeholders
+            function updateFormPlaceholders(lang) {
+                const placeholders = {
+                    'en': {
+                        'name': 'Enter your full name',
+                        'email': 'Enter your email address',
+                        'phone': 'Enter your phone number',
+                        'password': 'Enter your password',
+                        'confirm_password': 'Confirm your password',
+                        'company_name': 'Enter company name',
+                        'description': 'Enter company description',
+                        'website': 'Enter company website (optional)',
+                        'cover_letter': 'Write your cover letter here...'
+                    },
+                    'id': {
+                        'name': 'Masukkan nama lengkap',
+                        'email': 'Masukkan alamat email',
+                        'phone': 'Masukkan nomor telepon',
+                        'password': 'Masukkan kata sandi',
+                        'confirm_password': 'Konfirmasi kata sandi',
+                        'company_name': 'Masukkan nama perusahaan',
+                        'description': 'Masukkan deskripsi perusahaan',
+                        'website': 'Masukkan situs web perusahaan (opsional)',
+                        'cover_letter': 'Tulis surat lamaran Anda di sini...'
+                    }
+                };
+                
+                Object.keys(placeholders[lang]).forEach(field => {
+                    const element = document.getElementById(field);
+                    if (element) {
+                        element.placeholder = placeholders[lang][field];
+                    }
+                });
+            }
+
+            // Initialize with saved language
+            toggleLang(savedLang);
+            
+            // Add click event listeners to language options
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    localStorage.setItem(LANG_KEY, lang);
+                    toggleLang(lang);
+                });
             });
+
+            /* ---------- Flash pop-in and special persistent alert handling ---------- */
+            const flashContainer = document.getElementById('flash-messages-container');
+            if (flashContainer) {
+                // animate in
+                requestAnimationFrame(() => flashContainer.classList.add('show'));
+
+                // handle special persistent login message
+                const msgs = flashContainer.querySelectorAll('.flash-message');
+                // In the flash message section, update this part:
+                msgs.forEach(msg => {
+                    const txt = (msg.textContent || '').trim().toLowerCase();
+                    if (txt.includes('please log in to access this page')) {
+                        msg.classList.add('persistent-login-alert');
+                        // Remove close button for persistent login alerts
+                        const closeBtn = msg.querySelector('.btn-close');
+                        if (closeBtn) {
+                            closeBtn.remove();
+                        }
+                    }
+});
+
+                // auto-hide non-persistent flashes after timeout
+                const AUTO_HIDE_MS = 3000;
+                setTimeout(() => {
+                    flashContainer.style.transition = 'opacity 350ms ease, transform 300ms cubic-bezier(.2,.9,.2,1)';
+                    flashContainer.style.opacity = '0';
+                    flashContainer.style.transform = 'translateX(-50%) translateY(-10px)';
+                    setTimeout(() => {
+                        if (flashContainer && flashContainer.parentNode) flashContainer.remove();
+                    }, 400);
+                }, AUTO_HIDE_MS);
+            }
+
+            window.clearPersistentLoginAlert = function() {
+                const container = document.getElementById('flash-messages-container');
+                if (!container) return;
+                const persistent = container.querySelector('.persistent-login-alert');
+                if (persistent) {
+                    persistent.remove();
+                }
+                if (container.children.length === 0 && container.parentNode) {
+                    container.parentNode.removeChild(container);
+                }
+            };
         });
 
         function showJobDetail(jobId) {
-             // Use fetch to get job details and display them in a modal
-            fetch(`/job/${jobId}`)
-                .then(response => response.json())
-                .then(job => {
-                    document.getElementById('jobDetailTitle').textContent = job.title;
-                    document.getElementById('jobDetailBody').innerHTML = `
-                        <h6>Company: ${job.company}</h6>
-                        <p><strong>Location:</strong> ${job.location}</p>
-                        <p><strong>Available Slots:</strong> ${job.slots}</p>
-                        <p><strong>Current Applicants:</strong> ${job.applied_count}</p>
-                        <hr>
-                        <h6>Qualifications:</h6>
-                        <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
-                        <hr>
-                        <h6>Job Description:</h6>
-                        <p>${job.description.replace(/\n/g, '<br>')}</p>
-                    `;
+    fetch(`/job/${jobId}`)
+        .then(response => response.json())
+        .then(job => {
+            document.getElementById('jobDetailTitle').textContent = job.title;
+            
+            // Get current language
+            const currentLang = localStorage.getItem('nk_lang') || 'en';
+            
+            // Create modal content with bilingual support
+            document.getElementById('jobDetailBody').innerHTML = `
+                <h6>
+                    <span data-i18n="modal_company_en">Company:</span>
+                    <span data-i18n="modal_company_id" class="d-none">Perusahaan:</span>
+                    ${job.company}
+                </h6>
+                <p>
+                    <strong>
+                        <span data-i18n="modal_location_en">Location:</span>
+                        <span data-i18n="modal_location_id" class="d-none">Lokasi:</span>
+                    </strong> ${job.location}
+                </p>
+                <p>
+                    <strong>
+                        <span data-i18n="modal_available_slots_en">Available Slots:</span>
+                        <span data-i18n="modal_available_slots_id" class="d-none">Kuota Tersedia:</span>
+                    </strong> ${job.slots}
+                </p>
+                <p>
+                    <strong>
+                        <span data-i18n="modal_current_applicants_en">Current Applicants:</span>
+                        <span data-i18n="modal_current_applicants_id" class="d-none">Pelamar Saat Ini:</span>
+                    </strong> ${job.applied_count}
+                </p>
+                <hr>
+                <h6>
+                    <span data-i18n="modal_qualifications_en">Qualifications:</span>
+                    <span data-i18n="modal_qualifications_id" class="d-none">Kualifikasi:</span>
+                </h6>
+                <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
+                <hr>
+                <h6>
+                    <span data-i18n="modal_job_description_en">Job Description:</span>
+                    <span data-i18n="modal_job_description_id" class="d-none">Deskripsi Pekerjaan:</span>
+                </h6>
+                <p>${job.description.replace(/\n/g, '<br>')}</p>
+            `;
 
-                    let applyButton = '';
-                    const isAuthenticated = '{{ current_user.is_authenticated|tojson|safe }}' === 'true';
-                    const userRole = isAuthenticated ? '{{ current_user.role }}' : null;
+            // Apply current language to modal content immediately
+            applyLangToModal(currentLang);
 
-                    if (isAuthenticated && userRole === 'applicant') {
-                        applyButton = `<a href="/apply/${job.id}" class="btn btn-primary">Apply Now</a>`;
-                    } else if (!isAuthenticated) {
-                        applyButton = `<a href="{{ url_for('login') }}" class="btn btn-primary">Login to Apply</a>`;
-                    }
-                    
-                    document.getElementById('applyButtonContainer').innerHTML = applyButton;
+            let applyButton = '';
+            const isAuthenticated = '{{ current_user.is_authenticated|tojson|safe }}' === 'true';
+            const userRole = isAuthenticated ? '{{ current_user.role }}' : null;
 
-                    const modal = new bootstrap.Modal(document.getElementById('jobDetailModal'));
-                    modal.show();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error loading job details');
-                });
+            if (isAuthenticated && userRole === 'applicant') {
+                applyButton = `<a href="/apply/${job.id}" class="btn btn-primary">
+                    <span data-i18n="modal_apply_now_en">Apply Now</span>
+                    <span data-i18n="modal_apply_now_id" class="d-none">Lamar Sekarang</span>
+                </a>`;
+            } else if (!isAuthenticated) {
+                applyButton = `<a href="{{ url_for('login') }}" class="btn btn-primary">
+                    <span data-i18n="modal_login_to_apply_en">Login to Apply</span>
+                    <span data-i18n="modal_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
+                </a>`;
+            }
+            document.getElementById('applyButtonContainer').innerHTML = applyButton;
+            
+            // Apply language to apply button as well
+            applyLangToModal(currentLang);
+            
+            const modal = new bootstrap.Modal(document.getElementById('jobDetailModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading job details');
+        });
+}
+
+// Function to apply language to modal content
+function applyLangToModal(lang) {
+    const modalBody = document.getElementById('jobDetailBody');
+    if (!modalBody) return;
+    
+    modalBody.querySelectorAll('[data-i18n]').forEach(el => {
+        const id = el.getAttribute('data-i18n');
+        
+        if (id.endsWith('_en') || id.endsWith('_id')) {
+            if (lang === 'en') {
+                if (id.endsWith('_en')) {
+                    el.classList.remove('d-none');
+                } else if (id.endsWith('_id')) {
+                    el.classList.add('d-none');
+                }
+            } else if (lang === 'id') {
+                if (id.endsWith('_id')) {
+                    el.classList.remove('d-none');
+                } else if (id.endsWith('_en')) {
+                    el.classList.add('d-none');
+                }
+            }
         }
-    </script>
-</body>
-</html>
+    });
+    
+    // Also update apply button
+    const applyContainer = document.getElementById('applyButtonContainer');
+    if (applyContainer) {
+        applyContainer.querySelectorAll('[data-i18n]').forEach(el => {
+            const id = el.getAttribute('data-i18n');
+            
+            if (id.endsWith('_en') || id.endsWith('_id')) {
+                if (lang === 'en') {
+                    if (id.endsWith('_en')) {
+                        el.classList.remove('d-none');
+                    } else if (id.endsWith('_id')) {
+                        el.classList.add('d-none');
+                    }
+                } else if (lang === 'id') {
+                    if (id.endsWith('_id')) {
+                        el.classList.remove('d-none');
+                    } else if (id.endsWith('_en')) {
+                        el.classList.add('d-none');
+                    }
+                }
+            }
+        });
+    }
+}
+        </script>
+        <script>
+// Notification System
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationBell = document.getElementById('notificationDropdown');
+    if (!notificationBell) return;
+
+    let notificationCheckInterval;
+
+    function loadNotifications() {
+        fetch('/notifications')
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(notifications => {
+                updateNotificationUI(notifications);
+            })
+            .catch(error => console.error('Error loading notifications:', error));
+    }
+
+    function updateNotificationUI(notifications) {
+        const notificationList = document.getElementById('notificationList');
+        const notificationBadge = document.getElementById('notificationBadge');
+        
+        if (!notifications || notifications.length === 0) {
+            notificationList.innerHTML = `
+                <li class="text-center py-3 text-muted">
+                    <span data-i18n="no_notifications_en">No notifications</span>
+                    <span data-i18n="no_notifications_id" class="d-none">Tidak ada notifikasi</span>
+                </li>
+            `;
+            notificationBadge.style.display = 'none';
+            return;
+        }
+
+        const unreadCount = notifications.filter(n => !n.is_read).length;
+        
+        // Update badge
+        if (unreadCount > 0) {
+            notificationBadge.textContent = unreadCount;
+            notificationBadge.style.display = 'block';
+        } else {
+            notificationBadge.style.display = 'none';
+        }
+
+        // Build notification list
+        let html = '';
+        notifications.forEach(notification => {
+            const isReadClass = notification.is_read ? '' : 'bg-light';
+            const timeAgo = getTimeAgo(notification.created_at);
+            
+            html += `
+                <li>
+                    <div class="dropdown-item ${isReadClass} notification-item p-3" 
+                         data-notification-id="${notification.id}" 
+                         style="cursor: pointer; border-bottom: 1px solid #f0f0f0;">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <h6 class="mb-1" style="font-size: 0.9rem;">${notification.title}</h6>
+                            <small class="text-muted">${timeAgo}</small>
+                        </div>
+                        <p class="mb-1 small text-muted">${notification.message}</p>
+                        ${!notification.is_read ? '<span class="badge bg-primary btn-sm">New</span>' : ''}
+                    </div>
+                </li>
+            `;
+        });
+        notificationList.innerHTML = html;
+
+        // Add click handlers for notifications
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-notification-id');
+                markNotificationRead(notificationId);
+                
+                // You can add navigation logic here based on notification type
+                const notification = notifications.find(n => n.id == notificationId);
+                if (notification) {
+                    handleNotificationClick(notification);
+                }
+            });
+        });
+    }
+
+    function getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
+        return date.toLocaleDateString();
+    }
+
+    function markNotificationRead(notificationId) {
+        fetch(`/notifications/read/${notificationId}`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadNotifications(); // Reload to update UI
+            }
+        })
+        .catch(error => console.error('Error marking notification read:', error));
+    }
+    const currentUserRole = '{{ current_user.role if current_user.is_authenticated else "" }}';
+    
+    
+    function handleNotificationClick(notification) {
+    // Navigate based on notification type
+    switch(notification.type) {
+        case 'job_posted':
+            window.location.href = '/dashboard';
+            break;
+        case 'application_received':
+            // For companies - go to applications page
+            if (currentUserRole === 'company') {
+                window.location.href = '/company/applications';
+            } else {
+                window.location.href = '/dashboard';
+            }
+            break;
+        case 'application_status':
+            // For applicants - go to my applications page
+            if (currentUserRole === 'applicant') {
+                window.location.href = '/my-applications';
+            } else {
+                window.location.href = '/dashboard';
+            }
+            break;
+        default:
+            window.location.href = '/dashboard';
+    }
+}
+    // Mark all as read
+    document.getElementById('markAllReadBtn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fetch('/notifications/read-all', { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadNotifications();
+            }
+        })
+        .catch(error => console.error('Error marking all notifications read:', error));
+    });
+
+    // Load notifications initially
+    loadNotifications();
+    
+    // Set up polling for new notifications (every 30 seconds)
+    notificationCheckInterval = setInterval(loadNotifications, 30000);
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (notificationCheckInterval) {
+            clearInterval(notificationCheckInterval);
+        }
+    });
+});
+</script>
+    
+    </body>
+    </html>
