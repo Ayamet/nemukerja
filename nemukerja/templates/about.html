@@ -3,15 +3,56 @@
 {% block title %}About Us - NemuKerja{% endblock %}
 
 {% block content %}
-<div class="container about-us-container py-4 px-3">
-    <img src="{{ url_for('static', filename='images/banner.png') }}" 
-         style="height: 200px;max-width: 1500px;" 
-         alt="About NemuKerja" 
-         class="about-banner mb-4">
-    <h2 class="mb-3" data-i18n="about_about_nemukerja_en">About Us</h2>
-    <p class="about-desc mx-auto" data-i18n="about_description_1">
-        NemuKerja is a modern job platform connecting companies and job seekers with an easy, responsive, and fast experience.
-        Our mission is to simplify recruitment through technology and accessibility.
-    </p>
+
+<div class="container-sm mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-4">
+                    <img src="{{ url_for('static', filename='images/banner.png') }}" 
+                         class="img-fluid mb-4" 
+                         style="max-height: 150px; display: block; margin: 0 auto;"
+                         alt="NemuKerja">
+                    
+                    <h2 class="text-center mb-4">
+                        <span data-i18n="about_about_nemukerja_en">About Us</span>
+                        <span data-i18n="about_about_nemukerja_id" class="d-none">Tentang Kami</span>
+                    </h2>
+
+                    <div class="text-content">
+                        <p class="mb-3">
+                            <span data-i18n="about_description_1_en">NemuKerja is a modern job platform connecting companies and job seekers with an easy, responsive, and fast experience. Our mission is to simplify recruitment through technology and accessibility.</span>
+                            <span data-i18n="about_description_1_id" class="d-none">NemuKerja adalah platform pekerjaan modern yang menghubungkan perusahaan dan pencari kerja dengan pengalaman yang mudah, responsif, dan cepat. Misi kami adalah menyederhanakan rekrutmen melalui teknologi dan aksesibilitas.</span>
+                        </p>
+                                           
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+.text-content {
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.text-content p {
+    margin-bottom: 1rem;
+}
+
+/* Optional: Add some responsive spacing */
+@media (max-width: 768px) {
+    .container-sm {
+        margin-top: 2rem !important;
+        padding-top: 1rem !important;
+    }
+    
+    .text-content {
+        text-align: left;
+    }
+}
+</style>
+
 {% endblock %}

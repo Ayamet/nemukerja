@@ -3,103 +3,132 @@
 {% block title %}Job Listings - NemuKerja{% endblock %}
 
 {% block content %}
-<style>
-/* Set colors to dark text on light background to override base.html's dark-mode reliance */
-.card-title, .card-text, .modal-body, .card, .card-subtitle { 
-    color: #343a40 !important; 
-}
-.card-footer {
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
-}
-.card-text small.text-muted {
-    color: #6c757d !important;
-}
-</style>
-<div class="container mt-4">
-    <h2>
-        <span data-i18n="index_available_job_listings_en">Available Job Listings</span>
-        <span data-i18n="index_available_job_listings_id" class="d-none">Daftar Pekerjaan Tersedia</span>
-    </h2>
-
-    <div class="alert alert-info">
-        <span data-i18n="index_please_en">Please</span> 
-        <span data-i18n="index_please_id" class="d-none">Silakan</span>
-        <a href="{{ url_for('login') }}">
-            <span data-i18n="index_login_en">login</span>
-            <span data-i18n="index_login_id" class="d-none">masuk</span>
-        </a> 
-        <span data-i18n="index_or_en">or</span>
-        <span data-i18n="index_or_id" class="d-none">atau</span>
-        <a href="{{ url_for('register') }}">
-            <span data-i18n="index_register_en">register</span>
-            <span data-i18n="index_register_id" class="d-none">daftar</span>
-        </a> 
-        <span data-i18n="index_to_apply_for_jobs_en">to apply for jobs.</span>
-        <span data-i18n="index_to_apply_for_jobs_id" class="d-none">untuk melamar pekerjaan.</span>
+<div class="container mx-auto px-4 py-8 mt-16">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-gray-800 mb-6">
+            <span data-i18n="index_available_job_listings_en">Available Job Listings</span>
+            <span data-i18n="index_available_job_listings_id" class="hidden">Daftar Pekerjaan Tersedia</span>
+        </h1>
+        <p class="text-gray-600 text-xl max-w-3xl mx-auto">
+            <span data-i18n="index_discover_opportunities_en">Discover your next career opportunity from top companies</span>
+            <span data-i18n="index_discover_opportunities_id" class="hidden">Temukan peluang karir berikutnya dari perusahaan terkemuka</span>
+        </p>
     </div>
 
-    <div class="row">
-        {% for job in jobs %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ job.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
-                    <p class="card-text">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
-                            <i class="fas fa-users"></i> 
-                            {{ job.slots }} 
-                            <span data-i18n="index_slots_available_en">slots available</span>
-                            <span data-i18n="index_slots_available_id" class="d-none">kuota tersedia</span>
-                        </small>
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline-primary btn-sm" 
-                            onclick="showJobDetail('{{ job.id }}')">
-                        <span data-i18n="index_view_details_en">View Details</span>
-                        <span data-i18n="index_view_details_id" class="d-none">Lihat Detail</span>
-                    </button>
-                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
-                        <span data-i18n="index_login_to_apply_en">Login to Apply</span>
-                        <span data-i18n="index_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
-                    </a>
+    {% if jobs %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {% for job in jobs %}
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden hover:-translate-y-2 group">
+                <div class="p-6">
+                    <div class="mb-4">
+                        <h5 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">{{ job.title }}</h5>
+                        <h6 class="text-gray-600 font-medium flex items-center">
+                            <i class="fas fa-building text-gray-400 mr-2 text-sm"></i>
+                            {{ job.company.company_name }}
+                        </h6>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed">{{ job.description[:120] }}{% if job.description|length > 120 %}...{% endif %}</p>
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-map-marker-alt text-blue-500 mr-3 w-4 text-center"></i>
+                            <span class="text-sm">{{ job.location }}</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-users text-green-500 mr-3 w-4 text-center"></i>
+                            <span class="text-sm">
+                                {{ job.slots }} 
+                                <span data-i18n="index_slots_available_en">slots available</span>
+                                <span data-i18n="index_slots_available_id" class="hidden">kuota tersedia</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3">
+                        <button type="button" 
+                                class="flex-1 bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center group/btn"
+                                onclick="showJobDetail('{{ job.id }}')">
+                            <i class="fas fa-eye mr-2 group-hover/btn:scale-110 transition-transform duration-300"></i>
+                            <span data-i18n="index_view_details_en">View Details</span>
+                            <span data-i18n="index_view_details_id" class="hidden">Lihat Detail</span>
+                        </button>
+                        <a href="{{ url_for('login') }}" 
+                           class="flex-1 bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center group/btn shadow-lg hover:shadow-xl">
+                            <i class="fas fa-sign-in-alt mr-2 group-hover/btn:scale-110 transition-transform duration-300"></i>
+                            <span data-i18n="index_login_to_apply_en">Login to Apply</span>
+                            <span data-i18n="index_login_to_apply_id" class="hidden">Masuk untuk Lamar</span>
+                        </a>
+                    </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% else %}
-        <div class="col-12">
-            <div class="alert alert-info">
-                <span data-i18n="index_no_jobs_available_en">No jobs available at the moment.</span>
-                <span data-i18n="index_no_jobs_available_id" class="d-none">Tidak ada pekerjaan tersedia saat ini.</span>
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+            <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-briefcase text-gray-400 text-4xl"></i>
             </div>
+            <h4 class="text-3xl font-bold text-gray-700 mb-4">
+                <span data-i18n="index_no_jobs_available_en">No Jobs Available</span>
+                <span data-i18n="index_no_jobs_available_id" class="hidden">Tidak Ada Pekerjaan Tersedia</span>
+            </h4>
+            <p class="text-gray-500 mb-8 max-w-md mx-auto text-lg">
+                <span data-i18n="index_check_back_later_en">Please check back later for new job opportunities.</span>
+                <span data-i18n="index_check_back_later_id" class="hidden">Silakan periksa kembali nanti untuk peluang pekerjaan baru.</span>
+            </p>
         </div>
-        {% endfor %}
+    {% endif %}
+
+    <!-- Call to Action Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-white mb-12">
+        <h3 class="text-3xl font-bold mb-4">
+            <span data-i18n="index_ready_to_start_en">Ready to start your career journey?</span>
+            <span data-i18n="index_ready_to_start_id" class="hidden">Siap memulai perjalanan karir Anda?</span>
+        </h3>
+        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            <span data-i18n="index_join_our_community_en">Join our community of job seekers and find your perfect match today!</span>
+            <span data-i18n="index_join_our_community_id" class="hidden">Bergabunglah dengan komunitas pencari kerja kami dan temukan kesempatan terbaik hari ini!</span>
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center">
+                <i class="fas fa-user-plus mr-3"></i>
+                <span data-i18n="index_register_now_en">Register Now</span>
+                <span data-i18n="index_register_now_id" class="hidden">Daftar Sekarang</span>
+            </a>
+            <a href="{{ url_for('login') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center">
+                <i class="fas fa-sign-in-alt mr-3"></i>
+                <span data-i18n="index_login_now_en">Login Now</span>
+                <span data-i18n="index_login_now_id" class="hidden">Masuk Sekarang</span>
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="modal fade" id="jobDetailModal" tabindex="-1" aria-labelledby="jobDetailModalLabel" aria-hidden="true">
+<!-- Enhanced Job Detail Modal -->
+<div class="modal fade" id="jobDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailModalLabel">
+        <div class="modal-content border-0 shadow-2xl rounded-2xl">
+            <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 rounded-t-2xl p-6">
+                <h5 class="modal-title text-2xl font-bold flex items-center" id="jobDetailTitle">
+                    <i class="fas fa-briefcase me-4"></i>
                     <span data-i18n="index_job_details_en">Job Details</span>
-                    <span data-i18n="index_job_details_id" class="d-none">Detail Pekerjaan</span>
+                    <span data-i18n="index_job_details_id" class="hidden">Detail Pekerjaan</span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close custom-red-close hover:scale-110 transition-transform duration-300" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="jobDetailBody">
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <div class="modal-body p-8 bg-white/95" id="jobDetailBody">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer border-t border-gray-200/50 bg-gray-50/80 rounded-b-2xl p-6">
+                <button type="button" class="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-medium px-8 py-3 rounded-xl" data-bs-dismiss="modal">
                     <span data-i18n="index_close_en">Close</span>
                     <span data-i18n="index_close_id" class="d-none">Tutup</span>
                 </button>
                 <span id="applyButtonContainer">
-                    <a href="{{ url_for('login') }}" class="btn btn-primary">
+                    <a href="{{ url_for('login') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center">
+                        <i class="fas fa-sign-in-alt mr-3"></i>
                         <span data-i18n="index_login_to_apply_en">Login to Apply</span>
                         <span data-i18n="index_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
                     </a>
@@ -138,7 +167,7 @@ function showJobDetail(jobId) {
             return response.json();
         })
         .then(job => {
-            document.getElementById('jobDetailModalLabel').textContent = job.title;
+            document.getElementById('jobDetailTitle').textContent = job.title;
             
             // Store current job ID for re-translation
             document.getElementById('jobDetailModal').setAttribute('data-current-job', jobId);
@@ -156,8 +185,13 @@ function showJobDetail(jobId) {
         .catch(error => {
             console.error('Error loading job details:', error);
             document.getElementById('jobDetailBody').innerHTML = `
-                <div class="alert alert-danger">
-                    Error loading job details: ${error.message}
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+                    <h5 class="text-2xl font-bold text-gray-800 mb-3">
+                        <span data-i18n="index_error_loading_en">Error loading job details</span>
+                        <span data-i18n="index_error_loading_id" class="hidden">Error memuat detail pekerjaan</span>
+                    </h5>
+                    <p class="text-gray-600">${error.message}</p>
                 </div>
             `;
             const modalElement = document.getElementById('jobDetailModal');
@@ -168,41 +202,62 @@ function showJobDetail(jobId) {
 
 function createModalContent(job) {
     document.getElementById('jobDetailBody').innerHTML = `
-        <h6>
-            <span data-i18n="index_company_en">Company:</span>
-            <span data-i18n="index_company_id" class="d-none">Perusahaan:</span>
-            ${job.company}
-        </h6>
-        <p>
-            <strong>
-                <span data-i18n="index_location_en">Location:</span>
-                <span data-i18n="index_location_id" class="d-none">Lokasi:</span>
-            </strong> ${job.location}
-        </p>
-        <p>
-            <strong>
-                <span data-i18n="index_available_slots_en">Available Slots:</span>
-                <span data-i18n="index_available_slots_id" class="d-none">Kuota Tersedia:</span>
-            </strong> ${job.slots}
-        </p>
-        <p>
-            <strong>
-                <span data-i18n="index_current_applicants_en">Current Applicants:</span>
-                <span data-i18n="index_current_applicants_id" class="d-none">Pelamar Saat Ini:</span>
-            </strong> ${job.applied_count}
-        </p>
-        <hr>
-        <h6>
-            <span data-i18n="index_qualifications_en">Qualifications:</span>
-            <span data-i18n="index_qualifications_id" class="d-none">Kualifikasi:</span>
-        </h6>
-        <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
-        <hr>
-        <h6>
-            <span data-i18n="index_job_description_en">Job Description:</span>
-            <span data-i18n="index_job_description_id" class="d-none">Deskripsi Pekerjaan:</span>
-        </h6>
-        <p>${job.description.replace(/\n/g, '<br>')}</p>
+        <div class="space-y-6">
+            <div class="flex items-center text-gray-700 text-lg">
+                <i class="fas fa-building text-blue-500 mr-4 w-6"></i>
+                <span class="font-semibold mr-3">
+                    <span data-i18n="index_company_en">Company:</span>
+                    <span data-i18n="index_company_id" class="hidden">Perusahaan:</span>
+                </span>
+                <span>${job.company}</span>
+            </div>
+            <div class="flex items-center text-gray-700 text-lg">
+                <i class="fas fa-map-marker-alt text-green-500 mr-4 w-6"></i>
+                <span class="font-semibold mr-3">
+                    <span data-i18n="index_location_en">Location:</span>
+                    <span data-i18n="index_location_id" class="hidden">Lokasi:</span>
+                </span>
+                <span>${job.location}</span>
+            </div>
+            <div class="flex items-center text-gray-700 text-lg">
+                <i class="fas fa-users text-purple-500 mr-4 w-6"></i>
+                <span class="font-semibold mr-3">
+                    <span data-i18n="index_available_slots_en">Available Slots:</span>
+                    <span data-i18n="index_available_slots_id" class="hidden">Kuota Tersedia:</span>
+                </span>
+                <span>${job.slots}</span>
+            </div>
+            <div class="flex items-center text-gray-700 text-lg">
+                <i class="fas fa-user-check text-orange-500 mr-4 w-6"></i>
+                <span class="font-semibold mr-3">
+                    <span data-i18n="index_current_applicants_en">Current Applicants:</span>
+                    <span data-i18n="index_current_applicants_id" class="hidden">Pelamar Saat Ini:</span>
+                </span>
+                <span>${job.applied_count}</span>
+            </div>
+            
+            <hr class="my-6 border-gray-300">
+            
+            <div>
+                <h6 class="font-semibold text-xl text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-graduation-cap text-orange-500 mr-3"></i>
+                    <span data-i18n="index_qualifications_en">Qualifications</span>
+                    <span data-i18n="index_qualifications_id" class="hidden">Kualifikasi</span>
+                </h6>
+                <p class="text-gray-700 bg-gray-50 p-6 rounded-xl border border-gray-200 text-lg leading-relaxed">${job.qualifications.replace(/\n/g, '<br>')}</p>
+            </div>
+            
+            <hr class="my-6 border-gray-300">
+            
+            <div>
+                <h6 class="font-semibold text-xl text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-tasks text-indigo-500 mr-3"></i>
+                    <span data-i18n="index_job_description_en">Job Description</span>
+                    <span data-i18n="index_job_description_id" class="hidden">Deskripsi Pekerjaan</span>
+                </h6>
+                <p class="text-gray-700 bg-gray-50 p-6 rounded-xl border border-gray-200 text-lg leading-relaxed">${job.description.replace(/\n/g, '<br>')}</p>
+            </div>
+        </div>
     `;
 }
 
@@ -210,22 +265,21 @@ function translateModalContent(lang) {
     const modalBody = document.getElementById('jobDetailBody');
     if (!modalBody) return;
     
-    // Update all translation elements in modal
     modalBody.querySelectorAll('[data-i18n]').forEach(el => {
         const id = el.getAttribute('data-i18n');
         
         if (id.endsWith('_en') || id.endsWith('_id')) {
             if (lang === 'en') {
                 if (id.endsWith('_en')) {
-                    el.classList.remove('d-none');
+                    el.classList.remove('hidden');
                 } else if (id.endsWith('_id')) {
-                    el.classList.add('d-none');
+                    el.classList.add('hidden');
                 }
             } else if (lang === 'id') {
                 if (id.endsWith('_id')) {
-                    el.classList.remove('d-none');
+                    el.classList.remove('hidden');
                 } else if (id.endsWith('_en')) {
-                    el.classList.add('d-none');
+                    el.classList.add('hidden');
                 }
             }
         }
@@ -249,4 +303,35 @@ function updateBaseLangFunction() {
 // Initialize the override
 document.addEventListener('DOMContentLoaded', updateBaseLangFunction);
 </script>
+
+<style>
+/* Custom animations for Tailwind components */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:-translate-y-2:hover {
+    transform: translateY(-0.5rem);
+}
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+/* Ensure modal backdrop works with Tailwind */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Group hover effects */
+.group:hover .group-hover\:text-blue-600 {
+    color: #2563eb;
+}
+
+.custom-red-close {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff0000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") !important;
+}
+</style>
 {% endblock %}

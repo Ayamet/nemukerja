@@ -1,216 +1,211 @@
 {% extends "base.html" %}
 
-{% block title %}Job Seeker Dashboard - NemuKerja{% endblock %}
+{% block title %}User Dashboard - NemuKerja{% endblock %}
 
 {% block content %}
-<style>
-.card-title, .card-text, .modal-body, .card, .card-subtitle { 
-    color: #343a40 !important; 
-}
-.card-footer {
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
-}
-.card-text small.text-muted {
-    color: #6c757d !important;
-}
-.stats-card {
-    transition: transform 0.2s;
-    border: none;
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
-}
-.stats-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,.15);
-}
-</style>
-
-<div class="container mt-4">
-    <!-- Welcome Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2 class="mb-1">
-                        <span data-i18n="dashboard_user_welcome_en">Welcome,</span>
-                        <span data-i18n="dashboard_user_welcome_id" class="d-none">Selamat datang,</span>
-                        {{ current_user.applicant_profile.full_name if current_user.applicant_profile else current_user.name }}
-                    </h2>
-                    <p class="text-muted mb-0">
-                        <span data-i18n="dashboard_user_job_seeker_dashboard_en">Job Seeker Dashboard</span>
-                        <span data-i18n="dashboard_user_job_seeker_dashboard_id" class="d-none">Dasbor Pencari Kerja</span>
-                    </p>
-                </div>
-                <div class="text-end">
-                    <small class="text-muted">
-                        <span data-i18n="dashboard_user_member_since_en">Member since:</span>
-                        <span data-i18n="dashboard_user_member_since_id" class="d-none">Anggota sejak:</span>
-                        {{ current_user.created_at.strftime('%B %Y') }}
-                    </small>
-                </div>
-            </div>
+<div class="container mx-auto px-4 py-8 mt-16">
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+            <span data-i18n="dashboard_user_welcome_en">Welcome,</span>
+            <span data-i18n="dashboard_user_welcome_id" class="hidden">Selamat datang,</span>
+            {{ current_user.applicant_profile.full_name if current_user.applicant_profile else current_user.name }}
+        </h2>
+        <p class="text-gray-600 text-xl">
+            <span data-i18n="dashboard_user_job_seeker_dashboard_en">Job Seeker Dashboard</span>
+            <span data-i18n="dashboard_user_job_seeker_dashboard_id" class="hidden">Dasbor Pencari Kerja</span>
+        </p>
+        <div class="mt-4">
+            <small class="text-gray-500">
+                <span data-i18n="dashboard_user_member_since_en">Member since:</span>
+                <span data-i18n="dashboard_user_member_since_id" class="hidden">Anggota sejak:</span>
+                {{ current_user.created_at.strftime('%B %Y') }}
+            </small>
         </div>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4 mb-3">
-            <div class="card stats-card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-primary">{{ current_user.applicant_profile.applications|length if current_user.applicant_profile else 0 }}</h5>
-                    <p class="card-text">
-                        <span data-i18n="dashboard_user_total_applications_en">Total Applications</span>
-                        <span data-i18n="dashboard_user_total_applications_id" class="d-none">Total Lamaran</span>
-                    </p>
-                    <a href="{{ url_for('my_applications') }}" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-list me-1"></i>
-                        <span data-i18n="dashboard_user_view_my_applications_en">View My Applications</span>
-                        <span data-i18n="dashboard_user_view_my_applications_id" class="d-none">Lihat Lamaran Saya</span>
-                    </a>
-                </div>
+    <!-- Statistics Cards - 3 Column Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <!-- Total Applications Card -->
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-blue-200 hover:scale-105">
+            <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-paper-plane text-white text-3xl"></i>
             </div>
+            <h3 class="text-5xl font-bold text-gray-800 mb-3">
+                {{ current_user.applicant_profile.applications|length if current_user.applicant_profile else 0 }}
+            </h3>
+            <p class="text-gray-600 font-semibold text-lg mb-6">
+                <span data-i18n="dashboard_user_total_applications_en">Total Applications</span>
+                <span data-i18n="dashboard_user_total_applications_id" class="hidden">Total Lamaran</span>
+            </p>
+            <a href="{{ url_for('my_applications') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center">
+                <i class="fas fa-list mr-2"></i>
+                <span data-i18n="dashboard_user_view_my_applications_en">View My Applications</span>
+                <span data-i18n="dashboard_user_view_my_applications_id" class="hidden">Lihat Lamaran Saya</span>
+            </a>
         </div>
-        <div class="col-md-4 mb-3">
-            <div class="card stats-card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-success">
-                        {{ current_user.applicant_profile.applications|selectattr("status", "equalto", "Diterima")|list|length if current_user.applicant_profile else 0 }}
-                    </h5>
-                    <p class="card-text">
-                        <span data-i18n="dashboard_user_accepted_applications_en">Accepted Applications</span>
-                        <span data-i18n="dashboard_user_accepted_applications_id" class="d-none">Lamaran Diterima</span>
-                    </p>
-                </div>
+
+        <!-- Accepted Applications Card -->
+        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-green-200 hover:scale-105">
+            <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-check-circle text-white text-3xl"></i>
             </div>
+            <h3 class="text-5xl font-bold text-gray-800 mb-3">
+                {{ current_user.applicant_profile.applications|selectattr("status", "equalto", "Diterima")|list|length if current_user.applicant_profile else 0 }}
+            </h3>
+            <p class="text-gray-600 font-semibold text-lg">
+                <span data-i18n="dashboard_user_accepted_applications_en">Accepted Applications</span>
+                <span data-i18n="dashboard_user_accepted_applications_id" class="hidden">Lamaran Diterima</span>
+            </p>
         </div>
-        <div class="col-md-4 mb-3">
-            <div class="card stats-card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title text-info">{{ jobs|length }}</h5>
-                    <p class="card-text">
-                        <span data-i18n="dashboard_user_available_jobs_en">Available Jobs</span>
-                        <span data-i18n="dashboard_user_available_jobs_id" class="d-none">Pekerjaan Tersedia</span>
-                    </p>
-                </div>
+
+        <!-- Available Jobs Card -->
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-purple-200 hover:scale-105">
+            <div class="w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-briefcase text-white text-3xl"></i>
             </div>
+            <h3 class="text-5xl font-bold text-gray-800 mb-3">{{ jobs|length }}</h3>
+            <p class="text-gray-600 font-semibold text-lg">
+                <span data-i18n="dashboard_user_available_jobs_en">Available Jobs</span>
+                <span data-i18n="dashboard_user_available_jobs_id" class="hidden">Pekerjaan Tersedia</span>
+            </p>
         </div>
     </div>
 
     <!-- Available Jobs Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3 class="mb-0">
-                    <span data-i18n="dashboard_user_available_job_listings_en">Available Job Listings</span>
-                    <span data-i18n="dashboard_user_available_job_listings_id" class="d-none">Daftar Pekerjaan Tersedia</span>
-                </h3>
-                <small class="text-muted">
-                    {{ jobs|length }} 
-                    <span data-i18n="dashboard_user_jobs_found_en">jobs found</span>
-                    <span data-i18n="dashboard_user_jobs_found_id" class="d-none">pekerjaan ditemukan</span>
-                </small>
-            </div>
-
-            {% if guest %}
-            <div class="alert alert-info">
-                <span data-i18n="dashboard_user_please_login_to_apply_en">Please</span> 
-                <a href="{{ url_for('login') }}">
-                    <span data-i18n="dashboard_user_login_en">login</span>
-                    <span data-i18n="dashboard_user_login_id" class="d-none">masuk</span>
-                </a> 
-                <span data-i18n="dashboard_user_or_en">or</span>
-                <a href="{{ url_for('register') }}">
-                    <span data-i18n="dashboard_user_register_en">register</span>
-                    <span data-i18n="dashboard_user_register_id" class="d-none">daftar</span>
-                </a> 
-                <span data-i18n="dashboard_user_to_apply_for_jobs_en">to apply for jobs.</span>
-                <span data-i18n="dashboard_user_to_apply_for_jobs_id" class="d-none">untuk melamar pekerjaan.</span>
-            </div>
-            {% endif %}
+    <div class="mb-12">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-3xl font-bold text-gray-800">
+                <span data-i18n="dashboard_user_available_job_listings_en">Available Job Listings</span>
+                <span data-i18n="dashboard_user_available_job_listings_id" class="hidden">Daftar Pekerjaan Tersedia</span>
+            </h3>
+            <small class="text-gray-500">
+                {{ jobs|length }} 
+                <span data-i18n="dashboard_user_jobs_found_en">jobs found</span>
+                <span data-i18n="dashboard_user_jobs_found_id" class="hidden">pekerjaan ditemukan</span>
+            </small>
         </div>
-    </div>
 
-    <!-- Job Listings -->
-    <div class="row">
-        {% for job in jobs %}
-        <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">{{ job.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">{{ job.company.company_name }}</h6>
-                    <p class="card-text">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <i class="fas fa-map-marker-alt"></i> {{ job.location }}<br>
-                            <i class="fas fa-users"></i> 
-                            {{ job.slots }} 
-                            <span data-i18n="dashboard_user_slots_available_en">slots available</span>
-                            <span data-i18n="dashboard_user_slots_available_id" class="d-none">kuota tersedia</span>
-                        </small>
-                    </p>
+        {% if guest %}
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-8">
+            <div class="flex items-center">
+                <i class="fas fa-info-circle text-blue-500 text-xl mr-4"></i>
+                <div>
+                    <span data-i18n="dashboard_user_please_login_to_apply_en">Please</span> 
+                    <a href="{{ url_for('login') }}" class="text-blue-600 hover:text-blue-800 font-semibold mx-1">
+                        <span data-i18n="dashboard_user_login_en">login</span>
+                        <span data-i18n="dashboard_user_login_id" class="hidden">masuk</span>
+                    </a> 
+                    <span data-i18n="dashboard_user_or_en">or</span>
+                    <a href="{{ url_for('register') }}" class="text-blue-600 hover:text-blue-800 font-semibold mx-1">
+                        <span data-i18n="dashboard_user_register_en">register</span>
+                        <span data-i18n="dashboard_user_register_id" class="hidden">daftar</span>
+                    </a> 
+                    <span data-i18n="dashboard_user_to_apply_for_jobs_en">to apply for jobs.</span>
+                    <span data-i18n="dashboard_user_to_apply_for_jobs_id" class="hidden">untuk melamar pekerjaan.</span>
                 </div>
-                <div class="card-footer bg-transparent">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-outline-primary btn-sm" 
-                                onclick="showJobDetail('{{ job.id }}')">
-                            <i class="fas fa-eye me-1"></i>
-                            <span data-i18n="dashboard_user_view_details_en">View Details</span>
-                            <span data-i18n="dashboard_user_view_details_id" class="d-none">Lihat Detail</span>
-                        </button>
-                        {% if (not guest) and current_user.role == 'applicant' %}
-                        <a href="{{ url_for('apply', job_id=job.id) }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-paper-plane me-1"></i>
-                            <span data-i18n="dashboard_user_apply_now_en">Apply Now</span>
-                            <span data-i18n="dashboard_user_apply_now_id" class="d-none">Lamar Sekarang</span>
-                        </a>
-                        {% elif guest %}
-                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-sign-in-alt me-1"></i>
-                            <span data-i18n="dashboard_user_login_to_apply_en">Login to Apply</span>
-                            <span data-i18n="dashboard_user_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
-                        </a>
-                        {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Job Listings -->
+        {% if jobs %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for job in jobs %}
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden hover:-translate-y-2">
+                    <div class="p-6">
+                        <!-- Header with title and company -->
+                        <div class="mb-4">
+                            <h5 class="text-xl font-bold text-gray-800 mb-2">{{ job.title }}</h5>
+                            <h6 class="text-gray-600 font-medium">{{ job.company.company_name }}</h6>
+                        </div>
+                        
+                        <!-- Job Description -->
+                        <p class="text-gray-600 mb-6">{{ job.description[:120] }}{% if job.description|length > 120 %}...{% endif %}</p>
+                        
+                        <!-- Job Details -->
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-map-marker-alt text-blue-500 mr-3 w-5 text-center"></i>
+                                <span class="text-sm">{{ job.location }}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-users text-green-500 mr-3 w-5 text-center"></i>
+                                <span class="text-sm">
+                                    {{ job.slots }} 
+                                    <span data-i18n="dashboard_user_slots_available_en">slots available</span>
+                                    <span data-i18n="dashboard_user_slots_available_id" class="hidden">kuota tersedia</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-3">
+                            <button type="button" 
+                                    class="flex-1 bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center"
+                                    onclick="showJobDetail('{{ job.id }}')">
+                                <i class="fas fa-eye mr-2"></i>
+                                <span data-i18n="dashboard_user_view_details_en">View</span>
+                                <span data-i18n="dashboard_user_view_details_id" class="hidden">Lihat</span>
+                            </button>
+                            {% if (not guest) and current_user.role == 'applicant' %}
+                            <a href="{{ url_for('apply', job_id=job.id) }}" 
+                               class="flex-1 bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                <span data-i18n="dashboard_user_apply_now_en">Apply</span>
+                                <span data-i18n="dashboard_user_apply_now_id" class="hidden">Lamar</span>
+                            </a>
+                            {% elif guest %}
+                            <a href="{{ url_for('login') }}" 
+                               class="flex-1 bg-blue-500 hover:bg-blue-600 text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-sign-in-alt mr-2"></i>
+                                <span data-i18n="dashboard_user_login_to_apply_en">Login</span>
+                                <span data-i18n="dashboard_user_login_to_apply_id" class="hidden">Masuk</span>
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-        </div>
         {% else %}
-        <div class="col-12">
-            <div class="alert alert-info text-center">
-                <i class="fas fa-briefcase fa-2x mb-3 text-muted"></i>
-                <h4>
-                    <span data-i18n="dashboard_user_no_jobs_available_en">No jobs available at the moment.</span>
-                    <span data-i18n="dashboard_user_no_jobs_available_id" class="d-none">Tidak ada pekerjaan tersedia saat ini.</span>
+            <!-- Empty State -->
+            <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+                <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-briefcase text-gray-400 text-4xl"></i>
+                </div>
+                <h4 class="text-3xl font-bold text-gray-700 mb-4">
+                    <span data-i18n="dashboard_user_no_jobs_available_en">No Jobs Available</span>
+                    <span data-i18n="dashboard_user_no_jobs_available_id" class="hidden">Tidak Ada Pekerjaan Tersedia</span>
                 </h4>
-                <p class="mb-0">
+                <p class="text-gray-500 mb-8 max-w-md mx-auto text-lg">
                     <span data-i18n="dashboard_user_check_back_later_en">Please check back later for new job opportunities.</span>
-                    <span data-i18n="dashboard_user_check_back_later_id" class="d-none">Silakan periksa kembali nanti untuk peluang pekerjaan baru.</span>
+                    <span data-i18n="dashboard_user_check_back_later_id" class="hidden">Silakan periksa kembali nanti untuk peluang pekerjaan baru.</span>
                 </p>
             </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
 </div>
 
-<!-- Job Detail Modal -->
-<div class="modal fade" id="jobDetailModal" tabindex="-1" aria-labelledby="jobDetailModalLabel" aria-hidden="true">
+<!-- Enhanced Job Detail Modal -->
+<div class="modal fade" id="jobDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="jobDetailModalLabel">
+        <div class="modal-content border-0 shadow-2xl rounded-2xl">
+            <div class="modal-header bg-gradient-to-r from-blue-600 to-blue-700 text-white border-0 rounded-t-2xl p-6">
+                <h5 class="modal-title text-2xl font-bold flex items-center" id="jobDetailTitle">
+                    <i class="fas fa-briefcase me-4"></i>
                     <span data-i18n="dashboard_user_job_details_en">Job Details</span>
-                    <span data-i18n="dashboard_user_job_details_id" class="d-none">Detail Pekerjaan</span>
+                    <span data-i18n="dashboard_user_job_details_id" class="hidden">Detail Pekerjaan</span>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white hover:scale-110 transition-transform duration-300" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="jobDetailBody">
-                <!-- Content will be loaded by JavaScript -->
+            <div class="modal-body p-8 bg-white/95" id="jobDetailBody">
+                <!-- Content will be loaded dynamically -->
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-1"></i>
+            <div class="modal-footer border-t border-gray-200/50 bg-gray-50/80 rounded-b-2xl p-6">
+                <button type="button" class="bg-transparent border border-gray-500 text-gray-500 hover:bg-gray-500 hover:text-white transition-all duration-300 font-medium px-8 py-3 rounded-xl" data-bs-dismiss="modal">
                     <span data-i18n="dashboard_user_close_en">Close</span>
-                    <span data-i18n="dashboard_user_close_id" class="d-none">Tutup</span>
+                    <span data-i18n="dashboard_user_close_id" class="hidden">Tutup</span>
                 </button>
                 <span id="applyButtonContainer">
                     <!-- Apply button will be loaded here -->
@@ -236,49 +231,79 @@ function showJobDetail(jobId) {
             return response.json();
         })
         .then(job => {
-            document.getElementById('jobDetailModalLabel').textContent = job.title;
+            document.getElementById('jobDetailTitle').textContent = job.title;
             document.getElementById('jobDetailBody').innerHTML = `
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>
+                <div class="space-y-6">
+                    <div class="flex items-center text-gray-700 text-lg">
+                        <i class="fas fa-building text-blue-500 mr-4 w-6"></i>
+                        <span class="font-semibold mr-3">
                             <span data-i18n="dashboard_user_company_en">Company:</span>
-                            <span data-i18n="dashboard_user_company_id" class="d-none">Perusahaan:</span>
-                            ${job.company}
-                        </h6>
-                        <p><strong><span data-i18n="dashboard_user_location_en">Location:</span><span data-i18n="dashboard_user_location_id" class="d-none">Lokasi:</span></strong> ${job.location}</p>
-                        <p><strong><span data-i18n="dashboard_user_available_slots_en">Available Slots:</span><span data-i18n="dashboard_user_available_slots_id" class="d-none">Kuota Tersedia:</span></strong> ${job.slots}</p>
-                        <p><strong><span data-i18n="dashboard_user_current_applicants_en">Current Applicants:</span><span data-i18n="dashboard_user_current_applicants_id" class="d-none">Pelamar Saat Ini:</span></strong> ${job.applied_count}</p>
+                            <span data-i18n="dashboard_user_company_id" class="hidden">Perusahaan:</span>
+                        </span>
+                        <span>${job.company}</span>
                     </div>
-                    <div class="col-md-6">
-                        <p class="text-muted">
-                            <small>
-                                <span data-i18n="dashboard_user_posted_recently_en">Posted recently</span>
-                                <span data-i18n="dashboard_user_posted_recently_id" class="d-none">Diposting baru-baru ini</span>
-                            </small>
-                        </p>
+                    <div class="flex items-center text-gray-700 text-lg">
+                        <i class="fas fa-map-marker-alt text-green-500 mr-4 w-6"></i>
+                        <span class="font-semibold mr-3">
+                            <span data-i18n="dashboard_user_location_en">Location:</span>
+                            <span data-i18n="dashboard_user_location_id" class="hidden">Lokasi:</span>
+                        </span>
+                        <span>${job.location}</span>
+                    </div>
+                    <div class="flex items-center text-gray-700 text-lg">
+                        <i class="fas fa-users text-purple-500 mr-4 w-6"></i>
+                        <span class="font-semibold mr-3">
+                            <span data-i18n="dashboard_user_available_slots_en">Available Slots:</span>
+                            <span data-i18n="dashboard_user_available_slots_id" class="hidden">Kuota Tersedia:</span>
+                        </span>
+                        <span>${job.slots}</span>
+                    </div>
+                    <div class="flex items-center text-gray-700 text-lg">
+                        <i class="fas fa-user-check text-orange-500 mr-4 w-6"></i>
+                        <span class="font-semibold mr-3">
+                            <span data-i18n="dashboard_user_current_applicants_en">Current Applicants:</span>
+                            <span data-i18n="dashboard_user_current_applicants_id" class="hidden">Pelamar Saat Ini:</span>
+                        </span>
+                        <span>${job.applied_count}</span>
+                    </div>
+                    
+                    <hr class="my-6 border-gray-300">
+                    
+                    <div>
+                        <h6 class="font-semibold text-xl text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-graduation-cap text-orange-500 mr-3"></i>
+                            <span data-i18n="dashboard_user_qualifications_en">Qualifications</span>
+                            <span data-i18n="dashboard_user_qualifications_id" class="hidden">Kualifikasi</span>
+                        </h6>
+                        <p class="text-gray-700 bg-gray-50 p-6 rounded-xl border border-gray-200 text-lg leading-relaxed">${job.qualifications.replace(/\n/g, '<br>')}</p>
+                    </div>
+                    
+                    <hr class="my-6 border-gray-300">
+                    
+                    <div>
+                        <h6 class="font-semibold text-xl text-gray-800 mb-4 flex items-center">
+                            <i class="fas fa-tasks text-indigo-500 mr-3"></i>
+                            <span data-i18n="dashboard_user_job_description_en">Job Description</span>
+                            <span data-i18n="dashboard_user_job_description_id" class="hidden">Deskripsi Pekerjaan</span>
+                        </h6>
+                        <p class="text-gray-700 bg-gray-50 p-6 rounded-xl border border-gray-200 text-lg leading-relaxed">${job.description.replace(/\n/g, '<br>')}</p>
                     </div>
                 </div>
-                <hr>
-                <h6><span data-i18n="dashboard_user_qualifications_en">Qualifications:</span><span data-i18n="dashboard_user_qualifications_id" class="d-none">Kualifikasi:</span></h6>
-                <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
-                <hr>
-                <h6><span data-i18n="dashboard_user_job_description_en">Job Description:</span><span data-i18n="dashboard_user_job_description_id" class="d-none">Deskripsi Pekerjaan:</span></h6>
-                <p>${job.description.replace(/\n/g, '<br>')}</p>
             `;
 
             let applyButton = '';
             
             if (!isGuest && userRole === 'applicant') {
-                applyButton = `<a href="/apply/${job.id}" class="btn btn-primary">
-                    <i class="fas fa-paper-plane me-1"></i>
+                applyButton = `<a href="/apply/${job.id}" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center">
+                    <i class="fas fa-paper-plane mr-3"></i>
                     <span data-i18n="dashboard_user_apply_now_en">Apply Now</span>
-                    <span data-i18n="dashboard_user_apply_now_id" class="d-none">Lamar Sekarang</span>
+                    <span data-i18n="dashboard_user_apply_now_id" class="hidden">Lamar Sekarang</span>
                 </a>`;
             } else if (isGuest) {
-                applyButton = `<a href="{{ url_for('login') }}" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt me-1"></i>
+                applyButton = `<a href="{{ url_for('login') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center">
+                    <i class="fas fa-sign-in-alt mr-3"></i>
                     <span data-i18n="dashboard_user_login_to_apply_en">Login to Apply</span>
-                    <span data-i18n="dashboard_user_login_to_apply_id" class="d-none">Masuk untuk Lamar</span>
+                    <span data-i18n="dashboard_user_login_to_apply_id" class="hidden">Masuk untuk Lamar</span>
                 </a>`;
             }
 
@@ -291,13 +316,13 @@ function showJobDetail(jobId) {
         .catch(error => {
             console.error('Error loading job details:', error);
             document.getElementById('jobDetailBody').innerHTML = `
-                <div class="alert alert-danger text-center">
-                    <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
-                    <h5>
+                <div class="text-center py-8">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-5xl mb-4"></i>
+                    <h5 class="text-2xl font-bold text-gray-800 mb-3">
                         <span data-i18n="dashboard_user_error_loading_en">Error loading job details</span>
-                        <span data-i18n="dashboard_user_error_loading_id" class="d-none">Error memuat detail pekerjaan</span>
+                        <span data-i18n="dashboard_user_error_loading_id" class="hidden">Error memuat detail pekerjaan</span>
                     </h5>
-                    <p class="mb-0">${error.message}</p>
+                    <p class="text-gray-600">${error.message}</p>
                 </div>
             `;
             const modalElement = document.getElementById('jobDetailModal');
@@ -306,4 +331,26 @@ function showJobDetail(jobId) {
         });
 }
 </script>
+
+<style>
+/* Custom animations for Tailwind components */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:-translate-y-2:hover {
+    transform: translateY(-0.5rem);
+}
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+/* Ensure modal backdrop works with Tailwind */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+</style>
 {% endblock %}

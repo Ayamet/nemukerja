@@ -5,14 +5,11 @@
 {% block content %}
 <div class="container-sm mt-5 pt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+        <div class="col-md-6 col-lg-4">
             <div class="card shadow-lg border-0">
                 <div class="card-body p-4">
-                    <div class="img bg-light rounded-top d-flex justify-content-center align-items-center mb-4" style="height: 165px;">
-                        <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="height: 165px; width: 600px;">
-                    </div>
-
-                    <h2 class="text-center mb-4">
+                    <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="max-height: 150px;">
+                    <h2 class="text-center mt-4">
                         <span data-i18n="register_sign_up_en">Sign Up</span>
                         <span data-i18n="register_sign_up_id" class="d-none">Daftar</span>
                     </h2>
@@ -55,7 +52,6 @@
                             {{ form.phone(class="form-control", id="phone") }}
                         </div>
                         
-                        <!-- Password with eye -->
                         <div class="mb-3">
                             <label for="signup_password" class="form-label">
                                 <span data-i18n="register_password_en">Password</span>
@@ -69,7 +65,6 @@
                             </div>
                         </div>
                         
-                        <!-- Confirm password with eye -->
                         <div class="mb-3">
                             <label for="confirm_password" class="form-label">
                                 <span data-i18n="register_confirm_password_en">Confirm Password</span>
@@ -118,6 +113,17 @@
                         <div class="mb-3">
                             {{ form.submit(class="btn btn-primary w-100") }}
                         </div>
+                        
+                        <div class="text-center">
+                            <p class="mb-0">
+                                <span data-i18n="register_already_have_an_account_en">Already have an account?</span>
+                                <span data-i18n="register_already_have_an_account_id" class="d-none">Sudah punya akun?</span>
+                                <a href="{{ url_for('login') }}">
+                                    <span data-i18n="register_sign_in_en">Sign In</span>
+                                    <span data-i18n="register_sign_in_id" class="d-none">Masuk</span>
+                                </a>
+                            </p>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -126,7 +132,6 @@
 </div>
 
 <script>
-    // Toggle password visibility for any input id passed
     function togglePassword(id) {
         var pwd = document.getElementById(id);
         if (!pwd) return;
@@ -146,7 +151,6 @@
         }
     }
 
-    // Company fields toggle
     document.getElementById('role_select').addEventListener('change', function() {
         var companyFields = document.getElementById('company_fields');
         if (this.value === 'company') {
@@ -156,7 +160,6 @@
         }
     });
 
-    // Set placeholders based on language
     document.addEventListener('DOMContentLoaded', function() {
         const savedLang = localStorage.getItem('nk_lang') || 'en';
         
@@ -180,7 +183,6 @@
             document.getElementById('website').placeholder = "Masukkan situs web perusahaan (opsional)";
         }
 
-        // Initialize eye icons
         ['signup_password', 'confirm_password'].forEach(function(id){
             var el = document.getElementById(id);
             var eye = document.getElementById('eye-' + id);
@@ -197,10 +199,8 @@
 </script>
 
 <style>
-/* Clean up styles to rely on global CSS */
 .card { border-radius: 10px; }
 
-/* make eye clickable and look like a button */
 .input-group-text.btn-eye {
     cursor: pointer;
     display: inline-flex;

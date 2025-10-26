@@ -23,63 +23,85 @@
         <!-- Left column: Get In Touch -->
         <div class="col-lg-4 mb-4">
             <div class="card card-sm border-0 shadow-sm h-100">
-                <div class="card-body p-4 d-flex flex-column text-center">
-                   <div class="text-center">
-                        <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="logo" width="256" class="mb-2">
+                <div class="card-body p-4 d-flex flex-column">
+                    <!-- Centered Logo -->
+                    <div class="w-100 text-center mb-3">
+                        <div class="d-flex justify-content-center">
+                            <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="logo" width="150" class="mb-2">
+                        </div>
                     </div>
 
-                    <h4 class="card-title">
+                    <h4 class="card-title text-center">
                         <span data-i18n="get_in_touch_en">Get in Touch</span>
                         <span data-i18n="get_in_touch_id" class="d-none">Hubungi Kami</span>
                     </h4>
-                    <p class="text-muted">
+                    <p class="text-muted text-center">
                         <span data-i18n="get_in_touch_sub_en">We are always ready to assist with any inquiries</span>
                         <span data-i18n="get_in_touch_sub_id" class="d-none">Kami selalu siap membantu dengan pertanyaan apa pun</span>
                     </p>
 
-                    <div class="contact-info mt-auto text-start">
+                    <div class="contact-info mt-auto">
                         <!-- Address -->
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-circle bg-primary text-white me-3"><i class="fas fa-map-marker-alt"></i></div>
-                            <div>
-                                <h6 class="mb-0">
+                        <div class="contact-item modern-card mb-4">
+                            <div class="contact-icon-wrapper">
+                                <div class="modern-icon bg-gradient-primary">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                            </div>
+                            <div class="contact-content">
+                                <h6 class="contact-title">
                                     <span data-i18n="addr_en">Address</span>
                                     <span data-i18n="addr_id" class="d-none">Alamat</span>
                                 </h6>
-                                <p class="text-muted mb-0">Batam<br>Somewhere</p>
+                                <p class="contact-detail">Batam<br>Somewhere</p>
                             </div>
                         </div>
+
                         <!-- Phone -->
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-circle bg-success text-white me-3"><i class="fas fa-phone"></i></div>
-                            <div>
-                                <h6 class="mb-0">
+                        <div class="contact-item modern-card mb-4">
+                            <div class="contact-icon-wrapper">
+                                <div class="modern-icon bg-gradient-success">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                            </div>
+                            <div class="contact-content">
+                                <h6 class="contact-title">
                                     <span data-i18n="phone_en">Phone</span>
                                     <span data-i18n="phone_id" class="d-none">Telepon</span>
                                 </h6>
-                                <p class="text-muted mb-0">+62 0813 6464 7725</p>
+                                <p class="contact-detail">+62 0813 6464 7725</p>
                             </div>
                         </div>
+
                         <!-- Email -->
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-circle bg-info text-white me-3"><i class="fas fa-envelope"></i></div>
-                            <div>
-                                <h6 class="mb-0">
+                        <div class="contact-item modern-card mb-4">
+                            <div class="contact-icon-wrapper">
+                                <div class="modern-icon bg-gradient-info">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                            </div>
+                            <div class="contact-content">
+                                <h6 class="contact-title">
                                     <span data-i18n="email_en">Email</span>
                                     <span data-i18n="email_id" class="d-none">Email</span>
                                 </h6>
-                                <p class="text-muted mb-0">support@nemukerja.com</p>
+                                <p class="contact-detail">support@nemukerja.com</p>
                             </div>
                         </div>
+
                         <!-- Working Hours -->
-                        <div class="d-flex align-items-center">
-                            <div class="icon-circle bg-warning text-white me-3"><i class="fas fa-clock"></i></div>
-                            <div>
-                                <h6 class="mb-0">
+                        <div class="contact-item modern-card">
+                            <div class="contact-icon-wrapper">
+                                <div class="modern-icon bg-gradient-warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div class="contact-content">
+                                <h6 class="contact-title">
                                     <span data-i18n="hours_en">Working Hours</span>
                                     <span data-i18n="hours_id" class="d-none">Jam Kerja</span>
                                 </h6>
-                                <p class="text-muted mb-0">
+                                <p class="contact-detail">
                                     <span data-i18n="hours_time_en">Mon - Fri: 9:00 AM - 6:00 PM<br>Sat: 9:00 AM - 2:00 PM</span>
                                     <span data-i18n="hours_time_id" class="d-none">Sen - Jum: 9:00 - 18:00<br>Sab: 9:00 - 14:00</span>
                                 </p>
@@ -169,13 +191,17 @@
                                 placeholder=""></textarea>
                         </div>
 
-                        <div class="mb-3 form-check">
+                        <div class="mb-3"></div>
+                           </div>
+
+                        <div class="mb-4 p-5 form-check">
                             <input type="checkbox" class="form-check-input" id="newsletter">
                             <label class="form-check-label">
                                 <span data-i18n="newsletter_en">Subscribe to our newsletter for job updates</span>
                                 <span data-i18n="newsletter_id" class="d-none">Berlangganan newsletter untuk info lowongan dan update</span>
                             </label>
                         </div>
+
 
                         <div class="text-center mt-2">
                             <button type="submit" class="btn btn-primary btn-lg px-5"><i class="fas fa-paper-plane me-2"></i>
@@ -321,6 +347,95 @@
     </div>
 
 </div>
+
+<style>
+.contact-item.modern-card {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.contact-item.modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.contact-icon-wrapper {
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.modern-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-item.modern-card:hover .modern-icon {
+    transform: scale(1.1);
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.contact-content {
+    flex: 1;
+}
+
+.contact-title {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+}
+
+.contact-detail {
+    color: #718096;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .contact-item.modern-card {
+        padding: 1rem;
+    }
+    
+    .modern-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
