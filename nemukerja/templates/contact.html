@@ -5,7 +5,6 @@
 {% block content %}
 <div class="container contact-page mt-5 pt-4">
 
-    <!-- Header -->
     <div class="row mb-4">
         <div class="col-12 text-center">
             <h1 class="display-4 fw-bold text-primary mb-2">
@@ -20,11 +19,9 @@
     </div>
 
     <div class="row">
-        <!-- Left column: Get In Touch -->
         <div class="col-lg-4 mb-4">
             <div class="card card-sm border-0 shadow-sm h-100">
                 <div class="card-body p-4 d-flex flex-column">
-                    <!-- Centered Logo -->
                     <div class="w-100 text-center mb-3">
                         <div class="d-flex justify-content-center">
                             <img src="{{ url_for('static', filename='images/logopeb.png') }}" alt="logo" width="150" class="mb-2">
@@ -41,7 +38,6 @@
                     </p>
 
                     <div class="contact-info mt-auto">
-                        <!-- Address -->
                         <div class="contact-item modern-card mb-4">
                             <div class="contact-icon-wrapper">
                                 <div class="modern-icon bg-gradient-primary">
@@ -57,7 +53,6 @@
                             </div>
                         </div>
 
-                        <!-- Phone -->
                         <div class="contact-item modern-card mb-4">
                             <div class="contact-icon-wrapper">
                                 <div class="modern-icon bg-gradient-success">
@@ -73,7 +68,6 @@
                             </div>
                         </div>
 
-                        <!-- Email -->
                         <div class="contact-item modern-card mb-4">
                             <div class="contact-icon-wrapper">
                                 <div class="modern-icon bg-gradient-info">
@@ -89,7 +83,6 @@
                             </div>
                         </div>
 
-                        <!-- Working Hours -->
                         <div class="contact-item modern-card">
                             <div class="contact-icon-wrapper">
                                 <div class="modern-icon bg-gradient-warning">
@@ -112,7 +105,6 @@
             </div>
         </div>
 
-        <!-- Right column: Send Message -->
         <div class="col-lg-8 mb-4">
             <div class="card card-sm border-0 shadow-sm h-100">
                 <div class="card-body p-4 d-flex flex-column">
@@ -215,7 +207,6 @@
         </div>
     </div>
 
-    <!-- FAQ: single column -->
     <div class="row mt-3">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
@@ -226,7 +217,6 @@
                     </h3>
                     <div class="accordion" id="faqAccordion">
 
-                        <!-- FAQ 1 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq1">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
@@ -242,7 +232,6 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 2 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq2">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
@@ -258,7 +247,6 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 3 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq3">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
@@ -274,7 +262,6 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 4 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq4">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
@@ -290,7 +277,6 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 5 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq5">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
@@ -306,7 +292,6 @@
                             </div>
                         </div>
 
-                        <!-- FAQ 6 -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="faq6">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
@@ -328,7 +313,6 @@
         </div>
     </div>
 
-    <!-- Map -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card border-0 shadow-sm">
@@ -347,128 +331,4 @@
     </div>
 
 </div>
-
-<style>
-.contact-item.modern-card {
-    display: flex;
-    align-items: flex-start;
-    padding: 1.25rem;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-}
-
-.contact-item.modern-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-.contact-icon-wrapper {
-    margin-right: 1rem;
-    flex-shrink: 0;
-}
-
-.modern-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.contact-item.modern-card:hover .modern-icon {
-    transform: scale(1.1);
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-gradient-success {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.bg-gradient-info {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-}
-
-.bg-gradient-warning {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
-.contact-content {
-    flex: 1;
-}
-
-.contact-title {
-    font-weight: 600;
-    color: #2d3748;
-    margin-bottom: 0.25rem;
-    font-size: 0.95rem;
-}
-
-.contact-detail {
-    color: #718096;
-    margin-bottom: 0;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .contact-item.modern-card {
-        padding: 1rem;
-    }
-    
-    .modern-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.1rem;
-    }
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const langKey = 'nk_lang';
-    const savedLang = localStorage.getItem(langKey) || 'en';
-
-    function toggleLang(lang) {
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const id = el.getAttribute('data-i18n');
-            if(id.endsWith('_en') || id.endsWith('_id')) {
-                if(lang === 'en' && id.endsWith('_en')) el.classList.remove('d-none');
-                else if(lang === 'en' && id.endsWith('_id')) el.classList.add('d-none');
-                else if(lang === 'id' && id.endsWith('_id')) el.classList.remove('d-none');
-                else if(lang === 'id' && id.endsWith('_en')) el.classList.add('d-none');
-            }
-
-            // toggle placeholder if applicable
-            if(el.hasAttribute('data-i18n-placeholder-en') && el.hasAttribute('data-i18n-placeholder-id')){
-                el.placeholder = lang === 'en' ? el.getAttribute('data-i18n-placeholder-en') : el.getAttribute('data-i18n-placeholder-id');
-            }
-        });
-    }
-
-    toggleLang(savedLang);
-
-    document.querySelectorAll('.lang-option').forEach(el => {
-        el.addEventListener('click', e => {
-            e.preventDefault();
-            const lang = el.getAttribute('data-lang');
-            localStorage.setItem(langKey, lang);
-            toggleLang(lang);
-        });
-    });
-});
-</script>
 {% endblock %}
