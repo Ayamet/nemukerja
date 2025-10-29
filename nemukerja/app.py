@@ -9,7 +9,6 @@ from nemukerja.models import User, Company, JobListing, Application, Applicant, 
 from nemukerja.forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
 from werkzeug.utils import secure_filename
 import json
-from sqlalchemy import or_, desc
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-me')
@@ -65,48 +64,8 @@ def create_app():
         open_jobs = len([job for job in jobs if getattr(job, 'is_open', True)])
         closed_jobs = len([job for job in jobs if not getattr(job, 'is_open', True)])
         
-        # RECENT ACTIVITY LOGIC
-        # Fetch recent activities (limit 10 from each category to combine)
-        # Perlu join dengan Company/Applicant untuk mendapatkan nama di deskripsi
-        recent_users = User.query.order_by(desc(User.created_at)).limit(10).all()
-        recent_jobs = JobListing.query.join(Company).order_by(desc(JobListing.posted_at)).limit(10).all()
-        recent_applications = Application.query.join(Applicant).join(JobListing).order_by(desc(Application.applied_at)).limit(10).all()
-        
+        # Recent activity
         recent_activity = []
-        
-        # 1. Process Users (Registration)
-        for user in recent_users:
-            role_type = 'user' if user.role == 'applicant' else ('company' if user.role == 'company' else 'user')
-            recent_activity.append({
-                'type': role_type,
-                'description': f"{user.name} ({user.role.capitalize()}) registered.",
-                'date': user.created_at
-            })
-
-        # 2. Process Jobs (New Postings)
-        for job in recent_jobs:
-            recent_activity.append({
-                'type': 'job',
-                'description': f"New Job: '{job.title}' posted by {job.company.company_name}.",
-                'date': job.posted_at
-            })
-
-        # 3. Process Applications (New Applications)
-        for app in recent_applications:
-            recent_activity.append({
-                'type': 'application',
-                'description': f"New Application for '{app.job.title}' by {app.applicant.full_name} (Status: {app.status}).",
-                'date': app.applied_at
-            })
-            
-        # Sort all activities by date (descending) and take top 20
-        recent_activity.sort(key=lambda x: x['date'], reverse=True)
-        recent_activity = recent_activity[:20]
-
-        # Format the date string for the template
-        for activity in recent_activity:
-            activity['date'] = activity['date'].strftime('%Y-%m-%d %H:%M')
-        # END RECENT ACTIVITY LOGIC
         
         return render_template('admin_dashboard.html',
                              total_users=total_users,
@@ -123,8 +82,7 @@ def create_app():
     @login_required
     @admin_required
     def admin_users():
-        from sqlalchemy.orm import joinedload
-        users = User.query.options(joinedload(User.applicant_profile), joinedload(User.company_profile)).all()
+        users = User.query.all()
         return render_template('admin_users.html', users=users)
 
     @app.route('/admin/companies')
@@ -144,7 +102,7 @@ def create_app():
     # Your existing routes continue here...
     @app.route('/')
     def index():
-        jobs = JobListing.query.filter_by(is_open=True).order_by(JobListing.posted_at.desc()).all() # MODIFIKASI: Filter is_open
+        jobs = JobListing.query.order_by(JobListing.posted_at.desc()).all()
         return render_template('index.html', jobs=jobs, guest=True)
 
     @app.route('/login', methods=['GET', 'POST'])
@@ -221,48 +179,7 @@ def create_app():
         
         applications = Application.query.filter_by(id_applicant=applicant.id).order_by(Application.applied_at.desc()).all()
         
-        return render_template('my_applications.html', applications=applications, title_suffix="All Applications")
-
-    @app.route('/my-pending')
-    @login_required
-    def my_pending_applications():
-        if current_user.role != 'applicant':
-            flash('Only applicants can access this page.', 'danger')
-            return redirect(url_for('dashboard'))
-        
-        applicant = current_user.applicant_profile
-        if not applicant:
-            flash('Applicant profile not found.', 'danger')
-            return redirect(url_for('dashboard'))
-        
-        # Filter hanya yang Pending
-        applications = Application.query.filter_by(
-            id_applicant=applicant.id,
-            status='Pending'
-        ).order_by(Application.applied_at.desc()).all()
-        
-        return render_template('my_applications.html', applications=applications, title_suffix="Pending Applications")
-
-    @app.route('/my-accepted')
-    @login_required
-    def my_accepted_applications():
-        if current_user.role != 'applicant':
-            flash('Only applicants can access this page.', 'danger')
-            return redirect(url_for('dashboard'))
-        
-        applicant = current_user.applicant_profile
-        if not applicant:
-            flash('Applicant profile not found.', 'danger')
-            return redirect(url_for('dashboard'))
-        
-        # Filter hanya yang Diterima
-        applications = Application.query.filter_by(
-            id_applicant=applicant.id,
-            status='Diterima'
-        ).order_by(Application.applied_at.desc()).all()
-        
-        return render_template('my_applications.html', applications=applications, title_suffix="Accepted Applications")
-
+        return render_template('my_applications.html', applications=applications)
 
     # Notification routes
     @app.route('/notifications')
@@ -270,24 +187,6 @@ def create_app():
     def get_notifications():
         notifications = Notification.query.filter_by(id_user=current_user.id).order_by(Notification.created_at.desc()).limit(10).all()
         return jsonify([n.to_dict() for n in notifications])
-    
-    # NEW API: Mendapatkan Job ID dari Application ID (untuk navigasi notifikasi)
-    @app.route('/api/get_job_id/<int:application_id>')
-    @login_required
-    def get_job_id_from_application(application_id):
-        application = Application.query.get(application_id)
-        if not application:
-            return jsonify({'job_id': None}), 404
-        
-        # Jika pengguna adalah Pelamar, pastikan aplikasi ini miliknya
-        if current_user.role == 'applicant' and application.id_applicant != current_user.applicant_profile.id:
-             return jsonify({'job_id': None}), 403
-        
-        # Jika pengguna adalah Perusahaan, pastikan aplikasi ini untuk lowongan mereka
-        if current_user.role == 'company' and application.job.company.user.id != current_user.id:
-            return jsonify({'job_id': None}), 403
-
-        return jsonify({'job_id': application.id_job})
 
     @app.route('/notifications/read/<int:notification_id>', methods=['POST'])
     @login_required
@@ -345,7 +244,7 @@ def create_app():
                 flash('Please complete your company profile first.', 'warning')
                 return redirect(url_for('company_profile'))
 
-            jobs = JobListing.query.filter_by(id_company=company.id).order_by(JobListing.posted_at.desc()).all() # Ambil SEMUA job, termasuk yang closed
+            jobs = company.jobs if company else []
             total_jobs = len(jobs)
             total_applications = sum(len(job.applications) for job in jobs)
             recent_applications = db.session.query(Application).join(JobListing).filter(JobListing.id_company == company.id).order_by(Application.applied_at.desc()).limit(5).all()
@@ -357,29 +256,12 @@ def create_app():
                                      total_applications=total_applications,
                                      recent_applications=recent_applications)
         else: 
-            jobs = JobListing.query.filter_by(is_open=True).order_by(JobListing.posted_at.desc()).all()
-            
-            applicant_profile = current_user.applicant_profile
-            total_app = applicant_profile.applications if applicant_profile else []
-            pending_app_count = len([app for app in total_app if app.status == 'Pending'])
-            accepted_app_count = len([app for app in total_app if app.status == 'Diterima'])
-
-            return render_template('dashboard_user.html', 
-                                   jobs=jobs, 
-                                   guest=False,
-                                   total_app_count=len(total_app),
-                                   pending_app_count=pending_app_count,
-                                   accepted_app_count=accepted_app_count) # MODIFIKASI: Mengirim 3 metrik
+            jobs = JobListing.query.order_by(JobListing.posted_at.desc()).all()
+            return render_template('dashboard_user.html', jobs=jobs, guest=False)
 
     @app.route('/job/<int:job_id>')
     def job_detail(job_id):
         job = JobListing.query.get_or_404(job_id)
-        
-        # Hitung pelamar aktif (Pending atau Diterima)
-        used_slots = Application.query.filter_by(id_job=job.id).filter(
-            Application.status.in_(['Pending', 'Diterima'])
-        ).count()
-        
         data = {
             'id': job.id,
             'title': job.title,
@@ -387,9 +269,8 @@ def create_app():
             'description': job.description,
             'qualifications': job.qualifications,
             'company': job.company.company_name if job.company else "N/A",
-            'applied_count': used_slots,
-            'slots': job.slots,
-            'is_open': job.is_open
+            'applied_count': len(job.applications),
+            'slots': job.slots
         }
         return jsonify(data)
 
@@ -402,22 +283,6 @@ def create_app():
 
         job = JobListing.query.get_or_404(job_id)
         applicant = current_user.applicant_profile
-        
-        # --- NEW SLOT CHECK LOGIC ---
-        # Hitung slot yang terpakai (Pending atau Diterima)
-        used_slots = Application.query.filter_by(id_job=job.id).filter(
-            Application.status.in_(['Pending', 'Diterima'])
-        ).count()
-        
-        if used_slots >= job.slots:
-            flash('Slot lamaran untuk pekerjaan ini sudah penuh.', 'danger')
-            return redirect(url_for('dashboard'))
-
-        if not job.is_open:
-            flash(f'Pekerjaan "{job.title}" saat ini tidak terbuka untuk lamaran.', 'danger')
-            return redirect(url_for('dashboard'))
-        # --- END NEW SLOT CHECK LOGIC ---
-
         if not applicant:
             flash('Applicant profile not found.', 'danger')
             return redirect(url_for('dashboard'))
@@ -497,67 +362,6 @@ def create_app():
             filename
         )
     
-    @app.route('/company/job/<int:job_id>/close', methods=['POST'])
-    @login_required
-    def close_job(job_id):
-        job = JobListing.query.get_or_404(job_id)
-        if current_user.role != 'company' or job.company.user.id != current_user.id:
-            flash('You are not authorized to manage this job.', 'danger')
-            return redirect(url_for('dashboard'))
-
-        job.is_open = False
-        db.session.commit()
-        flash(f'Job "{job.title}" has been closed. You may now delete it.', 'warning')
-        return redirect(url_for('dashboard'))
-
-    @app.route('/company/job/<int:job_id>/open', methods=['POST'])
-    @login_required
-    def open_job(job_id):
-        job = JobListing.query.get_or_404(job_id)
-        if current_user.role != 'company' or job.company.user.id != current_user.id:
-            flash('You are not authorized to manage this job.', 'danger')
-            return redirect(url_for('dashboard'))
-        
-        job.is_open = True
-        db.session.commit()
-        flash(f'Job "{job.title}" has been reopened. It is now visible to applicants.', 'success')
-        return redirect(url_for('dashboard'))
-
-    @app.route('/company/job/<int:job_id>/delete', methods=['POST'])
-    @login_required
-    def delete_job(job_id):
-        job = JobListing.query.get_or_404(job_id)
-        if current_user.role != 'company' or job.company.user.id != current_user.id:
-            flash('You are not authorized to manage this job.', 'danger')
-            return redirect(url_for('dashboard'))
-
-        if job.is_open:
-            flash('Job must be closed before deletion.', 'danger')
-            return redirect(url_for('dashboard'))
-
-        job_title = job.title
-        
-        # Collect IDs of users who applied
-        applicant_users = [app.applicant.user for app in job.applications]
-
-        db.session.delete(job)
-        db.session.commit()
-        
-        # Create notifications for relevant applicants
-        for user in applicant_users:
-            notification = Notification(
-                id_user=user.id,
-                title="Job Posting Removed",
-                message=f"The job '{job_title}' you applied for has been removed by the company.",
-                type='job_posted',
-                related_id=None 
-            )
-            db.session.add(notification)
-        db.session.commit()
-
-        flash(f'Job "{job_title}" has been successfully deleted.', 'success')
-        return redirect(url_for('dashboard'))
-
     @app.route('/company/add-job', methods=['GET', 'POST'])
     @login_required
     def add_job():
@@ -711,15 +515,6 @@ def create_app():
     @app.route('/address')
     def address():
         return render_template('address.html')
-    
-    @app.route('/notifications/clear-all', methods=['POST'])
-    @login_required
-    def clear_all_notifications():
-        # Menghapus semua notifikasi milik pengguna
-        # FIX: Menambahkan synchronize_session=False untuk batch delete agar commit berhasil di DB
-        Notification.query.filter_by(id_user=current_user.id).delete(synchronize_session=False)
-        db.session.commit()
-        return jsonify({'success': True})
 
     return app
 

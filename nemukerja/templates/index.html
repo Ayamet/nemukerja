@@ -44,6 +44,7 @@
                         </div>
                     </div>
 
+                    <!-- Action Buttons -->
                     <div class="flex space-x-3">
                         <button type="button" 
                                 class="flex-1 bg-transparent border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 text-sm py-3 rounded-lg flex items-center justify-center group/btn"
@@ -64,6 +65,7 @@
             {% endfor %}
         </div>
     {% else %}
+        <!-- Empty State -->
         <div class="text-center py-16 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
             <div class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
                 <i class="fas fa-briefcase text-gray-400 text-4xl"></i>
@@ -78,8 +80,33 @@
             </p>
         </div>
     {% endif %}
+
+    <!-- Call to Action Section -->
+    <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12 text-center text-white mb-12">
+        <h3 class="text-3xl font-bold mb-4">
+            <span data-i18n="index_ready_to_start_en">Ready to start your career journey?</span>
+            <span data-i18n="index_ready_to_start_id" class="hidden">Siap memulai perjalanan karir Anda?</span>
+        </h3>
+        <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            <span data-i18n="index_join_our_community_en">Join our community of job seekers and find your perfect match today!</span>
+            <span data-i18n="index_join_our_community_id" class="hidden">Bergabunglah dengan komunitas pencari kerja kami dan temukan kesempatan terbaik hari ini!</span>
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('register') }}" class="bg-white text-blue-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl inline-flex items-center">
+                <i class="fas fa-user-plus mr-3"></i>
+                <span data-i18n="index_register_now_en">Register Now</span>
+                <span data-i18n="index_register_now_id" class="hidden">Daftar Sekarang</span>
+            </a>
+            <a href="{{ url_for('login') }}" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-bold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center">
+                <i class="fas fa-sign-in-alt mr-3"></i>
+                <span data-i18n="index_login_now_en">Login Now</span>
+                <span data-i18n="index_login_now_id" class="hidden">Masuk Sekarang</span>
+            </a>
+        </div>
+    </div>
 </div>
 
+<!-- Enhanced Job Detail Modal -->
 <div class="modal fade" id="jobDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content border-0 shadow-2xl rounded-2xl">
@@ -92,6 +119,7 @@
                 <button type="button" class="btn-close custom-red-close hover:scale-110 transition-transform duration-300" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-8 bg-white/95" id="jobDetailBody">
+                <!-- Content will be loaded dynamically -->
             </div>
             <div class="modal-footer border-t border-gray-200/50 bg-gray-50/80 rounded-b-2xl p-6">
                 <button type="button" class="bg-transparent border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-300 font-medium px-8 py-3 rounded-xl" data-bs-dismiss="modal">
@@ -277,6 +305,7 @@ document.addEventListener('DOMContentLoaded', updateBaseLangFunction);
 </script>
 
 <style>
+/* Custom animations for Tailwind components */
 .hover\:scale-105:hover {
     transform: scale(1.05);
 }
@@ -291,10 +320,12 @@ document.addEventListener('DOMContentLoaded', updateBaseLangFunction);
     transition-duration: 300ms;
 }
 
+/* Ensure modal backdrop works with Tailwind */
 .modal-backdrop {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* Group hover effects */
 .group:hover .group-hover\:text-blue-600 {
     color: #2563eb;
 }
@@ -303,5 +334,4 @@ document.addEventListener('DOMContentLoaded', updateBaseLangFunction);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ff0000'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") !important;
 }
 </style>
-
 {% endblock %}

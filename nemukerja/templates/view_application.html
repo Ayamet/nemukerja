@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container mt-5 pt-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-10">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
@@ -181,7 +181,7 @@
                                 </form>
                             {% endif %}
                             
-                            <div class="mt-3 text-center">
+                            <div class="mt-3">
                                 <a href="{{ url_for('company_applications') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> 
                                     <span data-i18n="view_application_back_to_applications_en">Back to Applications</span>
@@ -200,4 +200,12 @@
         </div>
     </div>
 </div>
+<style>
+.card { box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; margin-bottom: 20px; }
+.card-header { border-bottom: 1px solid #dee2e6; }
+.badge { font-size: 0.8em; }
+.btn { padding: 10px 20px; font-weight: 500; }
+.alert { border: none; border-radius: 8px; }
+.cover-letter-content { line-height: 1.6; font-family: inherit; }
+</style>
 {% endblock %}

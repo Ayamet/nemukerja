@@ -69,4 +69,71 @@
         </div>
     </form>
 </div>
+<style>
+/* Perbaikan Tema untuk tampilan Edit Job (Putih-Biru) */
+.wrap { 
+    max-width: 600px; 
+    margin: 50px auto; 
+    padding: 30px; 
+    background: #ffffff !important; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    color: #343a40 !important; 
+}
+
+/* Memastikan semua teks menjadi gelap/biru */
+.wrap h2, 
+.wrap .form-label, 
+.wrap .form-label.fw-bold, 
+.wrap label { 
+    color: #343a40 !important; 
+}
+.wrap .text-muted { 
+    color: #6c757d !important;
+}
+
+/* Form control styling */
+.wrap .form-control { 
+    background-color: #ffffff !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control:focus { 
+    border-color: #007bff !important; 
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; 
+    background-color: #ffffff !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control::placeholder { 
+    color: #adb5bd !important; 
+}
+
+/* Button styling */
+.wrap .btn-primary { 
+    background: #007bff !important; 
+    border: none !important; 
+    padding: 12px !important; 
+    font-weight: 600 !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-primary:hover { 
+    background: #0056b3 !important; 
+    transform: translateY(-1px) !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary { 
+    background-color: #6c757d !important; 
+    border-color: #6c757d !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary:hover { 
+    background-color: #5a6268 !important; 
+    border-color: #5a6268 !important; 
+    color: #ffffff !important; 
+}
+
+.wrap .img { 
+    background-color: #e9ecef !important;
+}
+</style>
 {% endblock %}

@@ -3,9 +3,46 @@
 {% block title %}Manage Jobs - Admin Dashboard - NemuKerja{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-3">
+<div class="container mt-5 pt-5">
     <div class="row">
-        <div class="col-12">
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users me-2"></i>
+                            Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_companies') }}">
+                            <i class="fas fa-building me-2"></i>
+                            Manage Companies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_jobs') }}">
+                            <i class="fas fa-briefcase me-2"></i>
+                            Manage Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Main
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h2><span data-i18n="admin_jobs_manage_jobs_en">Manage Jobs</span></h2>
                 <div class="btn-toolbar mb-2 mb-md-0">
@@ -24,13 +61,13 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Job Title</th>
-                                    <th>Company</th>
-                                    <th>Location</th>
-                                    <th>Slots</th>
-                                    <th>Applicants</th>
-                                    <th>Status</th>
-                                    <th>Posted</th>
+                                    <th><span data-i18n="admin_jobs_job_title_en">Job Title</span></th>
+                                    <th><span data-i18n="admin_jobs_company_en">Company</span></th>
+                                    <th><span data-i18n="admin_jobs_location_en">Location</span></th>
+                                    <th><span data-i18n="admin_jobs_slots_en">Slots</span></th>
+                                    <th><span data-i18n="admin_jobs_applicants_en">Applicants</span></th>
+                                    <th><span data-i18n="admin_jobs_status_en">Status</span></th>
+                                    <th><span data-i18n="admin_jobs_posted_en">Posted</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,4 +101,26 @@
         </div>
     </div>
 </div>
+<style>
+.sidebar {
+    min-height: calc(100vh - 76px);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.sidebar .nav-link:hover:not(.active) {
+    background-color: #ffffff;
+}
+</style>
 {% endblock %}

@@ -3,9 +3,46 @@
 {% block title %}Manage Users - Admin Dashboard - NemuKerja{% endblock %}
 
 {% block content %}
-<div class="container mt-5 pt-3">
+
     <div class="row">
-        <div class="col-12">
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_users') }}">
+                            <i class="fas fa-users me-2"></i>
+                            Manage Users
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_companies') }}">
+                            <i class="fas fa-building me-2"></i>
+                            Manage Companies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_jobs') }}">
+                            <i class="fas fa-briefcase me-2"></i>
+                            Manage Jobs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Back to Main
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h2><span data-i18n="admin_users_manage_users_en">Manage Users</span></h2>
                 <div class="btn-toolbar mb-2 mb-md-0">
@@ -24,12 +61,12 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Phone</th>
-                                    <th>Registered</th>
-                                    <th>Status</th>
+                                    <th><span data-i18n="admin_users_name_en">Name</span></th>
+                                    <th><span data-i18n="admin_users_email_en">Email</span></th>
+                                    <th><span data-i18n="admin_users_role_en">Role</span></th>
+                                    <th><span data-i18n="admin_users_phone_en">Phone</span></th>
+                                    <th><span data-i18n="admin_users_registered_en">Registered</span></th>
+                                    <th><span data-i18n="admin_users_status_en">Status</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,7 +74,7 @@
                                 <tr>
                                     <td>{{ user.id }}</td>
                                     <td>
-                                        <strong>{{ user.name or user.email }}</strong>
+                                        <strong>{{ user.name }}</strong>
                                         {% if user.role == 'admin' %}
                                             <span class="badge bg-danger ms-1"><span data-i18n="admin_users_admin_en">Admin</span></span>
                                         {% endif %}
@@ -62,5 +99,28 @@
             </div>
         </div>
     </div>
-</div>
+
+
+<style>
+.sidebar {
+    min-height: calc(100vh - 76px);
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.sidebar .nav-link:hover:not(.active) {
+    background-color: #e9ecef;
+}
+</style>
 {% endblock %}

@@ -27,7 +27,7 @@
         <div class="form-group mt-3">
             <label class="form-label fw-bold"><span data-i18n="job_title_label">Job Title</span></label>
             <small class="text-muted d-block mb-2"><span data-i18n="job_title_help">Enter a clear and descriptive job title</span></small>
-            {{ form.title(class="form-control", placeholder="e.g., Senior Web Developer, Marketing Manager", id="title") }}
+            {{ form.title(class="form-control", placeholder="e.g., Senior Web Developer, Marketing Manager") }}
             {% if form.title.errors %}
                 <div class="text-danger mt-1">
                     {% for error in form.title.errors %}
@@ -40,7 +40,7 @@
         <div class="form-group mt-3">
             <label class="form-label fw-bold"><span data-i18n="location_label">Location</span></label>
             <small class="text-muted d-block mb-2"><span data-i18n="location_help">Where is this job located?</span></small>
-            {{ form.location(class="form-control", placeholder="e.g., Jakarta, Remote, Bandung", id="location") }}
+            {{ form.location(class="form-control", placeholder="e.g., Jakarta, Remote, Bandung") }}
             {% if form.location.errors %}
                 <div class="text-danger mt-1">
                     {% for error in form.location.errors %}
@@ -66,7 +66,7 @@
         <div class="form-group mt-3">
             <label class="form-label fw-bold"><span data-i18n="description_label">Job Description</span></label>
             <small class="text-muted d-block mb-2"><span data-i18n="description_help">Describe the responsibilities and daily tasks</span></small>
-            {{ form.description(class="form-control", rows="6", placeholder="Describe the job responsibilities, requirements, qualifications, and any benefits...", id="description") }}
+            {{ form.description(class="form-control", rows="6", placeholder="Describe the job responsibilities, requirements, qualifications, and any benefits...") }}
             {% if form.description.errors %}
                 <div class="text-danger mt-1">
                     {% for error in form.description.errors %}
@@ -98,4 +98,157 @@
         </div>
     </form>
 </div>
+
+<style>
+/* Perbaikan Tema untuk tampilan Post Job (Putih-Biru) */
+.wrap { 
+    max-width: 600px; 
+    margin: 50px auto; 
+    padding: 30px; 
+    background: #ffffff !important; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    color: #343a40 !important; 
+}
+
+/* Memastikan semua teks menjadi gelap/biru */
+.wrap h2, 
+.wrap .form-label, 
+.wrap .form-label.fw-bold, 
+.wrap label { 
+    color: #343a40 !important; 
+}
+.wrap .text-muted { 
+    color: #6c757d !important;
+}
+.wrap .text-danger { 
+    color: #dc3545 !important; 
+}
+.wrap .text-danger small { 
+    color: #dc3545 !important; 
+}
+
+/* Form control styling */
+.wrap .form-control { 
+    background-color: #ffffff !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control:focus { 
+    border-color: #007bff !important; 
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important; 
+    background-color: #ffffff !important; 
+    color: #495057 !important; 
+}
+.wrap .form-control::placeholder { 
+    color: #adb5bd !important; 
+}
+
+/* Button styling */
+.wrap .btn-primary { 
+    background: #007bff !important; 
+    border: none !important; 
+    padding: 12px !important; 
+    font-weight: 600 !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-primary:hover { 
+    background: #0056b3 !important; 
+    transform: translateY(-1px) !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary { 
+    background-color: #6c757d !important; 
+    border-color: #6c757d !important; 
+    color: #ffffff !important; 
+}
+.wrap .btn-secondary:hover { 
+    background-color: #5a6268 !important; 
+    border-color: #5a6268 !important; 
+    color: #ffffff !important; 
+}
+
+/* Alert styling */
+.wrap .alert { 
+    background-color: #f8f9fa !important; 
+    border-color: #ced4da !important; 
+    color: #212529 !important;
+}
+.wrap .alert-danger { 
+    background-color: #f8d7da !important; 
+    border-color: #f5c6cb !important; 
+    color: #721c24 !important;
+}
+.wrap .alert-success { 
+    background-color: #d4edda !important; 
+    border-color: #c3e6cb !important; 
+    color: #155724 !important;
+}
+
+.wrap .img { 
+    background-color: #e9ecef !important;
+}
+.wrap .input-group-text { 
+    background-color: #f8f9fa !important; 
+    border-color: #ced4da !important; 
+    color: #495057 !important; 
+}
+.wrap small { 
+    color: #6c757d !important; 
+}
+.wrap .text-danger small { 
+    color: #dc3545 !important; 
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-resize textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        textarea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        textarea.dispatchEvent(new Event('input'));
+    });
+
+    // Form validation with translated messages
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const title = document.getElementById('{{ form.title.id }}').value;
+        const location = document.getElementById('{{ form.location.id }}').value;
+        const description = document.getElementById('{{ form.description.id }}').value;
+        
+        const currentLang = localStorage.getItem('nk_lang') || 'en';
+        const messages = {
+            en: {
+                fill_fields: 'Please fill in all required fields.',
+                description_short: 'Please provide a more detailed job description (at least 20 characters).',
+                confirm: 'Are you sure you want to post this job?'
+            },
+            id: {
+                fill_fields: 'Harap isi semua bidang yang wajib diisi.',
+                description_short: 'Harap berikan deskripsi pekerjaan yang lebih detail (minimal 20 karakter).',
+                confirm: 'Apakah Anda yakin ingin memposting pekerjaan ini?'
+            }
+        };
+        
+        if (!title.trim() || !location.trim() || !description.trim()) {
+            e.preventDefault();
+            alert(messages[currentLang].fill_fields);
+            return;
+        }
+        
+        if (description.trim().length < 20) {
+            e.preventDefault();
+            alert(messages[currentLang].description_short);
+            return;
+        }
+        
+        if (!confirm(messages[currentLang].confirm)) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
 {% endblock %}

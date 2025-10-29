@@ -1,23 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title_suffix }} - NemuKerja{% endblock %}
+{% block title %}My Applications - NemuKerja{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>
-            {% if title_suffix == "All Applications" %}
-                <span data-i18n="my_applications_my_applications_en">My Applications</span>
-                <span data-i18n="my_applications_my_applications_id" class="d-none">Lamaran Saya</span>
-            {% elif title_suffix == "Pending Applications" %}
-                <span data-i18n="my_applications_pending_en">Pending Applications</span>
-                <span data-i18n="my_applications_pending_id" class="d-none">Lamaran Menunggu</span>
-            {% elif title_suffix == "Accepted Applications" %}
-                <span data-i18n="my_applications_accepted_en">Accepted Applications</span>
-                <span data-i18n="my_applications_accepted_id" class="d-none">Lamaran Diterima</span>
-            {% else %}
-                {{ title_suffix }}
-            {% endif %}
+            <span data-i18n="my_applications_my_applications_en">My Applications</span>
+            <span data-i18n="my_applications_my_applications_id" class="d-none">Lamaran Saya</span>
         </h2>
         <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
             <i class="fas fa-arrow-left me-2"></i>
@@ -25,8 +15,7 @@
             <span data-i18n="my_applications_back_to_dashboard_id" class="d-none">Kembali ke Dashboard</span>
         </a>
     </div>
-    
-    {# ... Sisa konten di bawah ini sama ... #}
+
     {% if applications %}
     <div class="card shadow">
         <div class="card-body">
@@ -116,10 +105,9 @@
         </a>
     </div>
     {% endif %}
-    
-    {# ... sisanya adalah modal, tidak perlu diubah di sini ... #}
 </div>
 
+<!-- Application Detail Modal -->
 <div class="modal fade" id="applicationDetailModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -131,7 +119,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="applicationDetailBody">
-                </div>
+                <!-- Content will be loaded by JavaScript -->
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <span data-i18n="my_applications_close_en">Close</span>
@@ -141,4 +130,45 @@
         </div>
     </div>
 </div>
+
+<script>
+function showApplicationDetail(jobId) {
+    fetch(`/job/${jobId}`)
+        .then(response => response.json())
+        .then(job => {
+            document.getElementById('applicationDetailTitle').textContent = job.title;
+            document.getElementById('applicationDetailBody').innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Company:</strong> ${job.company}</p>
+                        <p><strong>Location:</strong> ${job.location}</p>
+                        <p><strong>Available Slots:</strong> ${job.slots}</p>
+                        <p><strong>Current Applicants:</strong> ${job.applied_count}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong> 
+                            <span class="badge bg-warning text-dark">
+                                <span data-i18n="my_applications_applied_en">Applied</span>
+                                <span data-i18n="my_applications_applied_id" class="d-none">Telah Dilamar</span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <hr>
+                <h6>Qualifications:</h6>
+                <p>${job.qualifications.replace(/\n/g, '<br>')}</p>
+                <hr>
+                <h6>Job Description:</h6>
+                <p>${job.description.replace(/\n/g, '<br>')}</p>
+            `;
+
+            const modal = new bootstrap.Modal(document.getElementById('applicationDetailModal'));
+            modal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error loading job details');
+        });
+}
+</script>
 {% endblock %}
