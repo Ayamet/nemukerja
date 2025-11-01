@@ -79,47 +79,4 @@
         </div>
     </div>
 </div>
-
-<script>
-function togglePassword(id) {
-    var pwd = document.getElementById(id);
-    var eye = document.getElementById('eye-' + id);
-    if (pwd.type === 'password') {
-        pwd.type = 'text';
-        eye.classList.remove('fa-eye');
-        eye.classList.add('fa-eye-slash');
-    } else {
-        pwd.type = 'password';
-        eye.classList.add('fa-eye');
-        eye.classList.remove('fa-eye-slash');
-    }
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const emailField = document.getElementById('email');
-    const passwordField = document.getElementById('login_password');
-
-    // Set placeholder based on language
-    const savedLang = localStorage.getItem('nk_lang') || 'en';
-    if (savedLang === 'en') {
-        emailField.placeholder = "Enter your email";
-        passwordField.placeholder = "Enter your password";
-    } else {
-        emailField.placeholder = "Masukkan email Anda";
-        passwordField.placeholder = "Masukkan kata sandi Anda";
-    }
-});
-</script>
-
-<style>
-/* Clean up styles to rely on global CSS */
-.form-check {
-    display: flex;
-    align-items: center;
-}
-
-.form-check-input {
-    margin-right: 10px;
-}
-</style>
 {% endblock %}

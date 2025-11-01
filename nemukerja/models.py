@@ -14,7 +14,24 @@ class User(db.Model, UserMixin):
 
     applicant_profile = db.relationship('Applicant', backref='user', uselist=False, cascade="all, delete-orphan")
     company_profile = db.relationship('Company', backref='user', uselist=False, cascade="all, delete-orphan")
-
+    
+    @property
+    def name(self):
+        if self.role == 'applicant' and self.applicant_profile:
+            return self.applicant_profile.full_name
+        if self.role == 'company' and self.company_profile:
+            return self.company_profile.company_name
+        if self.role == 'admin':
+            # Untuk admin, kita asumsikan namanya sama dengan bagian pertama email (sebelum @)
+            return self.email.split('@')[0].capitalize() 
+        return self.email # Fallback
+    
+    @property
+    def phone(self):
+        if self.role == 'company' and self.company_profile:
+            return self.company_profile.phone
+        # Anda dapat menambahkan logika untuk applicant atau mengembalikan None/Default
+        return None
 class Applicant(db.Model):
     __tablename__ = 'applicants'
     id = db.Column('id_applicant', db.Integer, primary_key=True)
@@ -58,6 +75,7 @@ class JobListing(db.Model):
     qualifications = db.Column(db.Text, nullable=False)
     location = db.Column(db.String(255))
     slots = db.Column(db.Integer, default=1, nullable=False)
+    is_open = db.Column(db.Boolean, default=True, nullable=False)  # MODIFIKASI: Tambahkan is_open
     posted_at = db.Column(db.TIMESTAMP, server_default=func.now())
     updated_at = db.Column(db.TIMESTAMP, server_default=func.now(), onupdate=func.now())
 

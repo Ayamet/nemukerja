@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-5 pt-5">
-<div class="wrap">
+<div class="wrap-auth">
     <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
         <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
     </div>
@@ -39,33 +39,4 @@
     </form>
     </div>
 </div>
-
-<style>
-.wrap { 
-    max-width: 500px; 
-    margin: 0 auto; 
-    padding: 30px; 
-    background: #ffffff !important; 
-    border-radius: 10px; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-    color: #343a40 !important; 
-}
-
-.wrap h2, 
-.wrap .form-label { 
-    color: #343a40 !important; 
-}
-
-.wrap .form-control { 
-    background-color: #ffffff !important; 
-    border-color: #ced4da !important; 
-    color: #495057 !important; 
-}
-
-.wrap .btn-primary { 
-    background: #007bff !important; 
-    border: none !important; 
-    color: #ffffff !important; 
-}
-</style>
 {% endblock %}
