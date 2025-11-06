@@ -29,10 +29,47 @@ class CompanyProfileForm(FlaskForm):
     phone = StringField('Phone Number', validators=[Optional(), Length(max=20)]) 
     website = StringField('Website', validators=[Optional(), Length(max=200)])
     submit = SubmitField('Save Profile')
+    
+class ApplicantProfileForm(FlaskForm): # BARU
+    full_name = StringField('Full Name', validators=[DataRequired(), Length(min=2, max=255)])
+    skills = TextAreaField('Skills & Expertise', validators=[Optional(), Length(max=1000)])
+    cv_file = FileField('Upload New CV (PDF, max 10MB)', validators=[
+        Optional(),
+        FileAllowed(['pdf'], 'Only PDF files are allowed!')
+    ])
+    submit = SubmitField('Save Profile')
+    
+    # Menambahkan validasi CV yang sama seperti di ApplyForm, tetapi diubah ke Optional
+    def validate_cv_file(self, field):
+        if field.data:
+            try:
+                field.data.seek(0, 2)
+                file_size = field.data.tell()
+                field.data.seek(0)
+                
+                if file_size > 10 * 1024 * 1024:
+                    raise ValidationError('File size must be less than 10MB. Your file is too large.')
+                
+                filename = field.data.filename.lower()
+                if not filename.endswith('.pdf'):
+                    raise ValidationError('Only PDF files are allowed.')
+                    
+            except OSError:
+                raise ValidationError('Error reading file. Please try again.')
 
 class AddJobForm(FlaskForm):
     title = StringField('Job Title', validators=[DataRequired(), Length(max=100)])
     location = StringField('Location', validators=[DataRequired(), Length(max=100)])
+    # BARU: Minimum Salary
+    salary_min = IntegerField('Minimum Salary (IDR)', validators=[
+        Optional(), 
+        NumberRange(min=0, message='Salary must be a non-negative number')
+    ], default=0)
+    # BARU: Maximum Salary
+    salary_max = IntegerField('Maximum Salary (IDR)', validators=[
+        Optional(), 
+        NumberRange(min=0, message='Salary must be a non-negative number')
+    ], default=0)
     description = TextAreaField('Job Description', validators=[DataRequired()])
     qualifications = TextAreaField('Qualifications', validators=[DataRequired()]) 
     slots = IntegerField('Available Slots', validators=[
@@ -40,6 +77,10 @@ class AddJobForm(FlaskForm):
         NumberRange(min=1, message='Slots must be at least 1')
     ], default=1)
     submit = SubmitField('Add Job')
+
+    def validate_salary_max(self, field):
+        if field.data and self.salary_min.data and field.data < self.salary_min.data:
+            raise ValidationError('Maximum salary cannot be less than minimum salary.')
 
 class ApplyForm(FlaskForm):
     cover_letter = TextAreaField('Cover Letter', validators=[

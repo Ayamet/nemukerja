@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - NemuKerja{% endblock %}
+
+{% block content %}
+<div class="wrap-auth container mt-5 pt-5">
+    <div class="img" style="background-color: #e9ecef; height: 150px; display: flex; justify-content: center; align-items: center;">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
+    </div>
+    
+    <h2 class="text-center">
+        <span data-i18n="edit_applicant_profile_title_en">Edit Profile</span>
+        <span data-i18n="edit_applicant_profile_title_id" class="d-none">Edit Profil</span>
+    </h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('edit_applicant_profile') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold"><span data-i18n="edit_applicant_full_name_en">Full Name</span></label>
+            {{ form.full_name(class="form-control", placeholder="e.g., John Doe") }}
+        </div>
+        
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold"><span data-i18n="edit_applicant_skills_en">Skills & Expertise</span></label>
+            <small class="text-muted d-block mb-2">
+                <span data-i18n="edit_applicant_skills_help_en">List your key skills (e.g., Python, SQL, Marketing).</span>
+                <span data-i18n="edit_applicant_skills_help_id" class="d-none">Daftarkan keahlian utama Anda (misalnya, Python, SQL, Pemasaran).</span>
+            </small>
+            {{ form.skills(class="form-control", rows="4", placeholder="e.g., Python, SQL, Project Management") }}
+        </div>
+
+        <div class="form-group mt-4 p-3 border rounded">
+            <label class="form-label fw-bold d-block mb-2"><span data-i18n="edit_applicant_cv_en">Update CV</span></label>
+            
+            {% if applicant.cv_path %}
+                <p class="text-muted small">
+                    <i class="fas fa-file-pdf text-danger me-2"></i> 
+                    <span data-i18n="edit_applicant_current_cv_en">Current CV:</span>
+                    <span data-i18n="edit_applicant_current_cv_id" class="d-none">CV Saat Ini:</span>
+                     CV_File (Uploaded)
+                </p>
+                <small class="text-warning d-block mb-2">
+                    <span data-i18n="edit_applicant_warning_en">Choose a file below to replace the current CV (PDF, max 10MB).</span>
+                    <span data-i18n="edit_applicant_warning_id" class="d-none">Pilih file di bawah untuk mengganti CV saat ini (PDF, maks 10MB).</span>
+                </small>
+            {% else %}
+                 <p class="text-danger small"><i class="fas fa-exclamation-circle me-2"></i> <span data-i18n="edit_applicant_no_cv_en">No CV uploaded yet.</span><span data-i18n="edit_applicant_no_cv_id" class="d-none">Belum ada CV diunggah.</span></p>
+            {% endif %}
+
+            {{ form.cv_file(class="form-control") }}
+        </div>
+        
+        <div class="form-group mt-4">
+            {{ form.submit(class="btn btn-primary form-control", value="Save Changes") }}
+        </div>
+        
+        <div class="mt-3 text-center">
+            <a href="{{ url_for('view_applicant_profile') }}" class="btn btn-secondary">
+                <span data-i18n="edit_applicant_back_to_profile_en">Back to Profile</span>
+                <span data-i18n="edit_applicant_back_to_profile_id" class="d-none">Kembali ke Profil</span>
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

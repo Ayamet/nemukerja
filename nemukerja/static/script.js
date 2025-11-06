@@ -324,6 +324,15 @@ window.showJobDetail = function(jobId) {
                             </span>
                             <span>${job.location}</span>
                         </div>
+                        <div class="space-y-6">
+                        <div class="flex items-center text-gray-700 text-lg">
+                            <i class="fas fa-money-bill-wave text-yellow-500 mr-4 w-6"></i>
+                            <span class="font-semibold mr-3">
+                                <span data-i18n="modal_salary_en">Salary:</span>
+                                <span data-i18n="modal_salary_id" class="hidden">Gaji:</span>
+                            </span>
+                            <span>${formatSalary(job.salary_min, job.salary_max)}</span>
+                        </div>
                         <div class="flex items-center text-gray-700 text-lg">
                             <i class="fas fa-users text-purple-500 mr-4 w-6"></i>
                             <span class="font-semibold mr-3">
@@ -420,6 +429,27 @@ window.showJobDetail = function(jobId) {
                 alert('Error loading job details'); 
             }
         });
+
+        // Helper untuk format gaji
+        function formatSalary(min, max) {
+            if (!min && !max) return 'N/A';
+            const formatter = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            });
+            const minFormatted = formatter.format(min);
+            const maxFormatted = formatter.format(max);
+            
+            if (min > 0 && max > 0 && min !== max) {
+                return `${minFormatted} - ${maxFormatted}`;
+            } else if (min > 0) {
+                return `Min. ${minFormatted}`;
+            } else if (max > 0) {
+                return `Max. ${maxFormatted}`;
+            }
+            return 'N/A';
+        }
 }
 
 

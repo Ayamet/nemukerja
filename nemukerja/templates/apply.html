@@ -20,6 +20,15 @@
                         <div class="col-md-6">
                             <p><strong><span data-i18n="apply_company_en">Company:</span><span data-i18n="apply_company_id" class="d-none">Perusahaan:</span></strong> {{ job.company.company_name }}</p>
                             <p><strong><span data-i18n="apply_location_en">Location:</span><span data-i18n="apply_location_id" class="d-none">Lokasi:</span></strong> {{ job.location }}</p>
+                            <p><strong><span data-i18n="apply_salary_en">Salary:</span><span data-i18n="apply_salary_id" class="d-none">Gaji:</span></strong>
+                            {% if job.salary_min and job.salary_max and job.salary_min != 0 %}
+                                Rp {{ "{:,}".format(job.salary_min) }} - Rp {{ "{:,}".format(job.salary_max) }}
+                            {% elif job.salary_min and job.salary_min != 0 %}
+                                Min. Rp {{ "{:,}".format(job.salary_min) }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </p>
                         </div>
                         <div class="col-md-6">
                             <p><strong><span data-i18n="apply_available_slots_en">Available Slots:</span><span data-i18n="apply_available_slots_id" class="d-none">Kuota Tersedia:</span></strong> {{ job.slots }}</p>

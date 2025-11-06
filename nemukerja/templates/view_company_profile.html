@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Company Profile - NemuKerja{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
+    </div>
+    
+    <h2 class="text-center">
+        <span data-i18n="company_profile_title_en">Company Profile</span>
+        <span data-i18n="company_profile_title_id" class="d-none">Profil Perusahaan</span>
+    </h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ company.company_name }}</h4>
+            <a href="{{ url_for('edit_company_profile') }}" class="btn btn-warning btn-sm">
+                <i class="fas fa-edit me-2"></i> 
+                <span data-i18n="company_profile_edit_en">Edit Profile</span>
+                <span data-i18n="company_profile_edit_id" class="d-none">Edit Profil</span>
+            </a>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                <strong><span data-i18n="company_profile_contact_email_en">Contact Email:</span><span data-i18n="company_profile_contact_email_id" class="d-none">Email Kontak:</span></strong> {{ company.contact_email or 'N/A' }}<br>
+                <strong><span data-i18n="company_profile_phone_en">Phone:</span><span data-i18n="company_profile_phone_id" class="d-none">Telepon:</span></strong> {{ company.phone or 'N/A' }}<br>
+                {% if company.website %}
+                    <strong><span data-i18n="company_profile_website_en">Website:</span><span data-i18n="company_profile_website_id" class="d-none">Situs Web:</span></strong> <a href="{{ company.website }}" target="_blank">{{ company.website }}</a><br>
+                {% endif %}
+                <strong><span data-i18n="company_profile_member_since_en">Member since:</span><span data-i18n="company_profile_member_since_id" class="d-none">Anggota Sejak:</span></strong> {{ current_user.created_at.strftime('%B %d, %Y') if current_user.created_at else 'N/A' }}
+            </p>
+            <h6 class="fw-bold mt-3"><span data-i18n="company_profile_description_en">Description:</span><span data-i18n="company_profile_description_id" class="d-none">Deskripsi:</span></h6>
+            <p class="card-text text-muted">{{ company.description or 'No description provided.' }}</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">{{ total_jobs }}</h5>
+                    <p class="card-text"><span data-i18n="company_profile_total_jobs_posted_en">Total Jobs Posted</span><span data-i18n="company_profile_total_jobs_posted_id" class="d-none">Total Pekerjaan Diposting</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-success">{{ open_jobs }}</h5>
+                    <p class="card-text"><span data-i18n="company_profile_open_positions_en">Open Positions</span><span data-i18n="company_profile_open_positions_id" class="d-none">Posisi Terbuka</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-info">{{ total_applications }}</h5>
+                    <p class="card-text"><span data-i18n="company_profile_total_applications_en">Total Applications</span><span data-i18n="company_profile_total_applications_id" class="d-none">Total Lamaran</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>
+            <span data-i18n="company_profile_your_job_postings_en">Your Job Postings</span>
+            <span data-i18n="company_profile_your_job_postings_id" class="d-none">Pekerjaan yang Diposting</span>
+        </h3>
+        <a href="{{ url_for('add_job') }}" class="btn btn-primary">
+            <span data-i18n="company_profile_post_new_job_en">Post New Job</span>
+            <span data-i18n="company_profile_post_new_job_id" class="d-none">Posting Pekerjaan Baru</span>
+        </a>
+    </div>
+
+    {% if jobs %}
+        <div class="job-list">
+            {% for job in jobs %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title">{{ job.title }}</h5>
+                                <p class="card-text">
+                                    <strong><span data-i18n="company_profile_location_en">Location:</span><span data-i18n="company_profile_location_id" class="d-none">Lokasi:</span></strong> {{ job.location }}<br>
+                                    <strong><span data-i18n="company_profile_slots_available_en">Slots Available:</span><span data-i18n="company_profile_slots_available_id" class="d-none">Kuota Tersedia:</span></strong> {{ job.slots }}<br>
+                                    <strong><span data-i18n="company_profile_applicants_en">Applicants:</span><span data-i18n="company_profile_applicants_id" class="d-none">Pelamar:</span></strong> {{ job.applications|length }}<br>
+                                    <strong><span data-i18n="company_profile_status_en">Status:</span><span data-i18n="company_profile_status_id" class="d-none">Status:</span></strong> 
+                                    <span class="badge {% if job.is_open %}bg-success{% else %}bg-secondary{% endif %}">
+                                        {{ 'Open' if job.is_open else 'Closed' }}
+                                    </span><br>
+                                    <strong><span data-i18n="company_profile_posted_en">Posted:</span><span data-i18n="company_profile_posted_id" class="d-none">Diposting:</span></strong> {{ job.created_at.strftime('%B %d, %Y') if job.created_at else 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="btn-group-vertical">
+                                <a href="{{ url_for('job_detail', job_id=job.id) }}" class="btn btn-outline-primary btn-sm mb-2"><span data-i18n="company_profile_view_details_en">View Details</span><span data-i18n="company_profile_view_details_id" class="d-none">Lihat Detail</span></a>
+                                <a href="{{ url_for('edit_job', job_id=job.id) }}" class="btn btn-outline-secondary btn-sm mb-2"><span data-i18n="company_profile_edit_en">Edit</span><span data-i18n="company_profile_edit_id" class="d-none">Edit</span></a>
+                                {% if job.is_open %}
+                                    <form method="POST" action="{{ url_for('close_job', job_id=job.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-warning btn-sm mb-2" onclick="return confirm('Are you sure you want to close this job?')">
+                                            <span data-i18n="company_profile_close_job_en">Close Job</span><span data-i18n="company_profile_close_job_id" class="d-none">Tutup Lowongan</span>
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <form method="POST" action="{{ url_for('open_job', job_id=job.id) }}" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-success btn-sm mb-2" onclick="return confirm('Are you sure you want to reopen this job?')">
+                                            <span data-i18n="company_profile_reopen_job_en">Reopen Job</span><span data-i18n="company_profile_reopen_job_id" class="d-none">Buka Lagi Lowongan</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-4">
+            <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+            <h4><span data-i18n="company_profile_no_jobs_posted_yet_en">No Jobs Posted Yet</span><span data-i18n="company_profile_no_jobs_posted_yet_id" class="d-none">Belum Ada Pekerjaan Diposting</span></h4>
+            <p class="text-muted"><span data-i18n="company_profile_you_haven_t_posted_any_job_openings_yet_start_by_posting_your_first_job_en">You haven't posted any job openings yet. Start by posting your first job!</span><span data-i18n="company_profile_you_haven_t_posted_any_job_openings_yet_start_by_posting_your_first_job_id" class="d-none">Anda belum memposting lowongan pekerjaan apa pun. Mulailah dengan memposting pekerjaan pertama Anda!</span></p>
+            <a href="{{ url_for('add_job') }}" class="btn btn-primary"><span data-i18n="company_profile_post_your_first_job_en">Post Your First Job</span><span data-i18n="company_profile_post_your_first_job_id" class="d-none">Posting Pekerjaan Pertama Anda</span></a>
+        </div>
+    {% endif %}
+
+    {% if recent_applications %}
+    <div class="mt-5">
+        <h3><span data-i18n="company_profile_recent_applications_en">Recent Applications</span><span data-i18n="company_profile_recent_applications_id" class="d-none">Lamaran Terbaru</span></h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><span data-i18n="company_profile_job_title_en">Job Title</span><span data-i18n="company_profile_job_title_id" class="d-none">Judul Pekerjaan</span></th>
+                                <th><span data-i18n="company_profile_applicant_name_en">Applicant Name</span><span data-i18n="company_profile_applicant_name_id" class="d-none">Nama Pelamar</span></th>
+                                <th><span data-i18n="company_profile_applied_date_en">Applied Date</span><span data-i18n="company_profile_applied_date_id" class="d-none">Tanggal Lamar</span></th>
+                                <th><span data-i18n="company_profile_status_en">Status</span><span data-i18n="company_profile_status_id" class="d-none">Status</span></th>
+                                <th><span data-i18n="company_profile_action_en">Action</span><span data-i18n="company_profile_action_id" class="d-none">Aksi</span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for application in recent_applications %}
+                            <tr>
+                                <td>{{ application.job.title }}</td>
+                                <td>{{ application.applicant.name }}</td>
+                                <td>{{ application.applied_at.strftime('%Y-%m-%d') if application.applied_at else 'N/A' }}</td>
+                                <td>
+                                    <span class="badge {% if application.status == 'Pending' %}bg-warning text-dark{% elif application.status == 'Diterima' %}bg-success{% elif application.status == 'Ditolak' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                        {{ application.status|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_application', application_id=application.id) }}" class="btn btn-outline-primary btn-sm"><span data-i18n="company_profile_view_en">View</span><span data-i18n="company_profile_view_id" class="d-none">Lihat</span></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{{ url_for('company_applications') }}" class="btn btn-outline-primary"><span data-i18n="company_profile_view_all_applications_en">View All Applications</span><span data-i18n="company_profile_view_all_applications_id" class="d-none">Lihat Semua Lamaran</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-2"></i> Kembali ke Dasbor</a>
+    </div>
+</div>
+{% endblock %}

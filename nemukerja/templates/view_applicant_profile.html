@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Profile Detail - NemuKerja{% endblock %}
+
+{% block content %}
+<div class="wrap-auth container mt-5 pt-5">
+    <div class="img" style="background-color: #e9ecef; height: 150px; display: flex; justify-content: center; align-items: center;">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
+    </div>
+    
+    <h2 class="text-center">
+        <span data-i18n="view_applicant_profile_title_en">My Profile</span>
+        <span data-i18n="view_applicant_profile_title_id" class="d-none">Profil Saya</span>
+    </h2>
+    
+    <div class="card shadow-lg border-0 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-user-circle me-2"></i>
+                {{ applicant.full_name }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h6 class="fw-bold"><span data-i18n="view_applicant_contact_en">Contact Information</span><span data-i18n="view_applicant_contact_id" class="d-none">Informasi Kontak</span>:</h6>
+                <p class="mb-1"><strong>Email:</strong> {{ current_user.email }}</p>
+                <p class="mb-1"><strong>Role:</strong> <span class="badge bg-primary">{{ current_user.role|title }}</span></p>
+                <p><strong><span data-i18n="view_applicant_member_en">Member Since:</span><span data-i18n="view_applicant_member_id" class="d-none">Anggota Sejak:</span></strong> {{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <h6 class="fw-bold"><span data-i18n="view_applicant_skills_en">Skills & Expertise</span><span data-i18n="view_applicant_skills_id" class="d-none">Keahlian & Keahlian</span>:</h6>
+                <p class="text-muted">{{ applicant.skills or 'N/A' }}</p>
+            </div>
+            
+            <div class="mb-4">
+                <h6 class="fw-bold">CV:</h6>
+                {% if applicant.cv_path %}
+                    <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded">
+                        <div>
+                            <i class="fas fa-file-pdf text-danger me-2"></i>
+                            <span>CV_{{ applicant.full_name }}.pdf</span>
+                        </div>
+                        <a href="{{ url_for('view_cv', filename=applicant.cv_path) }}" 
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i> <span data-i18n="view_applicant_view_en">View</span><span data-i18n="view_applicant_view_id" class="d-none">Lihat</span>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning py-2"><i class="fas fa-exclamation-triangle me-2"></i> <span data-i18n="view_applicant_no_cv_en">No CV uploaded.</span><span data-i18n="view_applicant_no_cv_id" class="d-none">Belum ada CV diunggah.</span></div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('edit_applicant_profile') }}" class="btn btn-primary btn-lg me-2">
+            <i class="fas fa-edit me-2"></i> 
+            <span data-i18n="view_applicant_edit_profile_en">Edit Profile Information</span>
+            <span data-i18n="view_applicant_edit_profile_id" class="d-none">Edit Informasi Profil</span>
+        </a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">
+            <i class="fas fa-arrow-left me-2"></i> 
+            <span data-i18n="view_applicant_back_to_dashboard_en">Back to Dashboard</span>
+            <span data-i18n="view_applicant_back_to_dashboard_id" class="d-none">Kembali ke Dasbor</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

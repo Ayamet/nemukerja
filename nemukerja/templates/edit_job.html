@@ -56,6 +56,21 @@
             </label>
             {{ form.qualifications(class="form-control", rows="4") }}
         </div>
+
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_min_salary_en">Minimum Salary (IDR)</span>
+                <span data-i18n="edit_job_min_salary_id" class="d-none">Gaji Minimum (IDR)</span>
+            </label>
+            {{ form.salary_min(class="form-control") }}
+        </div>
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold">
+                <span data-i18n="edit_job_max_salary_en">Maximum Salary (IDR)</span>
+                <span data-i18n="edit_job_max_salary_id" class="d-none">Gaji Maksimum (IDR)</span>
+            </label>
+            {{ form.salary_max(class="form-control") }}
+        </div>
         
         <div class="form-group mt-4">
             {{ form.submit(class="btn btn-primary form-control", value="Save Changes") }}

@@ -15,6 +15,88 @@
         </p>
     </div>
 
+<div class="max-w-4xl mx-auto mb-10 p-6 bg-white rounded-xl shadow-lg border border-gray-100">
+    <form method="GET" action="{{ url_for('index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div class="md:col-span-4">
+             <label for="search" class="sr-only">Search</label>
+             <input type="text" name="search" id="search" placeholder="Job Title or Qualification Keywords..." 
+                    class="form-control form-control-lg" value="{{ search_query or '' }}">
+        </div>
+        
+        <div>
+            <label for="location" class="text-sm font-medium text-gray-700">Location</label>
+            <input type="text" name="location" id="location" placeholder="City or Remote" class="form-control">
+        </div>
+        
+        <div>
+            <label for="salary_min" class="text-sm font-medium text-gray-700">Min. Salary (IDR)</label>
+            <input type="number" name="salary_min" id="salary_min" placeholder="e.g., 5000000" class="form-control">
+        </div>
+
+        <div>
+            <label for="company" class="text-sm font-medium text-gray-700">Company</label>
+            <select name="company" id="company" class="form-select">
+                <option value="">All Companies</option>
+                {% for company in companies %}
+                    <option value="{{ company.company_name }}">{{ company.company_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="md:col-span-1">
+            <button type="submit" class="btn btn-primary w-full h-full">
+                <i class="fas fa-search me-2"></i> Search
+            </button>
+        </div>
+    </form>
+</div>
+{% if jobs %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        </div>
+    
+    <div class="flex justify-center mt-8">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=pagination.prev_num, search=search_query, location=request.args.get('location', ''), salary_min=request.args.get('salary_min', ''), company=request.args.get('company', '')) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&laquo;</span>
+                </li>
+                {% endif %}
+                
+                {% for p in pagination.iter_pages() %}
+                    {% if p %}
+                        {% if p == pagination.page %}
+                        <li class="page-item active" aria-current="page"><span class="page-link">{{ p }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="{{ url_for('index', page=p, search=search_query, location=request.args.get('location', ''), salary_min=request.args.get('salary_min', ''), company=request.args.get('company', '')) }}">{{ p }}</a></li>
+                        {% endif %}
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('index', page=pagination.next_num, search=search_query, location=request.args.get('location', ''), salary_min=request.args.get('salary_min', ''), company=request.args.get('company', '')) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link">&raquo;</span>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% endif %}
+
     {% if jobs %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {% for job in jobs %}
@@ -40,6 +122,18 @@
                                 {{ job.slots }} 
                                 <span data-i18n="index_slots_available_en">slots available</span>
                                 <span data-i18n="index_slots_available_id" class="hidden">kuota tersedia</span>
+                            </span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-money-bill-wave text-yellow-500 mr-3 w-4 text-center"></i>
+                            <span class="text-sm">
+                                {% if job.salary_min and job.salary_max and job.salary_min != 0 %}
+                                    Rp {{ "{:,}".format(job.salary_min) }} - Rp {{ "{:,}".format(job.salary_max) }}
+                                {% elif job.salary_min and job.salary_min != 0 %}
+                                    Min. Rp {{ "{:,}".format(job.salary_min) }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
                             </span>
                         </div>
                     </div>

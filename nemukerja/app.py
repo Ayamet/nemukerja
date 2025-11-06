@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import timedelta
 from nemukerja.models import User, Company, JobListing, Application, Applicant, Notification
-from nemukerja.forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm
+from nemukerja.forms import RegisterForm, LoginForm, CompanyProfileForm, AddJobForm, ApplyForm, ReactiveForm, ApplicantProfileForm
 from werkzeug.utils import secure_filename
 import json
 from sqlalchemy import or_, desc
@@ -141,11 +141,67 @@ def create_app():
         jobs = JobListing.query.all()
         return render_template('admin_jobs.html', jobs=jobs)
 
-    # Your existing routes continue here...
     @app.route('/')
     def index():
-        jobs = JobListing.query.filter_by(is_open=True).order_by(JobListing.posted_at.desc()).all() # MODIFIKASI: Filter is_open
-        return render_template('index.html', jobs=jobs, guest=True)
+        # Parameter untuk Pencarian dan Filter
+        search_query = request.args.get('search', '', type=str)
+        location_filter = request.args.get('location', '', type=str)
+        salary_min_filter = request.args.get('salary_min', type=int)
+        company_filter = request.args.get('company', '', type=str)
+        
+        # Pagination Parameters
+        page = request.args.get('page', 1, type=int)
+        per_page = 9 # Jumlah item per halaman
+
+        # Query Awal (filter is_open=True sudah ada)
+        query = JobListing.query.filter_by(is_open=True).order_by(JobListing.posted_at.desc())
+
+        # 1. Implementasi Filter & Search
+        filters = []
+
+        # Search Judul atau Kualifikasi
+        if search_query:
+            filters.append(or_(
+                JobListing.title.ilike(f'%{search_query}%'),
+                JobListing.qualifications.ilike(f'%{search_query}%')
+            ))
+
+        # Filter Lokasi
+        if location_filter:
+            filters.append(JobListing.location.ilike(f'%{location_filter}%'))
+
+        # Filter Gaji Minimum
+        if salary_min_filter is not None and salary_min_filter > 0:
+            # Cari lowongan yang gaji_min-nya lebih besar atau sama dengan filter
+            filters.append(JobListing.salary_min >= salary_min_filter) 
+            # ATAU cari lowongan yang rentang gajinya mencakup nilai filter
+            filters.append(JobListing.salary_max >= salary_min_filter)
+
+
+        # Filter Perusahaan
+        if company_filter:
+            # Membutuhkan join atau subquery, kita akan menggunakan join sederhana dengan filter nama
+            # Ini memerlukan modifikasi di query awal atau join, untuk sementara kita buat query terpisah
+            company_ids = db.session.query(Company.id).filter(Company.company_name.ilike(f'%{company_filter}%')).subquery()
+            filters.append(JobListing.id_company.in_(company_ids))
+
+
+        if filters:
+            query = query.filter(*filters)
+        
+        # 2. Implementasi Pagination
+        jobs_pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+        jobs = jobs_pagination.items
+        
+        # Perlu list semua perusahaan untuk dropdown filter
+        companies = Company.query.all()
+
+        return render_template('index.html', 
+                               jobs=jobs, 
+                               pagination=jobs_pagination, # BARU
+                               companies=companies,       # BARU
+                               search_query=search_query, # BARU
+                               guest=True)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -306,27 +362,146 @@ def create_app():
         db.session.commit()
         return jsonify({'success': True})
 
-    @app.route('/company-profile', methods=['GET', 'POST'])
+    # === RUTE PROFIL APPLICANT (PELAMAR) ===
+
+    # RUTE BARU: Untuk MELIHAT profil pelamar
+    @app.route('/profile/applicant/view')
     @login_required
-    def company_profile():
+    def view_applicant_profile():
+        if current_user.role != 'applicant':
+            flash('Hanya akun pelamar yang dapat mengakses halaman ini.', 'danger')
+            return redirect(url_for('dashboard'))
+
+        applicant = current_user.applicant_profile
+        if not applicant:
+            flash('Profil pelamar tidak ditemukan.', 'danger')
+            return redirect(url_for('dashboard'))
+        
+        # Render template untuk MELIHAT profil
+        return render_template('view_applicant_profile.html', applicant=applicant)
+
+    # RUTE DIPERBARUI: Untuk MENGEDIT profil pelamar
+    # (Menggantikan @app.route('/profile/applicant', ...))
+    @app.route('/profile/applicant/edit', methods=['GET', 'POST'])
+    @login_required
+    def edit_applicant_profile():
+        if current_user.role != 'applicant':
+            flash('Hanya akun pelamar yang dapat mengakses halaman ini.', 'danger')
+            return redirect(url_for('dashboard'))
+
+        applicant = current_user.applicant_profile
+        if not applicant:
+            flash('Profil pelamar tidak ditemukan.', 'danger')
+            return redirect(url_for('dashboard'))
+
+        # Gunakan ApplicantProfileForm dari forms.py
+        form = ApplicantProfileForm(obj=applicant)
+        
+        if form.validate_on_submit():
+            # 1. Update data dasar (nama dan skills)
+            applicant.full_name = form.full_name.data
+            applicant.skills = form.skills.data
+
+            # 2. Handle upload CV jika ada file baru
+            cv_file = form.cv_file.data
+            if cv_file:
+                try:
+                    # Hapus file CV lama jika ada
+                    if applicant.cv_path:
+                        old_path = os.path.join(current_app.root_path, 'static', 'uploads', 'cv', applicant.cv_path)
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                            
+                    # Simpan file baru dengan nama unik
+                    original_filename = secure_filename(cv_file.filename)
+                    file_ext = os.path.splitext(original_filename)[1]
+                    unique_filename = f"{uuid.uuid4().hex}{file_ext}"
+                    
+                    upload_dir = os.path.join(current_app.root_path, 'static', 'uploads', 'cv')
+                    os.makedirs(upload_dir, exist_ok=True)
+                    
+                    file_path = os.path.join(upload_dir, unique_filename)
+                    cv_file.save(file_path)
+                    
+                    applicant.cv_path = unique_filename
+                    
+                except Exception as e:
+                    flash(f'Error mengunggah file CV: {e}', 'danger')
+                    db.session.rollback()
+                    return redirect(url_for('edit_applicant_profile'))
+
+            db.session.commit()
+            flash('Profil berhasil disimpan!', 'success')
+            # Redirect ke halaman MELIHAT profil setelah selesai edit
+            return redirect(url_for('view_applicant_profile'))
+
+        # Render template untuk MENGEDIT profil
+        return render_template('edit_applicant_profile.html', form=form, applicant=applicant)
+
+
+    # === RUTE PROFIL COMPANY (PERUSAHAAN) ===
+
+    # RUTE BARU: Untuk MELIHAT profil perusahaan
+    @app.route('/profile/company/view')
+    @login_required
+    def view_company_profile():
         if current_user.role != 'company':
-            flash('Only company accounts can access this page.', 'danger')
+            flash('Hanya akun perusahaan yang dapat mengakses halaman ini.', 'danger')
             return redirect(url_for('index'))
 
         company = current_user.company_profile
         if not company:
+            flash('Profil perusahaan tidak ditemukan. Harap lengkapi.', 'warning')
+            return redirect(url_for('edit_company_profile'))
+
+        # Ambil data statistik untuk ditampilkan di halaman lihat profil
+        jobs = JobListing.query.filter_by(id_company=company.id).order_by(JobListing.posted_at.desc()).all()
+        total_jobs = len(jobs)
+        open_jobs = len([job for job in jobs if getattr(job, 'is_open', True)])
+        total_applications = sum(len(job.applications) for job in jobs)
+        
+        # Ambil 5 lamaran terbaru (sesuai template view_company_profile.html)
+        recent_applications = db.session.query(Application).join(JobListing).filter(JobListing.id_company == company.id).order_by(Application.applied_at.desc()).limit(5).all()
+
+        # Render template MELIHAT profil
+        return render_template('view_company_profile.html', 
+                               company=company,
+                               jobs=jobs, # Kirim daftar pekerjaan
+                               recent_applications=recent_applications, # Kirim lamaran terbaru
+                               total_jobs=total_jobs,
+                               open_jobs=open_jobs,
+                               total_applications=total_applications)
+
+    # RUTE DIPERBARUI: Untuk MENGEDIT profil perusahaan
+    # (Menggantikan @app.route('/company-profile', ...))
+    @app.route('/profile/company/edit', methods=['GET', 'POST'])
+    @login_required
+    def edit_company_profile():
+        if current_user.role != 'company':
+            flash('Hanya akun perusahaan yang dapat mengakses halaman ini.', 'danger')
+            return redirect(url_for('index'))
+
+        company = current_user.company_profile
+        if not company:
+            # Jika profil belum ada (kasus jarang terjadi), buat baru
             company = Company(id_user=current_user.id, company_name="New Company")
             db.session.add(company)
             db.session.commit()
+            flash('Harap lengkapi profil perusahaan Anda.', 'info')
 
+        # Gunakan CompanyProfileForm dari forms.py
         form = CompanyProfileForm(obj=company)
+        
         if form.validate_on_submit():
+            # Mengisi objek company dengan data dari form
             form.populate_obj(company)
             db.session.commit()
-            flash('Company profile saved.', 'success')
-            return redirect(url_for('dashboard'))
+            flash('Profil perusahaan berhasil disimpan!', 'success')
+            # Redirect ke halaman MELIHAT profil setelah selesai edit
+            return redirect(url_for('view_company_profile'))
 
-        return render_template('company_profile.html', form=form, company=company)
+        # Render template MENGEDIT profil
+        return render_template('edit_company_profile.html', form=form)
 
     @app.route('/logout')
     @login_required
@@ -341,11 +516,12 @@ def create_app():
             return redirect(url_for('admin_dashboard'))
         elif current_user.role == 'company':
             company = current_user.company_profile
-            if not company or not company.company_name:
+            if not company or not company.company_name or company.company_name == "New Company":
                 flash('Please complete your company profile first.', 'warning')
-                return redirect(url_for('company_profile'))
+                # PERBARUI INI: Arahkan ke rute edit yang baru
+                return redirect(url_for('edit_company_profile'))
 
-            jobs = JobListing.query.filter_by(id_company=company.id).order_by(JobListing.posted_at.desc()).all() # Ambil SEMUA job, termasuk yang closed
+            jobs = JobListing.query.filter_by(id_company=company.id).order_by(JobListing.posted_at.desc()).all()
             total_jobs = len(jobs)
             total_applications = sum(len(job.applications) for job in jobs)
             recent_applications = db.session.query(Application).join(JobListing).filter(JobListing.id_company == company.id).order_by(Application.applied_at.desc()).limit(5).all()
@@ -357,6 +533,7 @@ def create_app():
                                      total_applications=total_applications,
                                      recent_applications=recent_applications)
         else: 
+            # (Logika dashboard applicant/user)
             jobs = JobListing.query.filter_by(is_open=True).order_by(JobListing.posted_at.desc()).all()
             
             applicant_profile = current_user.applicant_profile
@@ -369,7 +546,7 @@ def create_app():
                                    guest=False,
                                    total_app_count=len(total_app),
                                    pending_app_count=pending_app_count,
-                                   accepted_app_count=accepted_app_count) # MODIFIKASI: Mengirim 3 metrik
+                                   accepted_app_count=accepted_app_count)
 
     @app.route('/job/<int:job_id>')
     def job_detail(job_id):
@@ -384,6 +561,8 @@ def create_app():
             'id': job.id,
             'title': job.title,
             'location': job.location,
+            'salary_min': job.salary_min, # BARU
+            'salary_max': job.salary_max, # BARU
             'description': job.description,
             'qualifications': job.qualifications,
             'company': job.company.company_name if job.company else "N/A",
@@ -575,6 +754,8 @@ def create_app():
             new_job = JobListing(
                 title=form.title.data,
                 location=form.location.data,
+                salary_min=form.salary_min.data, # BARU
+                salary_max=form.salary_max.data, # BARU
                 description=form.description.data,
                 qualifications=form.qualifications.data,
                 slots=form.slots.data,

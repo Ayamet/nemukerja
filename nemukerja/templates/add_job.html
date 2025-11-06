@@ -88,6 +88,32 @@
                 </div>
             {% endif %}
         </div>
+
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold"><span data-i18n="salary_label">Minimum Salary (IDR)</span></label>
+            <small class="text-muted d-block mb-2"><span data-i18n="salary_min_help">Enter minimum salary (optional)</span></small>
+            {{ form.salary_min(class="form-control", placeholder="e.g., 5000000") }}
+            {% if form.salary_min.errors %}
+                <div class="text-danger mt-1">
+                    {% for error in form.salary_min.errors %}
+                        <small>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group mt-3">
+            <label class="form-label fw-bold"><span data-i18n="salary_label">Maximum Salary (IDR)</span></label>
+            <small class="text-muted d-block mb-2"><span data-i18n="salary_max_help">Enter maximum salary (optional)</span></small>
+            {{ form.salary_max(class="form-control", placeholder="e.g., 8000000") }}
+            {% if form.salary_max.errors %}
+                <div class="text-danger mt-1">
+                    {% for error in form.salary_max.errors %}
+                        <small>{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
         
         <div class="form-group mt-4">
             {{ form.submit(class="btn btn-primary form-control", **{'data-i18n': 'submit_button'}) }}

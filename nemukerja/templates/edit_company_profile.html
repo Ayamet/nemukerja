@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Company Profile - NemuKerja{% endblock %}
+
+{% block content %}
+<div class="wrap">
+    <div class="img" style="background-color: #f0f0f0; height: 150px; display: flex; justify-content: center; align-items: center;">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" style="width: 450px; height: 150px;">
+    </div>
+    
+    <h2 class="text-center">
+        <span data-i18n="edit_company_profile_title_en">Edit Company Profile</span>
+        <span data-i18n="edit_company_profile_title_id" class="d-none">Edit Profil Perusahaan</span>
+    </h2>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST" action="{{ url_for('edit_company_profile') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group mb-3">
+            <label for="company_name" class="form-label fw-bold">
+                <span data-i18n="edit_company_name_en">Company Name</span>
+                <span data-i18n="edit_company_name_id" class="d-none">Nama Perusahaan</span>
+            </label>
+            {{ form.company_name(class="form-control") }}
+        </div>
+        
+        <div class="form-group mb-3">
+            <label for="contact_email" class="form-label fw-bold">
+                <span data-i18n="edit_company_contact_email_en">Contact Email</span>
+                <span data-i18n="edit_company_contact_email_id" class="d-none">Email Kontak</span>
+            </label>
+            {{ form.contact_email(class="form-control") }}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="phone" class="form-label fw-bold">
+                <span data-i18n="edit_company_phone_en">Phone Number</span>
+                <span data-i18n="edit_company_phone_id" class="d-none">Nomor Telepon</span>
+            </label>
+            {{ form.phone(class="form-control") }}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="website" class="form-label fw-bold">
+                <span data-i18n="edit_company_website_en">Website</span>
+                <span data-i18n="edit_company_website_id" class="d-none">Situs Web</span>
+            </label>
+            {{ form.website(class="form-control") }}
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="description" class="form-label fw-bold">
+                <span data-i18n="edit_company_description_en">Description</span>
+                <span data-i18n="edit_company_description_id" class="d-none">Deskripsi</span>
+            </label>
+            {{ form.description(class="form-control", rows="5") }}
+        </div>
+
+        <div class="mt-4">
+            {{ form.submit(class="btn btn-primary form-control", value="Save Changes") }}
+        </div>
+        
+        <div class="mt-3 text-center">
+            <a href="{{ url_for('view_company_profile') }}" class="btn btn-secondary">
+                <span data-i18n="edit_company_back_to_profile_en">Back to Profile</span>
+                <span data-i18n="edit_company_back_to_profile_id" class="d-none">Kembali ke Profil</span>
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

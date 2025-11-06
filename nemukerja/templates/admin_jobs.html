@@ -27,6 +27,7 @@
                                     <th>Job Title</th>
                                     <th>Company</th>
                                     <th>Location</th>
+                                    <th>Salary (IDR)</th>
                                     <th>Slots</th>
                                     <th>Applicants</th>
                                     <th>Status</th>
@@ -42,6 +43,15 @@
                                     </td>
                                     <td>{{ job.company.company_name }}</td>
                                     <td>{{ job.location }}</td>
+                                    <td>
+                                        {% if job.salary_min and job.salary_max and job.salary_min != 0 %}
+                                            {{ "{:,}".format(job.salary_min) }} - {{ "{:,}".format(job.salary_max) }}
+                                        {% elif job.salary_min and job.salary_min != 0 %}
+                                            Min. {{ "{:,}".format(job.salary_min) }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
                                     <td>
                                         <span class="badge bg-primary">{{ job.slots }}</span>
                                     </td>

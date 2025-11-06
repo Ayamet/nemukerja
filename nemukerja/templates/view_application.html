@@ -37,6 +37,18 @@
                                         <span data-i18n="view_application_location_id" class="d-none">Lokasi:</span>
                                     </strong> {{ application.job.location }}</p>
                                     <p><strong>
+                                        <span data-i18n="view_application_salary_en">Salary:</span>
+                                        <span data-i18n="view_application_salary_id" class="d-none">Gaji:</span>
+                                    </strong> 
+                                        {% if application.job.salary_min and application.job.salary_max and application.job.salary_min != 0 %}
+                                            Rp {{ "{:,}".format(application.job.salary_min) }} - Rp {{ "{:,}".format(application.job.salary_max) }}
+                                        {% elif application.job.salary_min and application.job.salary_min != 0 %}
+                                            Min. Rp {{ "{:,}".format(application.job.salary_min) }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </p>
+                                    <p><strong>
                                         <span data-i18n="view_application_available_slots_en">Available Slots:</span>
                                         <span data-i18n="view_application_available_slots_id" class="d-none">Kuota Tersedia:</span>
                                     </strong> {{ application.job.slots }}</p>
