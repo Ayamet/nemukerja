@@ -3,84 +3,77 @@
 {% block title %}Sign In - NemuKerja{% endblock %}
 
 {% block content %}
-
-<div class="tw-container tw-mx-auto tw-mt-20 tw-px-4">
-    <div class="tw-flex tw-justify-center">
-        <div class="tw-w-full tw-max-w-md">
+<div class="tw-min-h-full tw-flex tw-flex-col tw-justify-center tw-items-center tw-bg-gray-50 tw-py-12 tw-px-4 sm:tw-px-6 lg:tw-px-8">
+    <div class="tw-w-full tw-max-w-md tw-space-y-8">
+        
+        <div class="tw-bg-white tw-shadow-2xl tw-rounded-2xl tw-p-8 sm:tw-p-10">
             
-            <div class="tw-bg-white tw-shadow-xl tw-rounded-2xl tw-border-0">
-                <div class="tw-p-6 sm:tw-p-8">
-                    
-                    <img src="{{ url_for('static', filename='images/banner.png') }}" class="tw-w-full tw-h-auto tw-mx-auto" style="max-height: 150px;">
-                    
-                    <h2 class="tw-text-center tw-mt-4 tw-mb-6 tw-text-3xl tw-font-bold tw-text-gray-900">
-                        <span data-i18n="login_sign_in_en">Sign In</span>
-                        <span data-i18n="login_sign_in_id" class="d-none">Masuk</span>
-                    </h2>
+            <h2 class="tw-text-center tw-text-3xl tw-font-bold tw-tracking-tight tw-text-gray-900">
+                <span data-i18n="login_sign_in_en">Sign In</span>
+                <span data-i18n="login_sign_in_id" class="d-none">Masuk</span>
+            </h2>
 
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            <div class="tw-mb-4 tw-space-y-3"> {% for category, message in messages %}
-                                <div class="tw-p-4 tw-rounded-md {% if category == 'error' %}tw-bg-red-100 tw-text-red-700{% else %}tw-bg-blue-100 tw-text-blue-700{% endif %}" role="alert">
-                                    {{ message }}
-                                   </div>
-                            {% endfor %}
-                            </div>
-                        {% endif %}
-                    {% endwith %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="tw-mt-4 tw-space-y-3">
+                    {% for category, message in messages %}
+                        <div class="tw-p-4 tw-rounded-md {% if category == 'error' %}tw-bg-red-100 tw-text-red-700{% else %}tw-bg-blue-100 tw-text-blue-700{% endif %}" role="alert">
+                            <span class="tw-font-medium">{{ message }}</span>
+                           </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-                    <form method="POST" action="{{ url_for('login') }}" class="tw-space-y-6"> {{ form.hidden_tag() }}
-
-                        <div>
-                            {{ form.email(class="tw-block tw-w-full tw-rounded-lg tw-border-gray-300 tw-shadow-sm tw-py-3 tw-px-4 focus:tw-border-blue-500 focus:tw-ring-blue-500", id="email", placeholder="Enter your email") }}
-                        </div>
-
-                        <div>
-                            <div class="tw-relative tw-flex">
-                                {{ form.password(class="tw-block tw-w-full tw-rounded-l-lg tw-border-gray-300 tw-shadow-sm tw-py-3 tw-px-4 focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-pr-10", id="login_password", placeholder="Enter your password") }}
-                                
-                                <span class="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-3 tw-cursor-pointer" onclick="togglePassword('login_password')">
-                                    <i class="fa fa-eye tw-text-gray-400" id="eye-login_password"></i>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="tw-flex tw-items-center">
-                                {{ form.remember(class="tw-h-4 tw-w-4 tw-text-blue-600 tw-border-gray-300 tw-rounded focus:tw-ring-blue-500", id="remember") }}
-                                
-                                <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="remember">
-                                    <span data-i18n="login_remember_me_en">Remember me</span>
-                                    <span data-i18n="login_remember_me_id" class="d-none">Ingat saya</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            {{ form.submit(class="tw-flex tw-w-full tw-justify-center tw-rounded-lg tw-border tw-border-transparent tw-bg-blue-600 tw-py-3 tw-px-4 tw-text-sm tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2") }}
-                        </div>
-
-                        <div class="tw-text-center tw-text-sm tw-text-gray-600 tw-space-y-2">
-                            <p>
-                                <span data-i18n="login_don_t_have_an_account_en">Don't have an account?</span>
-                                <span data-i18n="login_don_t_have_an_account_id" class="d-none">Tidak punya akun?</span>
-                                <a href="{{ url_for('register') }}" class="tw-font-medium tw-text-blue-600 hover:tw-text-blue-500">
-                                    <span data-i18n="login_sign_up_en">Sign Up</span>
-                                    <span data-i18n="login_sign_up_id" class="d-none">Daftar</span>
-                                </a>
-                            </p>
-                            <p>
-                                <span data-i18n="login_forgot_password_en">Forgot password?</span>
-                                <span data-i18n="login_forgot_password_id" class="d-none">Lupa kata sandi?</span>
-                                <a href="{{ url_for('reactivate') }}" class="tw-font-medium tw-text-blue-600 hover:tw-text-blue-500">
-                                    <span data-i18n="login_reactivate_account_en">Reactivate Account</span>
-                                    <span data-i18n="login_reactivate_account_id" class="d-none">Aktifkan Ulang Akun</span>
-                                </a>
-                            </p>
-                        </div>
-                    </form>
+            <form class="tw-mt-8 tw-space-y-6" method="POST" action="{{ url_for('login') }}">
+                {{ form.hidden_tag() }}
+                
+                <div>
+                    {{ form.email(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="email", placeholder="Enter your email") }}
                 </div>
+
+                <div>
+                    <div class="tw-relative">
+                        {{ form.password(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out tw-pr-10", id="login_password", placeholder="Enter your password") }}
+                        <span class="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-3 tw-cursor-pointer" onclick="togglePassword('login_password')">
+                            <i class="fa fa-eye tw-text-gray-400 hover:tw-text-gray-600 tw-transition-colors" id="eye-login_password"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="tw-flex tw-items-center tw-justify-between">
+                    <div class="tw-flex tw-items-center">
+                        {{ form.remember(class="tw-h-4 tw-w-4 tw-rounded tw-border-gray-400 tw-text-blue-600 focus:tw-ring-blue-500", id="remember") }}
+                        <label class="tw-ml-2 tw-block tw-text-sm tw-text-gray-900" for="remember">
+                            <span data-i18n="login_remember_me_en">Remember me</span>
+                            <span data-i18n="login_remember_me_id" class="d-none">Ingat saya</span>
+                        </label>
+                    </div>
+
+                    <div class="tw-text-sm">
+                        <a href="{{ url_for('reactivate') }}" class="tw-font-medium tw-text-blue-600 hover:tw-text-blue-500 tw-transition-colors">
+                            <span data-i18n="login_reactivate_account_en">Forgot password?</span>
+                            <span data-i18n="login_reactivate_account_id" class="d-none">Lupa kata sandi?</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form.submit(class="tw-flex tw-w-full tw-justify-center tw-rounded-lg tw-border tw-border-transparent tw-bg-blue-600 tw-py-3 tw-px-4 tw-text-base tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 tw-transition-all tw-duration-200 tw-ease-in-out hover:tw-scale-[1.01]") }}
+                </div>
+            </form>
+
+            <div class="tw-mt-6 tw-text-center tw-text-sm tw-text-gray-600">
+                <p>
+                    <span data-i18n="login_don_t_have_an_account_en">Don't have an account?</span>
+                    <span data-i18n="login_don_t_have_an_account_id" class="d-none">Tidak punya akun?</span>
+                    <a href="{{ url_for('register') }}" class="tw-font-semibold tw-text-gray-800 hover:tw-text-blue-600 tw-transition-colors tw-duration-150 tw-ease-in-out">
+                        <span data-i18n="login_sign_up_en">Sign Up</span>
+                        <span data-i18n="login_sign_up_id" class="d-none">Daftar</span>
+                    </a>
+                </p>
             </div>
+
         </div>
     </div>
 </div>

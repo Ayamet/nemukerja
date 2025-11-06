@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "postcss ./nemukerja/static/src/input.css -o ./nemukerja/static/style.css",
-    "watch": "postcss ./nemukerja/static/src/input.css -o ./nemukerja/static/style.css --watch"
+  "build": "npx tailwindcss -i ./nemukerja/static/src/input.css -o ./nemukerja/static/style.css",
+  "dev": "npx tailwindcss -i ./nemukerja/static/src/input.css -o ./nemukerja/static/style.css --watch"
   },
   "repository": {
     "type": "git",
@@ -20,10 +20,8 @@
   },
   "homepage": "https://github.com/Ayamet/nemukerja#readme",
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.16",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "postcss-cli": "^11.0.1",
-    "tailwindcss": "^4.1.16"
+    "tailwindcss": "^3.3.5"
   }
 }

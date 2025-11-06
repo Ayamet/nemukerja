@@ -3,6 +3,9 @@ module.exports = {
   // TAMBAHKAN prefix ini untuk migrasi yang aman dari Bootstrap
   prefix: 'tw-', 
 
+  // Aktifkan mode gelap berbasis class
+  darkMode: 'class',
+
   // Arahkan Tailwind ke template Flask Anda
   content: [
     "./nemukerja/templates/**/*.html",

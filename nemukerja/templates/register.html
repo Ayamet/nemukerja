@@ -3,130 +3,145 @@
 {% block title %}Sign Up - NemuKerja{% endblock %}
 
 {% block content %}
-<div class="container-sm mt-5 pt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-lg border-0">
-                <div class="card-body p-4">
-                    <img src="{{ url_for('static', filename='images/banner.png') }}" class="img-fluid" style="max-height: 150px;">
-                    <h2 class="text-center mt-4">
-                        <span data-i18n="register_sign_up_en">Sign Up</span>
-                        <span data-i18n="register_sign_up_id" class="d-none">Daftar</span>
-                    </h2>
-                    
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                        {% if messages %}
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                    
-                    <form method="POST" action="{{ url_for('register') }}">
-                        {{ form.hidden_tag() }}
-                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">
-                                <span data-i18n="register_full_name_en">Full Name</span>
-                                <span data-i18n="register_full_name_id" class="d-none">Nama Lengkap</span>
-                            </label>
-                            {{ form.name(class="form-control", id="name") }}
+<div class="tw-min-h-full tw-flex tw-flex-col tw-justify-center tw-items-center tw-bg-gray-50 tw-py-12 tw-px-4 sm:tw-px-6 lg:tw-px-8">
+    <div class="tw-w-full tw-max-w-md tw-space-y-8">
+        
+        <div class="tw-bg-white tw-shadow-2xl tw-rounded-2xl tw-p-8 sm:tw-p-10">
+            
+            <h2 class="tw-text-center tw-text-3xl tw-font-bold tw-tracking-tight tw-text-gray-900">
+                <span data-i18n="register_sign_up_en">Create Account</span>
+                <span data-i18n="register_sign_up_id" class="d-none">Buat Akun</span>
+            </h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="tw-mt-4 tw-space-y-3">
+                    {% for category, message in messages %}
+                        <div class="tw-p-4 tw-rounded-md {% if category == 'error' %}tw-bg-red-100 tw-text-red-700{% else %}tw-bg-blue-100 tw-text-blue-700{% endif %}" role="alert">
+                            <span class="tw-font-medium">{{ message }}</span>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <span data-i18n="register_email_address_en">Email Address</span>
-                                <span data-i18n="register_email_address_id" class="d-none">Alamat Email</span>
-                            </label>
-                            {{ form.email(class="form-control", id="email") }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">
-                                <span data-i18n="register_phone_number_en">Phone Number</span>
-                                <span data-i18n="register_phone_number_id" class="d-none">Nomor Telepon</span>
-                            </label>
-                            {{ form.phone(class="form-control", id="phone") }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="signup_password" class="form-label">
-                                <span data-i18n="register_password_en">Password</span>
-                                <span data-i18n="register_password_id" class="d-none">Kata Sandi</span>
-                            </label>
-                            <div class="input-group">
-                                {{ form.password(class="form-control", id="signup_password") }}
-                                <button type="button" class="input-group-text btn-eye" onclick="togglePassword('signup_password')" aria-label="Toggle password visibility">
-                                    <i class="fa fa-eye" id="eye-signup_password" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">
-                                <span data-i18n="register_confirm_password_en">Confirm Password</span>
-                                <span data-i18n="register_confirm_password_id" class="d-none">Konfirmasi Kata Sandi</span>
-                            </label>
-                            <div class="input-group">
-                                {{ form.confirm_password(class="form-control", id="confirm_password") }}
-                                <button type="button" class="input-group-text btn-eye" onclick="togglePassword('confirm_password')" aria-label="Toggle confirm password visibility">
-                                    <i class="fa fa-eye" id="eye-confirm_password" aria-hidden="true"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="role_select" class="form-label">
-                                <span data-i18n="register_i_am_a_en">I am a</span>
-                                <span data-i18n="register_i_am_a_id" class="d-none">Saya adalah</span>
-                            </label>
-                            {{ form.role(class="form-select", id="role_select") }}
-                        </div>
-                        
-                        <div id="company_fields" style="display: none;">
-                            <div class="mb-3">
-                                <label for="company_name" class="form-label">
-                                    <span data-i18n="register_company_name_en">Company Name</span>
-                                    <span data-i18n="register_company_name_id" class="d-none">Nama Perusahaan</span>
-                                </label>
-                                {{ form.company_name(class="form-control", id="company_name") }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label">
-                                    <span data-i18n="register_company_description_en">Company Description</span>
-                                    <span data-i18n="register_company_description_id" class="d-none">Deskripsi Perusahaan</span>
-                                </label>
-                                {{ form.description(class="form-control", id="description", rows="3") }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="website" class="form-label">
-                                    <span data-i18n="register_website_en">Website</span>
-                                    <span data-i18n="register_website_id" class="d-none">Situs Web</span>
-                                </label>
-                                {{ form.website(class="form-control", id="website") }}
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            {{ form.submit(class="btn btn-primary w-100") }}
-                        </div>
-                        
-                        <div class="text-center">
-                            <p class="mb-0">
-                                <span data-i18n="register_already_have_an_account_en">Already have an account?</span>
-                                <span data-i18n="register_already_have_an_account_id" class="d-none">Sudah punya akun?</span>
-                                <a href="{{ url_for('login') }}">
-                                    <span data-i18n="register_sign_in_en">Sign In</span>
-                                    <span data-i18n="register_sign_in_id" class="d-none">Masuk</span>
-                                </a>
-                            </p>
-                        </div>
-                    </form>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form class="tw-mt-8 tw-space-y-6" method="POST" action="{{ url_for('register') }}">
+                {{ form.hidden_tag() }}
+                
+                <div>
+                    <label for="name" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_full_name_en">Full Name</span>
+                        <span data-i18n="register_full_name_id" class="d-none">Nama Lengkap</span>
+                    </label>
+                    <div class="tw-mt-1">
+                        {{ form.name(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="name") }}
+                    </div>
                 </div>
+                
+                <div>
+                    <label for="email" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_email_address_en">Email Address</span>
+                        <span data-i18n="register_email_address_id" class="d-none">Alamat Email</span>
+                    </label>
+                    <div class="tw-mt-1">
+                        {{ form.email(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="email") }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="phone" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_phone_number_en">Phone Number</span>
+                        <span data-i18n="register_phone_number_id" class="d-none">Nomor Telepon</span>
+                    </label>
+                    <div class="tw-mt-1">
+                        {{ form.phone(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="phone") }}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="signup_password" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_password_en">Password</span>
+                        <span data-i18n="register_password_id" class="d-none">Kata Sandi</span>
+                    </label>
+                    <div class="tw-mt-1 tw-relative">
+                        {{ form.password(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out tw-pr-10", id="signup_password") }}
+                        
+                        <span class="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-3 tw-cursor-pointer" onclick="togglePassword('signup_password')">
+                            <i class="fa fa-eye tw-text-gray-400 hover:tw-text-gray-600 tw-transition-colors" id="eye-signup_password"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="confirm_password" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_confirm_password_en">Confirm Password</span>
+                        <span data-i18n="register_confirm_password_id" class="d-none">Konfirmasi Kata Sandi</span>
+                    </label>
+                    <div class="tw-mt-1 tw-relative">
+                        {{ form.confirm_password(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out tw-pr-10", id="confirm_password") }}
+                        
+                        <span class="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-pr-3 tw-cursor-pointer" onclick="togglePassword('confirm_password')">
+                            <i class="fa fa-eye tw-text-gray-400 hover:tw-text-gray-600 tw-transition-colors" id="eye-confirm_password"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="role_select" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                        <span data-i18n="register_i_am_a_en">I am a</span>
+                        <span data-i18n="register_i_am_a_id" class="d-none">Saya adalah</span>
+                    </label>
+                    <div class="tw-mt-1">
+                        {{ form.role(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="role_select") }}
+                    </div>
+                </div>
+                
+                <div id="company_fields" class="tw-space-y-6" style="display: none;">
+                    <div>
+                        <label for="company_name" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                            <span data-i18n="register_company_name_en">Company Name</span>
+                            <span data-i18n="register_company_name_id" class="d-none">Nama Perusahaan</span>
+                        </label>
+                        <div class="tw-mt-1">
+                            {{ form.company_name(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="company_name") }}
+                        </div>
+                    </div>
+                    <div>
+                        <label for="description" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                            <span data-i18n="register_company_description_en">Company Description</span>
+                            <span data-i18n="register_company_description_id" class="d-none">Deskripsi Perusahaan</span>
+                        </label>
+                        <div class="tw-mt-1">
+                            {{ form.description(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="description", rows="3") }}
+                        </div>
+                    </div>
+                    <div>
+                        <label for="website" class="tw-block tw-text-sm tw-font-medium tw-text-gray-700">
+                            <span data-i18n="register_website_en">Website</span>
+                            <span data-i18n="register_website_id" class="d-none">Situs Web</span>
+                        </label>
+                        <div class="tw-mt-1">
+                            {{ form.website(class="tw-block tw-w-full tw-appearance-none tw-rounded-lg tw-border-gray-400 tw-py-3 tw-px-4 tw-shadow-sm focus:tw-border-blue-500 focus:tw-ring-blue-500 tw-transition tw-duration-200 tw-ease-in-out", id="website") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    {{ form.submit(class="tw-flex tw-w-full tw-justify-center tw-rounded-lg tw-border tw-border-transparent tw-bg-blue-600 tw-py-3 tw-px-4 tw-text-base tw-font-semibold tw-text-white tw-shadow-sm hover:tw-bg-blue-700 focus:tw-outline-none focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-ring-offset-2 tw-transition-all tw-duration-200 tw-ease-in-out hover:tw-scale-[1.01]") }}
+                </div>
+            </form>
+
+            <div class="tw-mt-6 tw-text-center tw-text-sm tw-text-gray-600">
+                <p>
+                    <span data-i18n="register_already_have_an_account_en">Already have an account?</span>
+                    <span data-i18n="register_already_have_an_account_id" class="d-none">Sudah punya akun?</span>
+                    <a href="{{ url_for('login') }}" class="tw-font-semibold tw-text-gray-800 hover:tw-text-blue-600 tw-transition-colors tw-duration-150 tw-ease-in-out">
+                        <span data-i18n="register_sign_in_en">Sign In</span>
+                        <span data-i18n="register_sign_in_id" class="d-none">Masuk</span>
+                    </a>
+                </p>
             </div>
+
         </div>
     </div>
 </div>
